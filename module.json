@@ -1,0 +1,13 @@
+{
+    "name": "PlanificationStages",
+    "alias": "planificationstages",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\PlanificationStages\\Providers\\PlanificationStagesServiceProvider",
+        "Modules\\PlanificationStages\\Providers\\Filament\\FilamentPanelProvider"
+
+    ],
+    "files": []
+}

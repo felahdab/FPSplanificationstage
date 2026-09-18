@@ -1,0 +1,78 @@
+<?php
+
+namespace Modules\PlanificationStages\Filament\Resources\BesoinFormations;
+
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Tables\Table;
+use Modules\PlanificationStages\Filament\Resources\BesoinFormations\Pages\CreateBesoinFormation;
+use Modules\PlanificationStages\Filament\Resources\BesoinFormations\Pages\EditBesoinFormation;
+use Modules\PlanificationStages\Filament\Resources\BesoinFormations\Pages\ListBesoinFormations;
+use Modules\PlanificationStages\Filament\Resources\BesoinFormations\Pages\ViewBesoinFormation;
+use Modules\PlanificationStages\Filament\Resources\BesoinFormations\Schemas\BesoinFormationForm;
+use Modules\PlanificationStages\Filament\Resources\BesoinFormations\Schemas\BesoinFormationInfolist;
+use Modules\PlanificationStages\Filament\Resources\BesoinFormations\Tables\BesoinFormationsTable;
+use Modules\PlanificationStages\Models\BesoinFormation;
+
+class BesoinFormationResource extends Resource
+{
+    protected static ?string $model =
+        BesoinFormation::class;
+
+    protected static ?string $navigationLabel =
+        'Besoins de formation';
+
+    protected static ?string $modelLabel =
+        'besoin de formation';
+
+    protected static ?string $pluralModelLabel =
+        'besoins de formation';
+
+    protected static string|\UnitEnum|null $navigationGroup =
+        'Planification';
+
+    protected static ?int $navigationSort = 10;
+
+    public static function form(Schema $schema): Schema
+    {
+        return BesoinFormationForm::configure(
+            $schema
+        );
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return BesoinFormationInfolist::configure(
+            $schema
+        );
+    }
+
+    public static function table(Table $table): Table
+    {
+        return BesoinFormationsTable::configure(
+            $table
+        );
+    }
+
+    public static function getRelations(): array
+    {
+        return [];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' =>
+                ListBesoinFormations::route('/'),
+
+            'create' =>
+                CreateBesoinFormation::route('/create'),
+
+            'view' =>
+                ViewBesoinFormation::route('/{record}'),
+
+            'edit' =>
+                EditBesoinFormation::route('/{record}/edit'),
+        ];
+    }
+}
