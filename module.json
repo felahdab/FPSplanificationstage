@@ -1,7 +1,7 @@
 {
     "name": "PlanificationStages",
     "alias": "planificationstages",
-    "description": "",
+    "description": "Ce module permet la gestion des stages proposés par la FPS.",
     "keywords": [],
     "priority": 0,
     "providers": [
