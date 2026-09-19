@@ -1,2 +1,5 @@
 _backup*
 *.sh
+
+# Runner de tests automatique du module
+!tests/run_after_change.sh
