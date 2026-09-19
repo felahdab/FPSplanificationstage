@@ -215,7 +215,7 @@
     {{-- RETOUR_CALENDRIER_INSCRIPTION_V1 --}}
     <a
         class="back-calendar"
-        href="{{ route('planificationstages.public.calendrier') }}"
+        href="{{ route('fpsplanificationstage.public.calendrier') }}"
     >
         ← Retour au calendrier
     </a>
@@ -272,7 +272,7 @@
     <form
         method="POST"
         action="{{ route(
-            'planificationstages.public.inscription.store',
+            'fpsplanificationstage.public.inscription.store',
             ['session' => $session->id]
         ) }}"
     >

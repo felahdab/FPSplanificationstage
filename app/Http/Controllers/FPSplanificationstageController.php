@@ -1,18 +1,18 @@
 <?php
 
-namespace Modules\PlanificationStages\Http\Controllers;
+namespace Modules\FPSplanificationstage\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class PlanificationStagesController extends Controller
+class FPSplanificationstageController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('planificationstages::index');
+        return view('fpsplanificationstage::index');
     }
 
     /**
@@ -20,7 +20,7 @@ class PlanificationStagesController extends Controller
      */
     public function create()
     {
-        return view('planificationstages::create');
+        return view('fpsplanificationstage::create');
     }
 
     /**
@@ -36,7 +36,7 @@ class PlanificationStagesController extends Controller
      */
     public function show($id)
     {
-        return view('planificationstages::show');
+        return view('fpsplanificationstage::show');
     }
 
     /**
@@ -44,7 +44,7 @@ class PlanificationStagesController extends Controller
      */
     public function edit($id)
     {
-        return view('planificationstages::edit');
+        return view('fpsplanificationstage::edit');
     }
 
     /**

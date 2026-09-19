@@ -1,5 +1,5 @@
 {
-    "name": "nwidart/planificationstages",
+    "name": "nwidart/fpsplanificationstage",
     "description": "",
     "authors": [
         {
@@ -17,14 +17,14 @@
     },
     "autoload": {
         "psr-4": {
-            "Modules\\PlanificationStages\\": "app/",
-            "Modules\\PlanificationStages\\Database\\Factories\\": "database/factories/",
-            "Modules\\PlanificationStages\\Database\\Seeders\\": "database/seeders/"
+            "Modules\\FPSplanificationstage\\": "app/",
+            "Modules\\FPSplanificationstage\\Database\\Factories\\": "database/factories/",
+            "Modules\\FPSplanificationstage\\Database\\Seeders\\": "database/seeders/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Modules\\PlanificationStages\\Tests\\": "tests/"
+            "Modules\\FPSplanificationstage\\Tests\\": "tests/"
         }
     }
 }

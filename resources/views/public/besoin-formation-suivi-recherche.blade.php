@@ -116,7 +116,7 @@
     <a
         class="back"
         href="{{ route(
-            'planificationstages.public.calendrier'
+            'fpsplanificationstage.public.calendrier'
         ) }}"
     >
         ← Retour au portail
@@ -151,7 +151,7 @@
         <form
             method="POST"
             action="{{ route(
-                'planificationstages.public.besoin.suivi.rechercher'
+                'fpsplanificationstage.public.besoin.suivi.rechercher'
             ) }}"
         >
 

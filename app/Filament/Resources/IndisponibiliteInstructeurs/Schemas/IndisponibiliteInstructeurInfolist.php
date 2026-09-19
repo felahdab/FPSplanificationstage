@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\IndisponibiliteInstructeurs\Schemas;
+namespace Modules\FPSplanificationstage\Filament\Resources\IndisponibiliteInstructeurs\Schemas;
 
 use Filament\Schemas\Schema;
 

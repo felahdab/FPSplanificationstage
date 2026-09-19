@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\PlanificationStages\Services;
+namespace Modules\FPSplanificationstage\Services;
 
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Modules\PlanificationStages\Models\BesoinFormation;
-use Modules\PlanificationStages\Models\SessionStage;
+use Modules\FPSplanificationstage\Models\BesoinFormation;
+use Modules\FPSplanificationstage\Models\SessionStage;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;

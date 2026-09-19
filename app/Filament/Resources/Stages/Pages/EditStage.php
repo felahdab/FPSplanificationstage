@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Stages\Pages;
+namespace Modules\FPSplanificationstage\Filament\Resources\Stages\Pages;
 
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Modules\PlanificationStages\Filament\Resources\Stages\StageResource;
+use Modules\FPSplanificationstage\Filament\Resources\Stages\StageResource;
 
 class EditStage extends EditRecord
 {

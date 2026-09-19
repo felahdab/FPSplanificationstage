@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\SessionStages\Pages;
+namespace Modules\FPSplanificationstage\Filament\Resources\SessionStages\Pages;
 
 use Carbon\Carbon;
 use Filament\Actions\Action;
@@ -9,10 +9,10 @@ use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Contracts\Support\Htmlable;
-use Modules\PlanificationStages\Filament\Resources\BesoinFormations\BesoinFormationResource;
-use Modules\PlanificationStages\Filament\Resources\SessionStages\SessionStageResource;
-use Modules\PlanificationStages\Services\SessionStageAlternativeFinder;
-use Modules\PlanificationStages\Services\SessionStageConflictDetector;
+use Modules\FPSplanificationstage\Filament\Resources\BesoinFormations\BesoinFormationResource;
+use Modules\FPSplanificationstage\Filament\Resources\SessionStages\SessionStageResource;
+use Modules\FPSplanificationstage\Services\SessionStageAlternativeFinder;
+use Modules\FPSplanificationstage\Services\SessionStageConflictDetector;
 
 class EditSessionStage extends EditRecord
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Models;
+namespace Modules\FPSplanificationstage\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -56,7 +56,7 @@ class BesoinFormation extends Model
         static::saving(
             function (BesoinFormation $besoin): void {
                 $message =
-                    \Modules\PlanificationStages\Services\BesoinPeriodeService::validateValues(
+                    \Modules\FPSplanificationstage\Services\BesoinPeriodeService::validateValues(
                         $besoin->stage_id,
                         $besoin->type_periode,
                         $besoin->date_debut_souhaitee,
@@ -76,7 +76,7 @@ class BesoinFormation extends Model
 
                 if ($besoin->type_periode === 'dates_fixes') {
                     $fin =
-                        \Modules\PlanificationStages\Services\BesoinPeriodeService::calculatedFixedEndDate(
+                        \Modules\FPSplanificationstage\Services\BesoinPeriodeService::calculatedFixedEndDate(
                             $besoin->stage_id,
                             $besoin->date_debut_souhaitee
                         );

@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Stagiaires\Tables;
+namespace Modules\FPSplanificationstage\Filament\Resources\Stagiaires\Tables;
 
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Modules\PlanificationStages\Models\Stagiaire;
+use Modules\FPSplanificationstage\Models\Stagiaire;
 
 class StagiairesTable
 {

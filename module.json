@@ -1,12 +1,12 @@
 {
-    "name": "PlanificationStages",
-    "alias": "planificationstages",
+    "name": "FPSplanificationstage",
+    "alias": "fpsplanificationstage",
     "description": "Ce module permet la gestion des stages proposés par la FPS.",
     "keywords": [],
     "priority": 0,
     "providers": [
-        "Modules\\PlanificationStages\\Providers\\PlanificationStagesServiceProvider",
-        "Modules\\PlanificationStages\\Providers\\Filament\\FilamentPanelProvider"
+        "Modules\\FPSplanificationstage\\Providers\\FPSplanificationstageServiceProvider",
+        "Modules\\FPSplanificationstage\\Providers\\Filament\\FilamentPanelProvider"
 
     ],
     "files": []

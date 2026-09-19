@@ -156,7 +156,7 @@
     <a
         class="back"
         href="{{ route(
-            'planificationstages.public.calendrier'
+            'fpsplanificationstage.public.calendrier'
         ) }}"
     >
         ← Retour au portail
@@ -308,7 +308,7 @@
                 <a
                     class="button button-green"
                     href="{{ route(
-                        'planificationstages.public.inscription.create',
+                        'fpsplanificationstage.public.inscription.create',
                         [
                             'session' =>
                                 $besoin->sessionStage->id

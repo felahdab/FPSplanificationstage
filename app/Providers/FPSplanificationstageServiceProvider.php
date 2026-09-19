@@ -1,19 +1,19 @@
 <?php
 
-namespace Modules\PlanificationStages\Providers;
+namespace Modules\FPSplanificationstage\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
-class PlanificationStagesServiceProvider extends ServiceProvider
+class FPSplanificationstageServiceProvider extends ServiceProvider
 {
     use PathNamespace;
 
-    protected string $name = 'PlanificationStages';
+    protected string $name = 'FPSplanificationstage';
 
-    protected string $nameLower = 'planificationstages';
+    protected string $nameLower = 'fpsplanificationstage';
 
     /**
      * Boot the application events.

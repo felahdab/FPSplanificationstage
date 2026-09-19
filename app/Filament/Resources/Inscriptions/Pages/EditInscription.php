@@ -1,12 +1,12 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Inscriptions\Pages;
+namespace Modules\FPSplanificationstage\Filament\Resources\Inscriptions\Pages;
 
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
-use Modules\PlanificationStages\Filament\Resources\Inscriptions\InscriptionResource;
+use Modules\FPSplanificationstage\Filament\Resources\Inscriptions\InscriptionResource;
 
 class EditInscription extends EditRecord
 {

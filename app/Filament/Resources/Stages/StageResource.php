@@ -1,20 +1,20 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Stages;
+namespace Modules\FPSplanificationstage\Filament\Resources\Stages;
 
-use Modules\PlanificationStages\Models\Stage;
+use Modules\FPSplanificationstage\Models\Stage;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Modules\PlanificationStages\Filament\Resources\Stages\Pages\CreateStage;
-use Modules\PlanificationStages\Filament\Resources\Stages\Pages\EditStage;
-use Modules\PlanificationStages\Filament\Resources\Stages\Pages\ListStages;
-use Modules\PlanificationStages\Filament\Resources\Stages\Pages\ViewStage;
-use Modules\PlanificationStages\Filament\Resources\Stages\Schemas\StageForm;
-use Modules\PlanificationStages\Filament\Resources\Stages\Schemas\StageInfolist;
-use Modules\PlanificationStages\Filament\Resources\Stages\Tables\StagesTable;
+use Modules\FPSplanificationstage\Filament\Resources\Stages\Pages\CreateStage;
+use Modules\FPSplanificationstage\Filament\Resources\Stages\Pages\EditStage;
+use Modules\FPSplanificationstage\Filament\Resources\Stages\Pages\ListStages;
+use Modules\FPSplanificationstage\Filament\Resources\Stages\Pages\ViewStage;
+use Modules\FPSplanificationstage\Filament\Resources\Stages\Schemas\StageForm;
+use Modules\FPSplanificationstage\Filament\Resources\Stages\Schemas\StageInfolist;
+use Modules\FPSplanificationstage\Filament\Resources\Stages\Tables\StagesTable;
 
 class StageResource extends Resource
 {

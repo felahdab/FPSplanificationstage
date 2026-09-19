@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Http\Controllers;
+namespace Modules\FPSplanificationstage\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -9,8 +9,8 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
-use Modules\PlanificationStages\Models\BesoinFormation;
-use Modules\PlanificationStages\Models\Stage;
+use Modules\FPSplanificationstage\Models\BesoinFormation;
+use Modules\FPSplanificationstage\Models\Stage;
 
 class PublicBesoinFormationController extends Controller
 {
@@ -28,7 +28,7 @@ class PublicBesoinFormationController extends Controller
                 ->get();
 
         return view(
-            'planificationstages::public.besoin-formation',
+            'fpsplanificationstage::public.besoin-formation',
             [
                 'stages' =>
                     $stages,
@@ -188,7 +188,7 @@ class PublicBesoinFormationController extends Controller
 
         return redirect()
             ->route(
-                'planificationstages.public.besoin.confirmation',
+                'fpsplanificationstage.public.besoin.confirmation',
                 [
                     'token' =>
                         $besoin
@@ -206,7 +206,7 @@ class PublicBesoinFormationController extends Controller
             );
 
         return view(
-            'planificationstages::public.besoin-formation-confirmation',
+            'fpsplanificationstage::public.besoin-formation-confirmation',
             [
                 'besoin' =>
                     $besoin,
@@ -217,7 +217,7 @@ class PublicBesoinFormationController extends Controller
     public function suiviForm(): View
     {
         return view(
-            'planificationstages::public.besoin-formation-suivi-recherche'
+            'fpsplanificationstage::public.besoin-formation-suivi-recherche'
         );
     }
 
@@ -285,7 +285,7 @@ class PublicBesoinFormationController extends Controller
 
         return redirect()
             ->route(
-                'planificationstages.public.besoin.suivi',
+                'fpsplanificationstage.public.besoin.suivi',
                 [
                     'token' =>
                         $besoin
@@ -369,7 +369,7 @@ class PublicBesoinFormationController extends Controller
             };
 
         return view(
-            'planificationstages::public.besoin-formation-suivi',
+            'fpsplanificationstage::public.besoin-formation-suivi',
             [
                 'besoin' =>
                     $besoin,

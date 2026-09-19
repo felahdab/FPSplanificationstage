@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Stages\Pages;
+namespace Modules\FPSplanificationstage\Filament\Resources\Stages\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
-use Modules\PlanificationStages\Filament\Resources\Stages\StageResource;
+use Modules\FPSplanificationstage\Filament\Resources\Stages\StageResource;
 
 class CreateStage extends CreateRecord
 {

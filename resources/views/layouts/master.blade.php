@@ -7,19 +7,19 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>PlanificationStages Module - {{ config('app.name', 'Laravel') }}</title>
+    <title>FPSplanificationstage Module - {{ config('app.name', 'Laravel') }}</title>
 
     <meta name="description" content="{{ $description ?? '' }}">
     <meta name="keywords" content="{{ $keywords ?? '' }}">
     <meta name="author" content="{{ $author ?? '' }}">
 
     {{-- Vite CSS --}}
-    {{-- {{ module_vite('build-planificationstages', 'resources/assets/sass/app.scss') }} --}}
+    {{-- {{ module_vite('build-fpsplanificationstage', 'resources/assets/sass/app.scss') }} --}}
 </head>
 
 <body>
     @yield('content')
 
     {{-- Vite JS --}}
-    {{-- {{ module_vite('build-planificationstages', 'resources/assets/js/app.js') }} --}}
+    {{-- {{ module_vite('build-fpsplanificationstage', 'resources/assets/js/app.js') }} --}}
 </body>

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Instructeurs\Pages;
+namespace Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Pages;
 
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
@@ -8,8 +8,8 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Storage;
-use Modules\PlanificationStages\Filament\Resources\Instructeurs\InstructeurResource;
-use Modules\PlanificationStages\Services\InstructeurStageImporter;
+use Modules\FPSplanificationstage\Filament\Resources\Instructeurs\InstructeurResource;
+use Modules\FPSplanificationstage\Services\InstructeurStageImporter;
 use Throwable;
 
 class ListInstructeurs extends ListRecords

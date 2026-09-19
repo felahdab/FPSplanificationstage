@@ -1,7 +1,7 @@
-@extends('planificationstages::layouts.master')
+@extends('fpsplanificationstage::layouts.master')
 
 @section('content')
     <h1>Hello World</h1>
 
-    <p>Module: {!! config('planificationstages.name') !!}</p>
+    <p>Module: {!! config('fpsplanificationstage.name') !!}</p>
 @endsection

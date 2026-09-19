@@ -1,14 +1,14 @@
 <?php
 
-namespace Modules\PlanificationStages\Services;
+namespace Modules\FPSplanificationstage\Services;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Modules\PlanificationStages\Models\BesoinFormation;
-use Modules\PlanificationStages\Models\Instructeur;
-use Modules\PlanificationStages\Models\Salle;
-use Modules\PlanificationStages\Models\SessionStage;
-use Modules\PlanificationStages\Models\Stage;
+use Modules\FPSplanificationstage\Models\BesoinFormation;
+use Modules\FPSplanificationstage\Models\Instructeur;
+use Modules\FPSplanificationstage\Models\Salle;
+use Modules\FPSplanificationstage\Models\SessionStage;
+use Modules\FPSplanificationstage\Models\Stage;
 
 class BesoinFormationPlanner
 {

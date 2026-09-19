@@ -1,12 +1,12 @@
 <?php
 
-namespace Modules\PlanificationStages\Services;
+namespace Modules\FPSplanificationstage\Services;
 
 use Carbon\Carbon;
-use Modules\PlanificationStages\Models\IndisponibiliteInstructeur;
-use Modules\PlanificationStages\Models\Instructeur;
-use Modules\PlanificationStages\Models\Salle;
-use Modules\PlanificationStages\Models\SessionStage;
+use Modules\FPSplanificationstage\Models\IndisponibiliteInstructeur;
+use Modules\FPSplanificationstage\Models\Instructeur;
+use Modules\FPSplanificationstage\Models\Salle;
+use Modules\FPSplanificationstage\Models\SessionStage;
 
 class SessionStageConflictDetector
 {

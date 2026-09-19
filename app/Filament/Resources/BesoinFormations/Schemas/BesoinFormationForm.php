@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\FpsPlanificationStages\Filament\Resources\BesoinFormations\Schemas;
+namespace Modules\FPSplanificationstage\Filament\Resources\BesoinFormations\Schemas;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -8,7 +8,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Modules\PlanificationStages\Models\Stage;
+use Modules\FPSplanificationstage\Models\Stage;
 
 class BesoinFormationForm
 {
@@ -224,7 +224,7 @@ class BesoinFormationForm
                                     }
 
                                     if ($get('type_periode') === 'plage') {
-                                        return \Modules\PlanificationStages\Services\BesoinPeriodeService::minimumEndDate(
+                                        return \Modules\FPSplanificationstage\Services\BesoinPeriodeService::minimumEndDate(
                                             $get('stage_id'),
                                             $start
                                         )?->format('Y-m-d');
@@ -243,7 +243,7 @@ class BesoinFormationForm
                             )
                             ->helperText(
                                 fn ($get): string =>
-                                    \Modules\PlanificationStages\Services\BesoinPeriodeService::helperText(
+                                    \Modules\FPSplanificationstage\Services\BesoinPeriodeService::helperText(
                                         $get('stage_id'),
                                         $get('type_periode')
                                     )

@@ -1,22 +1,22 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Widgets;
+namespace Modules\FPSplanificationstage\Filament\Widgets;
 
 use Carbon\Carbon;
 use Filament\Widgets\Widget;
-use Modules\PlanificationStages\Filament\Pages\Planning;
-use Modules\PlanificationStages\Filament\Pages\Statistiques;
-use Modules\PlanificationStages\Filament\Resources\BesoinFormations\BesoinFormationResource;
-use Modules\PlanificationStages\Filament\Resources\Inscriptions\InscriptionResource;
-use Modules\PlanificationStages\Filament\Resources\SessionStages\SessionStageResource;
-use Modules\PlanificationStages\Models\BesoinFormation;
-use Modules\PlanificationStages\Models\Inscription;
-use Modules\PlanificationStages\Models\SessionStage;
+use Modules\FPSplanificationstage\Filament\Pages\Planning;
+use Modules\FPSplanificationstage\Filament\Pages\Statistiques;
+use Modules\FPSplanificationstage\Filament\Resources\BesoinFormations\BesoinFormationResource;
+use Modules\FPSplanificationstage\Filament\Resources\Inscriptions\InscriptionResource;
+use Modules\FPSplanificationstage\Filament\Resources\SessionStages\SessionStageResource;
+use Modules\FPSplanificationstage\Models\BesoinFormation;
+use Modules\FPSplanificationstage\Models\Inscription;
+use Modules\FPSplanificationstage\Models\SessionStage;
 
 class TableauBordSemaine extends Widget
 {
     protected string $view =
-        'planificationstages::filament.widgets.tableau-bord-semaine';
+        'fpsplanificationstage::filament.widgets.tableau-bord-semaine';
 
     protected int | string | array $columnSpan =
         'full';

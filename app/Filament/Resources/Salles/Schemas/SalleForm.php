@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Salles\Schemas;
+namespace Modules\FPSplanificationstage\Filament\Resources\Salles\Schemas;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;

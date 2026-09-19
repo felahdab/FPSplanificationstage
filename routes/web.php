@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\PlanificationStages\Http\Controllers\PublicBesoinFormationController;
-use Modules\PlanificationStages\Http\Controllers\PublicInscriptionController;
-use Modules\PlanificationStages\Http\Controllers\PublicPlanningController;
+use Modules\FPSplanificationstage\Http\Controllers\PublicBesoinFormationController;
+use Modules\FPSplanificationstage\Http\Controllers\PublicInscriptionController;
+use Modules\FPSplanificationstage\Http\Controllers\PublicPlanningController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +21,7 @@ Route::get(
         'index',
     ]
 )->name(
-    'planificationstages.public.calendrier'
+    'fpsplanificationstage.public.calendrier'
 );
 
 /*
@@ -34,7 +34,7 @@ Route::get(
         'create',
     ]
 )->name(
-    'planificationstages.public.besoin.create'
+    'fpsplanificationstage.public.besoin.create'
 );
 
 Route::post(
@@ -48,7 +48,7 @@ Route::post(
         'throttle:20,1'
     )
     ->name(
-        'planificationstages.public.besoin.store'
+        'fpsplanificationstage.public.besoin.store'
     );
 
 /*
@@ -62,7 +62,7 @@ Route::get(
         'suiviForm',
     ]
 )->name(
-    'planificationstages.public.besoin.suivi.form'
+    'fpsplanificationstage.public.besoin.suivi.form'
 );
 
 Route::post(
@@ -76,7 +76,7 @@ Route::post(
         'throttle:10,1'
     )
     ->name(
-        'planificationstages.public.besoin.suivi.rechercher'
+        'fpsplanificationstage.public.besoin.suivi.rechercher'
     );
 
 /*
@@ -90,7 +90,7 @@ Route::get(
         'confirmation',
     ]
 )->name(
-    'planificationstages.public.besoin.confirmation'
+    'fpsplanificationstage.public.besoin.confirmation'
 );
 
 Route::get(
@@ -100,7 +100,7 @@ Route::get(
         'suivi',
     ]
 )->name(
-    'planificationstages.public.besoin.suivi'
+    'fpsplanificationstage.public.besoin.suivi'
 );
 
 /*
@@ -113,7 +113,7 @@ Route::get(
         'create',
     ]
 )->name(
-    'planificationstages.public.inscription.create'
+    'fpsplanificationstage.public.inscription.create'
 );
 
 Route::post(
@@ -123,7 +123,7 @@ Route::post(
         'store',
     ]
 )->name(
-    'planificationstages.public.inscription.store'
+    'fpsplanificationstage.public.inscription.store'
 );
 
 Route::get(
@@ -133,15 +133,15 @@ Route::get(
         'confirmation',
     ]
 )->name(
-    'planificationstages.public.inscription.confirmation'
+    'fpsplanificationstage.public.inscription.confirmation'
 );
 
 \Illuminate\Support\Facades\Route::get(
     '/formations/sessions/{session}',
     [
-        \Modules\PlanificationStages\Http\Controllers\PublicPlanningController::class,
+        \Modules\FPSplanificationstage\Http\Controllers\PublicPlanningController::class,
         'show',
     ]
 )->name(
-    'planificationstages.public.session.show'
+    'fpsplanificationstage.public.session.show'
 );

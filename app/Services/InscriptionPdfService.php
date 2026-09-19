@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\PlanificationStages\Services;
+namespace Modules\FPSplanificationstage\Services;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
-use Modules\PlanificationStages\Models\Inscription;
+use Modules\FPSplanificationstage\Models\Inscription;
 
 class InscriptionPdfService
 {
@@ -16,7 +16,7 @@ class InscriptionPdfService
         ]);
 
         $html = view(
-            'planificationstages::public.inscription-pdf',
+            'fpsplanificationstage::public.inscription-pdf',
             [
                 'inscription' => $inscription,
             ]

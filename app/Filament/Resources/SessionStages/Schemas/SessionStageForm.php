@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\SessionStages\Schemas;
+namespace Modules\FPSplanificationstage\Filament\Resources\SessionStages\Schemas;
 
 use Carbon\Carbon;
 use Filament\Actions\Action;
@@ -16,12 +16,12 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Modules\PlanificationStages\Models\Instructeur;
-use Modules\PlanificationStages\Models\Salle;
-use Modules\PlanificationStages\Models\SessionStage;
-use Modules\PlanificationStages\Models\Stage;
-use Modules\PlanificationStages\Services\SessionStageAlternativeFinder;
-use Modules\PlanificationStages\Services\SessionStageConflictDetector;
+use Modules\FPSplanificationstage\Models\Instructeur;
+use Modules\FPSplanificationstage\Models\Salle;
+use Modules\FPSplanificationstage\Models\SessionStage;
+use Modules\FPSplanificationstage\Models\Stage;
+use Modules\FPSplanificationstage\Services\SessionStageAlternativeFinder;
+use Modules\FPSplanificationstage\Services\SessionStageConflictDetector;
 
 class SessionStageForm
 {

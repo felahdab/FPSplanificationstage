@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Pages;
+namespace Modules\FPSplanificationstage\Filament\Pages;
 
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
@@ -8,16 +8,16 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
-use Modules\PlanificationStages\Models\Salle;
-use Modules\PlanificationStages\Models\SalleOccupation;
-use Modules\PlanificationStages\Models\SessionStage;
-use Modules\PlanificationStages\Services\SalleReservationWorkbookService;
+use Modules\FPSplanificationstage\Models\Salle;
+use Modules\FPSplanificationstage\Models\SalleOccupation;
+use Modules\FPSplanificationstage\Models\SessionStage;
+use Modules\FPSplanificationstage\Services\SalleReservationWorkbookService;
 use Throwable;
 
 class ReservationsSalles extends Page
 {
     protected string $view =
-        'planificationstages::filament.pages.reservations-salles';
+        'fpsplanificationstage::filament.pages.reservations-salles';
 
     protected static ?string $navigationLabel =
         'Réservations salles';
@@ -252,7 +252,7 @@ class ReservationsSalles extends Page
             );
 
         $path =
-            'planificationstages/salles/master.json';
+            'fpsplanificationstage/salles/master.json';
 
         if (
             ! $disk->exists(

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Stages\Schemas;
+namespace Modules\FPSplanificationstage\Filament\Resources\Stages\Schemas;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
@@ -12,7 +12,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Modules\PlanificationStages\Models\Salle;
+use Modules\FPSplanificationstage\Models\Salle;
 
 class StageForm
 {

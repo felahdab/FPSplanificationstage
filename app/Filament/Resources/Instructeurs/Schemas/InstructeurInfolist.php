@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Instructeurs\Schemas;
+namespace Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Schemas;
 
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;

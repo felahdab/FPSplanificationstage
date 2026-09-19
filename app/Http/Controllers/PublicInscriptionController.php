@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Http\Controllers;
+namespace Modules\FPSplanificationstage\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -8,9 +8,9 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
-use Modules\PlanificationStages\Models\Inscription;
-use Modules\PlanificationStages\Models\InscriptionPrerequis;
-use Modules\PlanificationStages\Models\SessionStage;
+use Modules\FPSplanificationstage\Models\Inscription;
+use Modules\FPSplanificationstage\Models\InscriptionPrerequis;
+use Modules\FPSplanificationstage\Models\SessionStage;
 
 class PublicInscriptionController extends Controller
 {
@@ -37,7 +37,7 @@ class PublicInscriptionController extends Controller
         ]);
 
         return view(
-            'planificationstages::public.inscription',
+            'fpsplanificationstage::public.inscription',
             [
                 'session' =>
                     $session,
@@ -376,7 +376,7 @@ class PublicInscriptionController extends Controller
          */
         $pdfUrl =
             \Illuminate\Support\Facades\URL::temporarySignedRoute(
-                'planificationstages.public.inscription.confirmation',
+                'fpsplanificationstage.public.inscription.confirmation',
                 now()->addHour(),
                 [
                     'code' =>
@@ -390,7 +390,7 @@ class PublicInscriptionController extends Controller
             );
 return redirect()
             ->route(
-                'planificationstages.public.calendrier'
+                'fpsplanificationstage.public.calendrier'
             )
             ->with(
                 'inscription_success',
@@ -440,7 +440,7 @@ return redirect()
 
             $pdf =
                 app(
-                    \Modules\PlanificationStages\Services\InscriptionPdfService::class
+                    \Modules\FPSplanificationstage\Services\InscriptionPdfService::class
                 )
                     ->render(
                         $inscription
@@ -473,7 +473,7 @@ return redirect()
             );
         }
 return view(
-            'planificationstages::public.inscription-confirmation',
+            'fpsplanificationstage::public.inscription-confirmation',
             [
                 'inscription' =>
                     $inscription,

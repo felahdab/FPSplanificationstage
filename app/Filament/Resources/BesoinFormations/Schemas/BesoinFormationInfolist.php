@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\BesoinFormations\Schemas;
+namespace Modules\FPSplanificationstage\Filament\Resources\BesoinFormations\Schemas;
 
 use Filament\Schemas\Schema;
 

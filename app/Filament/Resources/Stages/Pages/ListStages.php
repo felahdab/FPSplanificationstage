@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Stages\Pages;
+namespace Modules\FPSplanificationstage\Filament\Resources\Stages\Pages;
 
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
@@ -8,8 +8,8 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Storage;
-use Modules\PlanificationStages\Filament\Resources\Stages\StageResource;
-use Modules\PlanificationStages\Services\FifStageImporter;
+use Modules\FPSplanificationstage\Filament\Resources\Stages\StageResource;
+use Modules\FPSplanificationstage\Services\FifStageImporter;
 use Throwable;
 
 class ListStages extends ListRecords

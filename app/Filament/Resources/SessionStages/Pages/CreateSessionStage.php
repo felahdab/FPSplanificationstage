@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\SessionStages\Pages;
+namespace Modules\FPSplanificationstage\Filament\Resources\SessionStages\Pages;
 
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
-use Modules\PlanificationStages\Filament\Resources\SessionStages\SessionStageResource;
-use Modules\PlanificationStages\Services\SessionStageAlternativeFinder;
-use Modules\PlanificationStages\Services\SessionStageConflictDetector;
+use Modules\FPSplanificationstage\Filament\Resources\SessionStages\SessionStageResource;
+use Modules\FPSplanificationstage\Services\SessionStageAlternativeFinder;
+use Modules\FPSplanificationstage\Services\SessionStageConflictDetector;
 
 class CreateSessionStage extends CreateRecord
 {

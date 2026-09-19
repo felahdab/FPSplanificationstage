@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\SessionStages\Schemas;
+namespace Modules\FPSplanificationstage\Filament\Resources\SessionStages\Schemas;
 
 use Filament\Schemas\Schema;
 

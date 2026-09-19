@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\PlanificationStages\Services;
+namespace Modules\FPSplanificationstage\Services;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Modules\PlanificationStages\Models\SessionStage;
-use Modules\PlanificationStages\Models\SessionStageHistorique;
+use Modules\FPSplanificationstage\Models\SessionStage;
+use Modules\FPSplanificationstage\Models\SessionStageHistorique;
 use Throwable;
 
 class SessionStageLifecycleService

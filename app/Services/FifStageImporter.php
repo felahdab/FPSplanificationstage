@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\PlanificationStages\Services;
+namespace Modules\FPSplanificationstage\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Modules\PlanificationStages\Models\Stage;
+use Modules\FPSplanificationstage\Models\Stage;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\RichText\RichText;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;

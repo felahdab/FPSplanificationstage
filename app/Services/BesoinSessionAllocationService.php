@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\PlanificationStages\Services;
+namespace Modules\FPSplanificationstage\Services;
 
 use Illuminate\Support\Facades\DB;
-use Modules\PlanificationStages\Models\BesoinFormation;
-use Modules\PlanificationStages\Models\SessionStage;
+use Modules\FPSplanificationstage\Models\BesoinFormation;
+use Modules\FPSplanificationstage\Models\SessionStage;
 
 class BesoinSessionAllocationService
 {

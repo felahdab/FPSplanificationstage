@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\BesoinFormations\Pages;
+namespace Modules\FPSplanificationstage\Filament\Resources\BesoinFormations\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
-use Modules\PlanificationStages\Filament\Resources\BesoinFormations\BesoinFormationResource;
+use Modules\FPSplanificationstage\Filament\Resources\BesoinFormations\BesoinFormationResource;
 
 class CreateBesoinFormation extends CreateRecord
 {

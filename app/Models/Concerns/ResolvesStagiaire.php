@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\PlanificationStages\Models\Concerns;
+namespace Modules\FPSplanificationstage\Models\Concerns;
 
-use Modules\PlanificationStages\Models\Inscription;
-use Modules\PlanificationStages\Services\StagiaireResolver;
+use Modules\FPSplanificationstage\Models\Inscription;
+use Modules\FPSplanificationstage\Services\StagiaireResolver;
 
 trait ResolvesStagiaire
 {

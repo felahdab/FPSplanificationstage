@@ -1,14 +1,14 @@
 <?php
 
-namespace Modules\PlanificationStages\Services;
+namespace Modules\FPSplanificationstage\Services;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Modules\PlanificationStages\Models\Salle;
-use Modules\PlanificationStages\Models\SalleOccupation;
-use Modules\PlanificationStages\Models\SessionStage;
+use Modules\FPSplanificationstage\Models\Salle;
+use Modules\FPSplanificationstage\Models\SalleOccupation;
+use Modules\FPSplanificationstage\Models\SessionStage;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
@@ -21,10 +21,10 @@ use RuntimeException;
 class SalleReservationWorkbookService
 {
     private const MASTER_PATH =
-        'planificationstages/salles/master.xlsx';
+        'fpsplanificationstage/salles/master.xlsx';
 
     private const META_PATH =
-        'planificationstages/salles/master.json';
+        'fpsplanificationstage/salles/master.json';
 
     private const SOURCE =
         'excel_sharepoint';
@@ -651,7 +651,7 @@ class SalleReservationWorkbookService
         }
 
         $relative =
-            'planificationstages/salles/exports/'
+            'fpsplanificationstage/salles/exports/'
             . 'resa_salle_skeletor_'
             . now()
                 ->format(

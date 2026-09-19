@@ -124,7 +124,7 @@
         <a
             class="button"
             href="{{ route(
-                'planificationstages.public.besoin.suivi',
+                'fpsplanificationstage.public.besoin.suivi',
                 [
                     'token' =>
                         $besoin->public_token
@@ -137,7 +137,7 @@
         <a
             class="button button-secondary"
             href="{{ route(
-                'planificationstages.public.calendrier'
+                'fpsplanificationstage.public.calendrier'
             ) }}"
         >
             Retour au portail

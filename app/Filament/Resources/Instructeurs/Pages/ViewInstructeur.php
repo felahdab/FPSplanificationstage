@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Instructeurs\Pages;
+namespace Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Pages;
 
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
-use Modules\PlanificationStages\Filament\Resources\Instructeurs\InstructeurResource;
+use Modules\FPSplanificationstage\Filament\Resources\Instructeurs\InstructeurResource;
 
 class ViewInstructeur extends ViewRecord
 {

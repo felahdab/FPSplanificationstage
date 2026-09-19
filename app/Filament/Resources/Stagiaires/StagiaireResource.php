@@ -1,14 +1,14 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Stagiaires;
+namespace Modules\FPSplanificationstage\Filament\Resources\Stagiaires;
 
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use Modules\PlanificationStages\Filament\Resources\Stagiaires\Pages\ListStagiaires;
-use Modules\PlanificationStages\Filament\Resources\Stagiaires\Pages\ViewStagiaire;
-use Modules\PlanificationStages\Filament\Resources\Stagiaires\Tables\StagiairesTable;
-use Modules\PlanificationStages\Models\Stagiaire;
+use Modules\FPSplanificationstage\Filament\Resources\Stagiaires\Pages\ListStagiaires;
+use Modules\FPSplanificationstage\Filament\Resources\Stagiaires\Pages\ViewStagiaire;
+use Modules\FPSplanificationstage\Filament\Resources\Stagiaires\Tables\StagiairesTable;
+use Modules\FPSplanificationstage\Models\Stagiaire;
 
 class StagiaireResource extends Resource
 {

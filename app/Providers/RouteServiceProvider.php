@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\PlanificationStages\Providers;
+namespace Modules\FPSplanificationstage\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    protected string $name = 'PlanificationStages';
+    protected string $name = 'FPSplanificationstage';
 
     /**
      * Called before routes are registered.
@@ -48,7 +48,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapApiRoutes(): void
     {
         Route::middleware('api')
-            ->prefix(config('skeletor.prefixe_instance') . '/api/planificationstages' )
+            ->prefix(config('skeletor.prefixe_instance') . '/api/fpsplanificationstage' )
             ->name('api.')
             ->group(module_path($this->name, '/routes/api.php'));
     }

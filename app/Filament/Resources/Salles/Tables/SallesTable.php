@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Salles\Tables;
+namespace Modules\FPSplanificationstage\Filament\Resources\Salles\Tables;
 
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;

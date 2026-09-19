@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Instructeurs\Schemas;
+namespace Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Schemas;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -8,8 +8,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Modules\PlanificationStages\Models\Salle;
-use Modules\PlanificationStages\Models\Stage;
+use Modules\FPSplanificationstage\Models\Salle;
+use Modules\FPSplanificationstage\Models\Stage;
 
 class InstructeurForm
 {

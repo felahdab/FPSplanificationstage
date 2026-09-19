@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Models;
+namespace Modules\FPSplanificationstage\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;

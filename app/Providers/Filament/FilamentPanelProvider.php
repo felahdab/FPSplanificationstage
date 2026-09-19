@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Providers\Filament;
+namespace Modules\FPSplanificationstage\Providers\Filament;
 
 use App\Filament\AvatarProviders\SkeletorAvatarProvider;
 use App\Filament\Widgets\PanelSwitcher;
@@ -26,16 +26,17 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Modules\PlanificationStages\Filament\Pages\Dashboard;
-use Modules\PlanificationStages\Filament\Pages\Planning;
-use Modules\PlanificationStages\Filament\Pages\Statistiques;
+use Modules\FPSplanificationstage\Filament\Pages\Dashboard;
+use Modules\FPSplanificationstage\Filament\Pages\Planning;
+use Modules\FPSplanificationstage\Filament\Pages\EspaceStagiaire\PlanningFormations;
+use Modules\FPSplanificationstage\Filament\Pages\Statistiques;
 
 class FilamentPanelProvider extends PanelProvider
 {
     use UsesSkeletorPrefixAndMultitenancyTrait;
 
     private string $module =
-        'PlanificationStages';
+        'FPSplanificationstage';
 
     public function panel(
         Panel $panel
@@ -45,11 +46,11 @@ class FilamentPanelProvider extends PanelProvider
 
         return $panel
             ->id(
-                'planificationstages'
+                'fpsplanificationstage'
             )
             ->path(
                 $this->prefix
-                . '/planificationstages'
+                . '/fpsplanificationstage'
             )
             ->colors([
                 'primary' =>
@@ -64,7 +65,7 @@ class FilamentPanelProvider extends PanelProvider
                 SkeletorAvatarProvider::class
             )
             ->brandName(
-                'PlanificationStages'
+                'FPSplanificationstage'
             )
             ->databaseNotifications()
             ->databaseNotificationsPolling(
@@ -83,7 +84,8 @@ class FilamentPanelProvider extends PanelProvider
                 Dashboard::class,
                 Planning::class,
                 Statistiques::class,
-                \Modules\PlanificationStages\Filament\Pages\Admission::class,
+                \Modules\FPSplanificationstage\Filament\Pages\Admission::class,
+                PlanningFormations::class,
             ])
             ->discoverWidgets(
                 in:

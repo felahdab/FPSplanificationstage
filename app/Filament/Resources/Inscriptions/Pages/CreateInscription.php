@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Inscriptions\Pages;
+namespace Modules\FPSplanificationstage\Filament\Resources\Inscriptions\Pages;
 
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
-use Modules\PlanificationStages\Filament\Resources\Inscriptions\InscriptionResource;
-use Modules\PlanificationStages\Models\SessionStage;
+use Modules\FPSplanificationstage\Filament\Resources\Inscriptions\InscriptionResource;
+use Modules\FPSplanificationstage\Models\SessionStage;
 
 class CreateInscription extends CreateRecord
 {

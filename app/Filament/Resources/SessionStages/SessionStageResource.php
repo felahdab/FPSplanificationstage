@@ -1,19 +1,19 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\SessionStages;
+namespace Modules\FPSplanificationstage\Filament\Resources\SessionStages;
 
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use Modules\PlanificationStages\Filament\Resources\SessionStages\Pages\CreateSessionStage;
-use Modules\PlanificationStages\Filament\Resources\SessionStages\Pages\EditSessionStage;
-use Modules\PlanificationStages\Filament\Resources\SessionStages\Pages\ListSessionStages;
-use Modules\PlanificationStages\Filament\Resources\SessionStages\Pages\ViewSessionStage;
-use Modules\PlanificationStages\Filament\Resources\SessionStages\RelationManagers\InscriptionsRelationManager;
-use Modules\PlanificationStages\Filament\Resources\SessionStages\Schemas\SessionStageForm;
-use Modules\PlanificationStages\Filament\Resources\SessionStages\Schemas\SessionStageInfolist;
-use Modules\PlanificationStages\Filament\Resources\SessionStages\Tables\SessionStagesTable;
-use Modules\PlanificationStages\Models\SessionStage;
+use Modules\FPSplanificationstage\Filament\Resources\SessionStages\Pages\CreateSessionStage;
+use Modules\FPSplanificationstage\Filament\Resources\SessionStages\Pages\EditSessionStage;
+use Modules\FPSplanificationstage\Filament\Resources\SessionStages\Pages\ListSessionStages;
+use Modules\FPSplanificationstage\Filament\Resources\SessionStages\Pages\ViewSessionStage;
+use Modules\FPSplanificationstage\Filament\Resources\SessionStages\RelationManagers\InscriptionsRelationManager;
+use Modules\FPSplanificationstage\Filament\Resources\SessionStages\Schemas\SessionStageForm;
+use Modules\FPSplanificationstage\Filament\Resources\SessionStages\Schemas\SessionStageInfolist;
+use Modules\FPSplanificationstage\Filament\Resources\SessionStages\Tables\SessionStagesTable;
+use Modules\FPSplanificationstage\Models\SessionStage;
 
 class SessionStageResource extends Resource
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\IndisponibiliteInstructeurs\Pages;
+namespace Modules\FPSplanificationstage\Filament\Resources\IndisponibiliteInstructeurs\Pages;
 
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
-use Modules\PlanificationStages\Filament\Resources\IndisponibiliteInstructeurs\IndisponibiliteInstructeurResource;
+use Modules\FPSplanificationstage\Filament\Resources\IndisponibiliteInstructeurs\IndisponibiliteInstructeurResource;
 
 class ViewIndisponibiliteInstructeur extends ViewRecord
 {

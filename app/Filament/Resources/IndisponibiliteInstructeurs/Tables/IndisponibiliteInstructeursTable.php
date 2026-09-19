@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\IndisponibiliteInstructeurs\Tables;
+namespace Modules\FPSplanificationstage\Filament\Resources\IndisponibiliteInstructeurs\Tables;
 
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;

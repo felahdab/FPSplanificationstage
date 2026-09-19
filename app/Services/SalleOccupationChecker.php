@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\PlanificationStages\Services;
+namespace Modules\FPSplanificationstage\Services;
 
 use Carbon\Carbon;
 use DateTimeInterface;
-use Modules\PlanificationStages\Models\SalleOccupation;
+use Modules\FPSplanificationstage\Models\SalleOccupation;
 
 class SalleOccupationChecker
 {

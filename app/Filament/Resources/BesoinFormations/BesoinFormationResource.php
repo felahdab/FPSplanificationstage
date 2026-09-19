@@ -1,18 +1,18 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\BesoinFormations;
+namespace Modules\FPSplanificationstage\Filament\Resources\BesoinFormations;
 
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use Modules\PlanificationStages\Filament\Resources\BesoinFormations\Pages\CreateBesoinFormation;
-use Modules\PlanificationStages\Filament\Resources\BesoinFormations\Pages\EditBesoinFormation;
-use Modules\PlanificationStages\Filament\Resources\BesoinFormations\Pages\ListBesoinFormations;
-use Modules\PlanificationStages\Filament\Resources\BesoinFormations\Pages\ViewBesoinFormation;
-use Modules\PlanificationStages\Filament\Resources\BesoinFormations\Schemas\BesoinFormationForm;
-use Modules\PlanificationStages\Filament\Resources\BesoinFormations\Schemas\BesoinFormationInfolist;
-use Modules\PlanificationStages\Filament\Resources\BesoinFormations\Tables\BesoinFormationsTable;
-use Modules\PlanificationStages\Models\BesoinFormation;
+use Modules\FPSplanificationstage\Filament\Resources\BesoinFormations\Pages\CreateBesoinFormation;
+use Modules\FPSplanificationstage\Filament\Resources\BesoinFormations\Pages\EditBesoinFormation;
+use Modules\FPSplanificationstage\Filament\Resources\BesoinFormations\Pages\ListBesoinFormations;
+use Modules\FPSplanificationstage\Filament\Resources\BesoinFormations\Pages\ViewBesoinFormation;
+use Modules\FPSplanificationstage\Filament\Resources\BesoinFormations\Schemas\BesoinFormationForm;
+use Modules\FPSplanificationstage\Filament\Resources\BesoinFormations\Schemas\BesoinFormationInfolist;
+use Modules\FPSplanificationstage\Filament\Resources\BesoinFormations\Tables\BesoinFormationsTable;
+use Modules\FPSplanificationstage\Models\BesoinFormation;
 
 class BesoinFormationResource extends Resource
 {

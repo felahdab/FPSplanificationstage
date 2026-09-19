@@ -1,19 +1,19 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Pages;
+namespace Modules\FPSplanificationstage\Filament\Pages;
 
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Collection;
-use Modules\PlanificationStages\Models\AdmissionMessageTemplate;
-use Modules\PlanificationStages\Models\Inscription;
-use Modules\PlanificationStages\Models\SessionStage;
-use Modules\PlanificationStages\Models\Stage;
+use Modules\FPSplanificationstage\Models\AdmissionMessageTemplate;
+use Modules\FPSplanificationstage\Models\Inscription;
+use Modules\FPSplanificationstage\Models\SessionStage;
+use Modules\FPSplanificationstage\Models\Stage;
 
 class Admission extends Page
 {
-    protected string $view = 'planificationstages::filament.pages.admission';
+    protected string $view = 'fpsplanificationstage::filament.pages.admission';
     protected static ?string $navigationLabel = 'Admission';
     protected static string|\UnitEnum|null $navigationGroup = 'Inscriptions';
     protected static ?int $navigationSort = 20;

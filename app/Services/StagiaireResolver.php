@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\PlanificationStages\Services;
+namespace Modules\FPSplanificationstage\Services;
 
-use Modules\PlanificationStages\Models\Inscription;
-use Modules\PlanificationStages\Models\Stagiaire;
+use Modules\FPSplanificationstage\Models\Inscription;
+use Modules\FPSplanificationstage\Models\Stagiaire;
 
 class StagiaireResolver
 {

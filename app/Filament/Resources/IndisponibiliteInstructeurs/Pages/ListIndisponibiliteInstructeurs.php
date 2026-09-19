@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\IndisponibiliteInstructeurs\Pages;
+namespace Modules\FPSplanificationstage\Filament\Resources\IndisponibiliteInstructeurs\Pages;
 
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
@@ -8,8 +8,8 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Storage;
-use Modules\PlanificationStages\Filament\Resources\IndisponibiliteInstructeurs\IndisponibiliteInstructeurResource;
-use Modules\PlanificationStages\Services\IndisponibiliteInstructeurImporter;
+use Modules\FPSplanificationstage\Filament\Resources\IndisponibiliteInstructeurs\IndisponibiliteInstructeurResource;
+use Modules\FPSplanificationstage\Services\IndisponibiliteInstructeurImporter;
 use Throwable;
 
 class ListIndisponibiliteInstructeurs extends ListRecords

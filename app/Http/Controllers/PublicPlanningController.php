@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\PlanificationStages\Http\Controllers;
+namespace Modules\FPSplanificationstage\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
-use Modules\PlanificationStages\Models\SessionStage;
+use Modules\FPSplanificationstage\Models\SessionStage;
 
 class PublicPlanningController extends Controller
 {
@@ -502,7 +502,7 @@ class PublicPlanningController extends Controller
             $weekStart
                 ->format('Y-m-d');
         return view(
-            'planificationstages::public.calendrier',
+            'fpsplanificationstage::public.calendrier',
             [
                 'days' =>
                     $days,
@@ -757,7 +757,7 @@ class PublicPlanningController extends Controller
 
             'inscription_url' =>
                 $this->publicRelativeRoute(
-                    'planificationstages.public.inscription.create',
+                    'fpsplanificationstage.public.inscription.create',
                     [
                         'session' =>
                             $session->id,

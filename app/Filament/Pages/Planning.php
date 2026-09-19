@@ -1,19 +1,19 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Pages;
+namespace Modules\FPSplanificationstage\Filament\Pages;
 
 use Carbon\Carbon;
 use Filament\Pages\Page;
-use Modules\PlanificationStages\Filament\Resources\SessionStages\SessionStageResource;
-use Modules\PlanificationStages\Models\Instructeur;
-use Modules\PlanificationStages\Models\Salle;
-use Modules\PlanificationStages\Models\SessionStage;
-use Modules\PlanificationStages\Models\Stage;
+use Modules\FPSplanificationstage\Filament\Resources\SessionStages\SessionStageResource;
+use Modules\FPSplanificationstage\Models\Instructeur;
+use Modules\FPSplanificationstage\Models\Salle;
+use Modules\FPSplanificationstage\Models\SessionStage;
+use Modules\FPSplanificationstage\Models\Stage;
 
 class Planning extends Page
 {
     protected string $view =
-        'planificationstages::filament.pages.planning';
+        'fpsplanificationstage::filament.pages.planning';
 
     protected static ?string $navigationLabel =
         'Planning / Calendrier';

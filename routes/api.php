@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\PlanificationStages\Http\Controllers\PlanificationStagesController;
+use Modules\FPSplanificationstage\Http\Controllers\FPSplanificationstageController;
 
 /*
  *--------------------------------------------------------------------------
@@ -15,5 +15,5 @@ use Modules\PlanificationStages\Http\Controllers\PlanificationStagesController;
 */
 
 Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-    #Route::apiResource('planificationstages', PlanificationStagesController::class)->names('planificationstages');
+    #Route::apiResource('fpsplanificationstage', FPSplanificationstageController::class)->names('fpsplanificationstage');
 });

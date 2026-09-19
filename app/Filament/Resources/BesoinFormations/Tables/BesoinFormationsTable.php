@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\BesoinFormations\Tables;
+namespace Modules\FPSplanificationstage\Filament\Resources\BesoinFormations\Tables;
 
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
@@ -10,8 +10,8 @@ use Filament\Forms\Components\Toggle;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Modules\PlanificationStages\Models\BesoinFormation;
-use Modules\PlanificationStages\Services\BesoinFormationGroupedPlanner;
+use Modules\FPSplanificationstage\Models\BesoinFormation;
+use Modules\FPSplanificationstage\Services\BesoinFormationGroupedPlanner;
 
 class BesoinFormationsTable
 {

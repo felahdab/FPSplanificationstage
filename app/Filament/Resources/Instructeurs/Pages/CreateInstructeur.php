@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Instructeurs\Pages;
+namespace Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
-use Modules\PlanificationStages\Filament\Resources\Instructeurs\InstructeurResource;
+use Modules\FPSplanificationstage\Filament\Resources\Instructeurs\InstructeurResource;
 
 class CreateInstructeur extends CreateRecord
 {

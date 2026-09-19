@@ -1,16 +1,16 @@
 <?php
 
-namespace Modules\PlanificationStages\Services;
+namespace Modules\FPSplanificationstage\Services;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Modules\PlanificationStages\Models\BesoinFormation;
-use Modules\PlanificationStages\Models\Instructeur;
-use Modules\PlanificationStages\Models\Salle;
-use Modules\PlanificationStages\Models\SessionStage;
-use Modules\PlanificationStages\Models\Stage;
+use Modules\FPSplanificationstage\Models\BesoinFormation;
+use Modules\FPSplanificationstage\Models\Instructeur;
+use Modules\FPSplanificationstage\Models\Salle;
+use Modules\FPSplanificationstage\Models\SessionStage;
+use Modules\FPSplanificationstage\Models\Stage;
 use Throwable;
 
 class BesoinFormationGroupedPlanner
@@ -157,7 +157,7 @@ class BesoinFormationGroupedPlanner
 
                         /* VALIDATION_PERIODE_AVANT_PLANIFICATION_V1_2 */
                         $periodeError =
-                            \Modules\PlanificationStages\Services\BesoinPeriodeService::validateBesoin(
+                            \Modules\FPSplanificationstage\Services\BesoinPeriodeService::validateBesoin(
                                 $besoin
                             );
 

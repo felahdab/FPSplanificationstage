@@ -1,17 +1,17 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Salles\Pages;
+namespace Modules\FPSplanificationstage\Filament\Resources\Salles\Pages;
 
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Storage;
-use Modules\PlanificationStages\Services\SalleReservationWorkbookService;
+use Modules\FPSplanificationstage\Services\SalleReservationWorkbookService;
 use Throwable;
 
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
-use Modules\PlanificationStages\Filament\Resources\Salles\SalleResource;
+use Modules\FPSplanificationstage\Filament\Resources\Salles\SalleResource;
 
 class ListSalles extends ListRecords
 {

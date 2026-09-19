@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\IndisponibiliteInstructeurs\Pages;
+namespace Modules\FPSplanificationstage\Filament\Resources\IndisponibiliteInstructeurs\Pages;
 
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
-use Modules\PlanificationStages\Filament\Resources\IndisponibiliteInstructeurs\IndisponibiliteInstructeurResource;
+use Modules\FPSplanificationstage\Filament\Resources\IndisponibiliteInstructeurs\IndisponibiliteInstructeurResource;
 
 class EditIndisponibiliteInstructeur extends EditRecord
 {

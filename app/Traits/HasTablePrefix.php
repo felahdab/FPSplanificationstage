@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Traits;
+namespace Modules\FPSplanificationstage\Traits;
 
 use App\Traits\HasTablePrefix as BasePrefixTrait;
 
@@ -8,5 +8,5 @@ trait HasTablePrefix
 {
     use BasePrefixTrait;
 
-    protected $prefix = 'planificationstages_';
+    protected $prefix = 'fpsplanificationstage_';
 }

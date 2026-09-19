@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\SessionStages\Tables;
+namespace Modules\FPSplanificationstage\Filament\Resources\SessionStages\Tables;
 
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
@@ -11,8 +11,8 @@ use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Modules\PlanificationStages\Models\SessionStage;
-use Modules\PlanificationStages\Services\SessionStageLifecycleService;
+use Modules\FPSplanificationstage\Models\SessionStage;
+use Modules\FPSplanificationstage\Services\SessionStageLifecycleService;
 
 class SessionStagesTable
 {

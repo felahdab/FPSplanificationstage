@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\BesoinFormations\Pages;
+namespace Modules\FPSplanificationstage\Filament\Resources\BesoinFormations\Pages;
 
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
-use Modules\PlanificationStages\Filament\Resources\BesoinFormations\BesoinFormationResource;
+use Modules\FPSplanificationstage\Filament\Resources\BesoinFormations\BesoinFormationResource;
 
 class ViewBesoinFormation extends ViewRecord
 {

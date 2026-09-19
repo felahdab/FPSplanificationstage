@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Providers;
+namespace Modules\FPSplanificationstage\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 

@@ -1,17 +1,17 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Pages;
+namespace Modules\FPSplanificationstage\Filament\Pages;
 
 use Carbon\Carbon;
 use Filament\Pages\Page;
-use Modules\PlanificationStages\Models\BesoinFormation;
-use Modules\PlanificationStages\Models\Inscription;
-use Modules\PlanificationStages\Models\SessionStage;
+use Modules\FPSplanificationstage\Models\BesoinFormation;
+use Modules\FPSplanificationstage\Models\Inscription;
+use Modules\FPSplanificationstage\Models\SessionStage;
 
 class Statistiques extends Page
 {
     protected string $view =
-        'planificationstages::filament.pages.statistiques';
+        'fpsplanificationstage::filament.pages.statistiques';
 
     protected static ?string $navigationLabel =
         'Statistiques';

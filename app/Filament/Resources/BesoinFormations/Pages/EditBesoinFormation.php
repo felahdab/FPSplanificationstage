@@ -1,15 +1,15 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\BesoinFormations\Pages;
+namespace Modules\FPSplanificationstage\Filament\Resources\BesoinFormations\Pages;
 
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
-use Modules\PlanificationStages\Filament\Resources\BesoinFormations\BesoinFormationResource;
-use Modules\PlanificationStages\Filament\Resources\SessionStages\SessionStageResource;
-use Modules\PlanificationStages\Services\BesoinFormationPlanner;
+use Modules\FPSplanificationstage\Filament\Resources\BesoinFormations\BesoinFormationResource;
+use Modules\FPSplanificationstage\Filament\Resources\SessionStages\SessionStageResource;
+use Modules\FPSplanificationstage\Services\BesoinFormationPlanner;
 
 class EditBesoinFormation extends EditRecord
 {

@@ -1,16 +1,16 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Inscriptions;
+namespace Modules\FPSplanificationstage\Filament\Resources\Inscriptions;
 
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use Modules\PlanificationStages\Filament\Resources\Inscriptions\Pages\CreateInscription;
-use Modules\PlanificationStages\Filament\Resources\Inscriptions\Pages\EditInscription;
-use Modules\PlanificationStages\Filament\Resources\Inscriptions\Pages\ListInscriptions;
-use Modules\PlanificationStages\Filament\Resources\Inscriptions\Schemas\InscriptionForm;
-use Modules\PlanificationStages\Filament\Resources\Inscriptions\Tables\InscriptionsTable;
-use Modules\PlanificationStages\Models\Inscription;
+use Modules\FPSplanificationstage\Filament\Resources\Inscriptions\Pages\CreateInscription;
+use Modules\FPSplanificationstage\Filament\Resources\Inscriptions\Pages\EditInscription;
+use Modules\FPSplanificationstage\Filament\Resources\Inscriptions\Pages\ListInscriptions;
+use Modules\FPSplanificationstage\Filament\Resources\Inscriptions\Schemas\InscriptionForm;
+use Modules\FPSplanificationstage\Filament\Resources\Inscriptions\Tables\InscriptionsTable;
+use Modules\FPSplanificationstage\Models\Inscription;
 
 class InscriptionResource extends Resource
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Modules\PlanificationStages\Models;
+namespace Modules\FPSplanificationstage\Models;
 
-use Modules\PlanificationStages\Models\Concerns\ResolvesStagiaire;
+use Modules\FPSplanificationstage\Models\Concerns\ResolvesStagiaire;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

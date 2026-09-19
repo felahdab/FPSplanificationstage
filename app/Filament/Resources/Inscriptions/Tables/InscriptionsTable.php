@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Inscriptions\Tables;
+namespace Modules\FPSplanificationstage\Filament\Resources\Inscriptions\Tables;
 
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
@@ -10,8 +10,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\DB;
-use Modules\PlanificationStages\Models\Inscription;
-use Modules\PlanificationStages\Models\SessionStage;
+use Modules\FPSplanificationstage\Models\Inscription;
+use Modules\FPSplanificationstage\Models\SessionStage;
 
 class InscriptionsTable
 {

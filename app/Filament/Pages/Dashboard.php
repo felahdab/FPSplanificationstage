@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Pages;
+namespace Modules\FPSplanificationstage\Filament\Pages;
 
 use Filament\Pages\Dashboard as BaseDashboard;
-use Modules\PlanificationStages\Filament\Widgets\TableauBordSemaine;
+use Modules\FPSplanificationstage\Filament\Widgets\TableauBordSemaine;
 
 class Dashboard extends BaseDashboard
 {

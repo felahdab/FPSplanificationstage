@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\PlanificationStages\Services;
+namespace Modules\FPSplanificationstage\Services;
 
 use Carbon\Carbon;
-use Modules\PlanificationStages\Models\Salle;
+use Modules\FPSplanificationstage\Models\Salle;
 
 class SessionStageAlternativeFinder
 {

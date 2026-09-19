@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\PlanificationStages\Services;
+namespace Modules\FPSplanificationstage\Services;
 
 use Illuminate\Support\Str;
-use Modules\PlanificationStages\Models\IndisponibiliteInstructeur;
-use Modules\PlanificationStages\Models\Instructeur;
+use Modules\FPSplanificationstage\Models\IndisponibiliteInstructeur;
+use Modules\FPSplanificationstage\Models\Instructeur;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 use RuntimeException;

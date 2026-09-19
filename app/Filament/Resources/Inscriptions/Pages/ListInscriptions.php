@@ -1,16 +1,16 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Inscriptions\Pages;
+namespace Modules\FPSplanificationstage\Filament\Resources\Inscriptions\Pages;
 
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Modules\PlanificationStages\Models\Inscription;
+use Modules\FPSplanificationstage\Models\Inscription;
 
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
-use Modules\PlanificationStages\Filament\Resources\Inscriptions\InscriptionResource;
+use Modules\FPSplanificationstage\Filament\Resources\Inscriptions\InscriptionResource;
 
 class ListInscriptions extends ListRecords
 {

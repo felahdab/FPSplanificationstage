@@ -1,23 +1,10 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        Portail des formations
-    </title>
+{{-- ESPACE_STAGIAIRE_PLANNING_FILAMENT_V1 --}}
+<x-filament-panels::page>
 
     <style>
-        * {
+.ps-stagiaire-planning, .ps-stagiaire-planning *{
             box-sizing: border-box;
-        }
-
-        body {
+        }.ps-stagiaire-planning{
             margin: 0;
             padding: 2rem 1rem;
             background: #f1f5f9;
@@ -28,42 +15,27 @@
                 BlinkMacSystemFont,
                 "Segoe UI",
                 sans-serif;
-        }
-
-        .container {
+        }.ps-stagiaire-planning .container{
             max-width: 1450px;
             margin: 0 auto;
-        }
-
-        .header {
+        }.ps-stagiaire-planning .header{
             margin-bottom: 1.5rem;
-        }
-
-        .header-top {
+        }.ps-stagiaire-planning .header-top{
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             gap: 1rem;
             flex-wrap: wrap;
-        }
-
-        h1 {
+        }.ps-stagiaire-planning h1{
             margin: 0 0 .4rem;
             font-size: 2rem;
-        }
-
-        .subtitle {
+        }.ps-stagiaire-planning .subtitle{
             color: #64748b;
-        }
-
-        .header-actions {
+        }.ps-stagiaire-planning .header-actions{
             display: flex;
             gap: .65rem;
             flex-wrap: wrap;
-        }
-
-        .need-button,
-        .follow-button {
+        }.ps-stagiaire-planning .need-button, .ps-stagiaire-planning .follow-button{
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -72,25 +44,15 @@
             color: white;
             text-decoration: none;
             font-weight: 750;
-        }
-
-        .need-button {
+        }.ps-stagiaire-planning .need-button{
             background: #0f766e;
-        }
-
-        .need-button:hover {
+        }.ps-stagiaire-planning .need-button:hover{
             background: #115e59;
-        }
-
-        .follow-button {
+        }.ps-stagiaire-planning .follow-button{
             background: #475569;
-        }
-
-        .follow-button:hover {
+        }.ps-stagiaire-planning .follow-button:hover{
             background: #334155;
-        }
-
-        .flash-success {
+        }.ps-stagiaire-planning .flash-success{
             display: flex;
             align-items: flex-start;
             gap: .8rem;
@@ -100,72 +62,50 @@
             border-radius: .8rem;
             background: #f0fdf4;
             color: #166534;
-        }
-
-        .flash-icon {
+        }.ps-stagiaire-planning .flash-icon{
             font-size: 1.4rem;
             font-weight: 800;
             line-height: 1;
-        }
-
-        .flash-title {
+        }.ps-stagiaire-planning .flash-title{
             font-weight: 800;
             margin-bottom: .2rem;
-        }
-
-        .flash-reference {
+        }.ps-stagiaire-planning .flash-reference{
             font-size: .9rem;
-        }
-
-        .portal-info {
+        }.ps-stagiaire-planning .portal-info{
             display: grid;
             grid-template-columns:
                 repeat(3, minmax(0, 1fr));
             gap: 1rem;
             margin-bottom: 1.5rem;
-        }
-
-        .portal-card {
+        }.ps-stagiaire-planning .portal-card{
             padding: 1rem 1.2rem;
             background: white;
             border: 1px solid #e2e8f0;
             border-radius: .8rem;
-        }
-
-        .portal-card strong {
+        }.ps-stagiaire-planning .portal-card strong{
             display: block;
             margin-bottom: .3rem;
-        }
-
-        .portal-card span {
+        }.ps-stagiaire-planning .portal-card span{
             color: #64748b;
             font-size: .9rem;
             line-height: 1.45;
-        }
-
-        .toolbar {
+        }.ps-stagiaire-planning .toolbar{
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 1rem;
             margin-bottom: 1rem;
             flex-wrap: wrap;
-        }
-
-        .toolbar-group {
+        }.ps-stagiaire-planning .toolbar-group{
             display: flex;
             gap: .5rem;
             align-items: center;
-        }
-
-        .month-title {
+        }.ps-stagiaire-planning .month-title{
             min-width: 220px;
             text-align: center;
             font-size: 1.25rem;
             font-weight: 750;
-        }
-
-        .button {
+        }.ps-stagiaire-planning .button{
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -176,17 +116,11 @@
             color: #0f172a;
             font-weight: 650;
             text-decoration: none;
-        }
-
-        .button:hover {
+        }.ps-stagiaire-planning .button:hover{
             background: #f8fafc;
-        }
-
-        .calendar-scroll {
+        }.ps-stagiaire-planning .calendar-scroll{
             overflow-x: auto;
-        }
-
-        .calendar {
+        }.ps-stagiaire-planning .calendar{
             min-width: 1150px;
             background: white;
             border: 1px solid #e2e8f0;
@@ -195,32 +129,24 @@
             box-shadow:
                 0 2px 8px
                 rgba(15, 23, 42, .04);
-        }
-
-        .week-header {
+        }.ps-stagiaire-planning .week-header{
             display: grid;
             grid-template-columns:
                 58px
                 repeat(5, minmax(0, 1fr));
             background: #f8fafc;
             border-bottom: 1px solid #e2e8f0;
-        }
-
-        .week-header div {
+        }.ps-stagiaire-planning .week-header div{
             padding: .75rem;
             text-align: center;
             font-weight: 750;
             color: #475569;
-        }
-
-        .week-row {
+        }.ps-stagiaire-planning .week-row{
             display: grid;
             grid-template-columns:
                 58px
                 repeat(5, minmax(0, 1fr));
-        }
-
-        .week-number {
+        }.ps-stagiaire-planning .week-number{
             min-height: 180px;
             display: flex;
             align-items: center;
@@ -230,32 +156,22 @@
             border-bottom: 1px solid #e2e8f0;
             color: #64748b;
             font-weight: 750;
-        }
-
-        .week-number span {
+        }.ps-stagiaire-planning .week-number span{
             padding: .35rem;
             background: white;
             border: 1px solid #e2e8f0;
             border-radius: .45rem;
-        }
-
-        .day {
+        }.ps-stagiaire-planning .day{
             min-height: 180px;
             padding: .5rem;
             border-right: 1px solid #e2e8f0;
             border-bottom: 1px solid #e2e8f0;
             background: white;
-        }
-
-        .week-row .day:last-child {
+        }.ps-stagiaire-planning .week-row .day:last-child{
             border-right: none;
-        }
-
-        .day.outside {
+        }.ps-stagiaire-planning .day.outside{
             background: #f8fafc;
-        }
-
-        .day-number {
+        }.ps-stagiaire-planning .day-number{
             width: 2rem;
             height: 2rem;
             display: flex;
@@ -264,18 +180,12 @@
             border-radius: 9999px;
             font-weight: 750;
             margin-bottom: .5rem;
-        }
-
-        .outside .day-number {
+        }.ps-stagiaire-planning .outside .day-number{
             color: #94a3b8;
-        }
-
-        .day-number.today {
+        }.ps-stagiaire-planning .day-number.today{
             background: #2563eb;
             color: white;
-        }
-
-        .session {
+        }.ps-stagiaire-planning .session{
             padding: .65rem;
             margin-bottom: .5rem;
             border-radius: .6rem;
@@ -290,9 +200,7 @@
                     --stage-border,
                     #2563eb
                 );
-        }
-
-        .session-title {
+        }.ps-stagiaire-planning .session-title{
             margin-bottom: .25rem;
             font-weight: 800;
             color:
@@ -300,23 +208,15 @@
                     --stage-text,
                     #1e3a8a
                 );
-        }
-
-        .places {
+        }.ps-stagiaire-planning .places{
             margin-top: .35rem;
             font-size: .78rem;
             font-weight: 700;
-        }
-
-        .places.available {
+        }.ps-stagiaire-planning .places.available{
             color: #15803d;
-        }
-
-        .places.full {
+        }.ps-stagiaire-planning .places.full{
             color: #c2410c;
-        }
-
-        .register {
+        }.ps-stagiaire-planning .register{
             display: inline-flex;
             margin-top: .5rem;
             padding: .42rem .65rem;
@@ -330,44 +230,32 @@
             text-decoration: none;
             font-size: .78rem;
             font-weight: 750;
-        }
-
-        .register:hover {
+        }.ps-stagiaire-planning .register:hover{
             background:
                 var(
                     --stage-button-hover,
                     #1d4ed8
                 );
-        }
-
-        .empty {
+        }.ps-stagiaire-planning .empty{
             margin-top: .5rem;
             font-size: .75rem;
             color: #94a3b8;
-        }
-
-        .legend {
+        }.ps-stagiaire-planning .legend{
             display: flex;
             gap: 1rem;
             flex-wrap: wrap;
             margin-top: 1rem;
             color: #64748b;
             font-size: .85rem;
-        }
-
-        .legend-item {
+        }.ps-stagiaire-planning .legend-item{
             display: flex;
             align-items: center;
             gap: .4rem;
-        }
-
-        .legend-dot {
+        }.ps-stagiaire-planning .legend-dot{
             width: .8rem;
             height: .8rem;
             border-radius: 9999px;
-        }
-
-        .dot-stage {
+        }.ps-stagiaire-planning .dot-stage{
             background:
                 linear-gradient(
                     135deg,
@@ -376,39 +264,26 @@
                     #9333ea,
                     #ea580c
                 );
-        }
-
-        .dot-full {
+        }.ps-stagiaire-planning .dot-full{
             background: #f59e0b;
         }
 
-        @media (max-width: 900px) {
-            .portal-info {
+        @media (max-width: 900px) {.ps-stagiaire-planning .portal-info{
                 grid-template-columns: 1fr;
             }
         }
 
-        @media (max-width: 700px) {
-            body {
+        @media (max-width: 700px) {.ps-stagiaire-planning{
                 padding: 1rem .6rem;
-            }
-
-            h1 {
+            }.ps-stagiaire-planning h1{
                 font-size: 1.55rem;
-            }
-
-            .header-actions {
+            }.ps-stagiaire-planning .header-actions{
                 width: 100%;
-            }
-
-            .need-button,
-            .follow-button {
+            }.ps-stagiaire-planning .need-button, .ps-stagiaire-planning .follow-button{
                 flex: 1;
             }
-        }
-    
-        /* PDF_CANDIDATURE_POPUP_V1 */
-        .candidature-pdf-box {
+        }/* PDF_CANDIDATURE_POPUP_V1 */
+.ps-stagiaire-planning .candidature-pdf-box{
             display: flex;
             align-items: center;
             gap: .8rem;
@@ -418,9 +293,7 @@
             border: 1px solid #bfdbfe;
             border-radius: .65rem;
             background: #eff6ff;
-        }
-
-        .candidature-pdf-icon {
+        }.ps-stagiaire-planning .candidature-pdf-icon{
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -432,21 +305,15 @@
             color: white;
             font-size: .72rem;
             font-weight: 800;
-        }
-
-        .candidature-pdf-content {
+        }.ps-stagiaire-planning .candidature-pdf-content{
             display: flex;
             flex: 1 1 220px;
             flex-direction: column;
             gap: .15rem;
-        }
-
-        .candidature-pdf-content span {
+        }.ps-stagiaire-planning .candidature-pdf-content span{
             color: #475569;
             font-size: .85rem;
-        }
-
-        .candidature-pdf-button {
+        }.ps-stagiaire-planning .candidature-pdf-button{
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -457,22 +324,14 @@
             text-decoration: none;
             font-size: .86rem;
             font-weight: 750;
-        }
-
-        .candidature-pdf-button:hover {
+        }.ps-stagiaire-planning .candidature-pdf-button:hover{
             background: #1d4ed8;
-        }
-
-        /* PORTAIL_LIBELLE_LONG_SURVOL_V1_1 */
-        .session {
+        }/* PORTAIL_LIBELLE_LONG_SURVOL_V1_1 */
+.ps-stagiaire-planning .session{
             position: relative;
-        }
-
-        .session:hover {
+        }.ps-stagiaire-planning .session:hover{
             z-index: 50;
-        }
-
-        .stage-long-tooltip {
+        }.ps-stagiaire-planning .stage-long-tooltip{
             display: none;
             position: absolute;
             left: 0;
@@ -493,13 +352,9 @@
             line-height: 1.4;
             white-space: normal;
             pointer-events: none;
-        }
-
-        .session:hover .stage-long-tooltip {
+        }.ps-stagiaire-planning .session:hover .stage-long-tooltip{
             display: block;
-        }
-
-        .stage-long-tooltip::before {
+        }.ps-stagiaire-planning .stage-long-tooltip::before{
             content: "";
             position: absolute;
             left: 1rem;
@@ -509,30 +364,23 @@
             border-bottom: .35rem solid #0f172a;
         }
 
-        @media (max-width: 700px) {
-            .stage-long-tooltip {
+        @media (max-width: 700px) {.ps-stagiaire-planning .stage-long-tooltip{
                 max-width: 280px;
             }
-        }
-
-        /* PORTAIL_VUES_RECHERCHE_STAGES_V1_3 */
-        .portal-tools {
+        }/* PORTAIL_VUES_RECHERCHE_STAGES_V1_3 */
+.ps-stagiaire-planning .portal-tools{
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: .8rem;
             flex-wrap: wrap;
             margin-bottom: 1rem;
-        }
-
-        .stage-search {
+        }.ps-stagiaire-planning .stage-search{
             display: flex;
             flex: 1 1 560px;
             align-items: center;
             gap: .55rem;
-        }
-
-        .stage-search input[type="search"] {
+        }.ps-stagiaire-planning .stage-search input[type="search"]{
             flex: 1 1 auto;
             min-width: 210px;
             padding: .72rem .85rem;
@@ -541,17 +389,11 @@
             background: white;
             color: #0f172a;
             font: inherit;
-        }
-
-        .stage-search input[type="search"]:focus {
+        }.ps-stagiaire-planning .stage-search input[type="search"]:focus{
             border-color: #3b82f6;
             outline: 2px solid #bfdbfe;
             outline-offset: 1px;
-        }
-
-        .search-button,
-        .clear-search,
-        .view-switch {
+        }.ps-stagiaire-planning .search-button, .ps-stagiaire-planning .clear-search, .ps-stagiaire-planning .view-switch{
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -565,41 +407,26 @@
             text-decoration: none;
             font-weight: 750;
             cursor: pointer;
-        }
-
-        .search-button {
+        }.ps-stagiaire-planning .search-button{
             border-color: #2563eb;
             background: #2563eb;
             color: white;
-        }
-
-        .search-button:hover {
+        }.ps-stagiaire-planning .search-button:hover{
             background: #1d4ed8;
-        }
-
-        .clear-search:hover,
-        .view-switch:hover {
+        }.ps-stagiaire-planning .clear-search:hover, .ps-stagiaire-planning .view-switch:hover{
             background: #f8fafc;
-        }
-
-        .view-switcher {
+        }.ps-stagiaire-planning .view-switcher{
             display: inline-flex;
             gap: .4rem;
-        }
-
-        .view-switch.active {
+        }.ps-stagiaire-planning .view-switch.active{
             border-color: #2563eb;
             background: #eff6ff;
             color: #1d4ed8;
-        }
-
-        .view-switch svg {
+        }.ps-stagiaire-planning .view-switch svg{
             width: 19px;
             height: 19px;
             flex: 0 0 auto;
-        }
-
-        .search-summary {
+        }.ps-stagiaire-planning .search-summary{
             flex-basis: 100%;
             padding: .7rem .85rem;
             border: 1px solid #bfdbfe;
@@ -607,44 +434,30 @@
             background: #eff6ff;
             color: #1e3a8a;
             font-size: .9rem;
-        }
-
-        .search-summary a {
+        }.ps-stagiaire-planning .search-summary a{
             margin-left: .35rem;
             color: #1d4ed8;
             font-weight: 800;
-        }
-
-        .calendar-view-hidden {
+        }.ps-stagiaire-planning .calendar-view-hidden{
             display: none !important;
-        }
-
-        .list-view-container {
+        }.ps-stagiaire-planning .list-view-container{
             max-width: 1450px;
             margin: 1rem auto 0;
-        }
-
-        .sessions-list {
+        }.ps-stagiaire-planning .sessions-list{
             display: flex;
             flex-direction: column;
             gap: 1.35rem;
-        }
-
-        .sessions-date-group {
+        }.ps-stagiaire-planning .sessions-date-group{
             display: flex;
             flex-direction: column;
             gap: .65rem;
-        }
-
-        .sessions-date-title {
+        }.ps-stagiaire-planning .sessions-date-title{
             padding-bottom: .45rem;
             border-bottom: 1px solid #cbd5e1;
             color: #334155;
             font-size: 1.02rem;
             font-weight: 800;
-        }
-
-        .list-session-card {
+        }.ps-stagiaire-planning .list-session-card{
             display: grid;
             grid-template-columns:
                 minmax(0, 1fr) auto;
@@ -654,57 +467,39 @@
             border-left: 4px solid #2563eb;
             border-radius: .75rem;
             background: white;
-        }
-
-        .list-session-card.full {
+        }.ps-stagiaire-planning .list-session-card.full{
             border-left-color: #f59e0b;
-        }
-
-        .list-session-title {
+        }.ps-stagiaire-planning .list-session-title{
             color: #1e3a8a;
             font-size: 1.05rem;
             font-weight: 800;
-        }
-
-        .list-session-long {
+        }.ps-stagiaire-planning .list-session-long{
             margin-top: .25rem;
             color: #475569;
             font-size: .9rem;
             line-height: 1.4;
-        }
-
-        .list-session-meta {
+        }.ps-stagiaire-planning .list-session-meta{
             display: flex;
             gap: .45rem 1rem;
             flex-wrap: wrap;
             margin-top: .65rem;
             color: #475569;
             font-size: .83rem;
-        }
-
-        .list-session-actions {
+        }.ps-stagiaire-planning .list-session-actions{
             display: flex;
             flex-direction: column;
             align-items: flex-end;
             justify-content: center;
             gap: .55rem;
             min-width: 180px;
-        }
-
-        .list-places {
+        }.ps-stagiaire-planning .list-places{
             font-size: .85rem;
             font-weight: 800;
-        }
-
-        .list-places.available {
+        }.ps-stagiaire-planning .list-places.available{
             color: #15803d;
-        }
-
-        .list-places.full {
+        }.ps-stagiaire-planning .list-places.full{
             color: #c2410c;
-        }
-
-        .list-empty {
+        }.ps-stagiaire-planning .list-empty{
             padding: 2rem 1rem;
             border: 1px dashed #cbd5e1;
             border-radius: .75rem;
@@ -713,119 +508,77 @@
             text-align: center;
         }
 
-        @media (max-width: 760px) {
-            .stage-search {
+        @media (max-width: 760px) {.ps-stagiaire-planning .stage-search{
                 flex-basis: 100%;
                 flex-wrap: wrap;
-            }
-
-            .stage-search input[type="search"] {
+            }.ps-stagiaire-planning .stage-search input[type="search"]{
                 flex-basis: 100%;
-            }
-
-            .view-switcher {
+            }.ps-stagiaire-planning .view-switcher{
                 width: 100%;
-            }
-
-            .view-switch {
+            }.ps-stagiaire-planning .view-switch{
                 flex: 1;
-            }
-
-            .list-session-card {
+            }.ps-stagiaire-planning .list-session-card{
                 grid-template-columns: 1fr;
-            }
-
-            .list-session-actions {
+            }.ps-stagiaire-planning .list-session-actions{
                 align-items: stretch;
                 min-width: 0;
             }
-        }
-
-        /* CALENDRIER_ALIGNEMENT_STAGES_V1 */
-        .session-slot {
+        }/* CALENDRIER_ALIGNEMENT_STAGES_V1 */
+.ps-stagiaire-planning .session-slot{
             margin-bottom: .5rem;
-        }
-
-        .session-slot > .session {
+        }.ps-stagiaire-planning .session-slot > .session{
             height: 100%;
             margin-bottom: 0;
-        }
-
-        .session-slot-empty {
+        }.ps-stagiaire-planning .session-slot-empty{
             visibility: hidden;
             pointer-events: none;
-        }
-
-        /* PORTAIL_VUE_SEMAINE_V1 */
-        .week-view-container {
+        }/* PORTAIL_VUE_SEMAINE_V1 */
+.ps-stagiaire-planning .week-view-container{
             max-width: 1450px;
             margin: 1rem auto 0;
-        }
-
-        .week-toolbar {
+        }.ps-stagiaire-planning .week-toolbar{
             display: grid;
             grid-template-columns: auto 1fr auto;
             align-items: center;
             gap: .8rem;
             margin-bottom: 1rem;
-        }
-
-        .week-toolbar-center {
+        }.ps-stagiaire-planning .week-toolbar-center{
             text-align: center;
-        }
-
-        .week-title {
+        }.ps-stagiaire-planning .week-title{
             font-size: 1.18rem;
             font-weight: 800;
             color: #0f172a;
-        }
-
-        .week-toolbar-actions {
+        }.ps-stagiaire-planning .week-toolbar-actions{
             display: flex;
             gap: .45rem;
             align-items: center;
-        }
-
-        .week-calendar-scroll {
+        }.ps-stagiaire-planning .week-calendar-scroll{
             overflow-x: auto;
-        }
-
-        .week-calendar {
+        }.ps-stagiaire-planning .week-calendar{
             min-width: 1000px;
             overflow: hidden;
             border: 1px solid #e2e8f0;
             border-radius: .9rem;
             background: white;
             box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
-        }
-
-        .week-days-header,
-        .week-events-grid {
+        }.ps-stagiaire-planning .week-days-header, .ps-stagiaire-planning .week-events-grid{
             display: grid;
             grid-template-columns: repeat(5, minmax(0, 1fr));
-        }
-
-        .week-day-header {
+        }.ps-stagiaire-planning .week-day-header{
             padding: .8rem .7rem;
             border-right: 1px solid #e2e8f0;
             border-bottom: 1px solid #e2e8f0;
             background: #f8fafc;
             text-align: center;
-        }
-
-        .week-day-header:last-child {
+        }.ps-stagiaire-planning .week-day-header:last-child{
             border-right: 0;
-        }
-
-        .week-day-name {
+        }.ps-stagiaire-planning .week-day-name{
             display: block;
             color: #475569;
             font-size: .82rem;
             font-weight: 750;
             text-transform: capitalize;
-        }
-
-        .week-day-number {
+        }.ps-stagiaire-planning .week-day-number{
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -837,67 +590,44 @@
             color: #0f172a;
             font-size: 1rem;
             font-weight: 850;
-        }
-
-        .week-day-number.today {
+        }.ps-stagiaire-planning .week-day-number.today{
             background: #2563eb;
             color: white;
-        }
-
-        .week-cell {
+        }.ps-stagiaire-planning .week-cell{
             min-height: 118px;
             padding: .5rem;
             border-right: 1px solid #e2e8f0;
             border-bottom: 1px solid #e2e8f0;
             background: white;
-        }
-
-        .week-events-grid .week-cell:nth-child(5n) {
+        }.ps-stagiaire-planning .week-events-grid .week-cell:nth-child(5n){
             border-right: 0;
-        }
-
-        .week-cell .session {
+        }.ps-stagiaire-planning .week-cell .session{
             height: 100%;
             min-height: 96px;
             margin-bottom: 0;
-        }
-
-        .week-empty-lane {
+        }.ps-stagiaire-planning .week-empty-lane{
             min-height: 96px;
-        }
-
-        .week-no-session {
+        }.ps-stagiaire-planning .week-no-session{
             grid-column: 1 / -1;
             padding: 2rem 1rem;
             color: #64748b;
             text-align: center;
         }
 
-        @media (max-width: 760px) {
-            .week-toolbar {
+        @media (max-width: 760px) {.ps-stagiaire-planning .week-toolbar{
                 grid-template-columns: 1fr;
-            }
-
-            .week-toolbar-center {
+            }.ps-stagiaire-planning .week-toolbar-center{
                 order: -1;
-            }
-
-            .week-toolbar-actions {
+            }.ps-stagiaire-planning .week-toolbar-actions{
                 justify-content: center;
                 flex-wrap: wrap;
             }
-        }
-</style>
-
-    {{-- PORTAIL_SKELETOR_STYLE_V1_3 --}}
-    <style>
-        /*
+        }/*
          * Couche VISUELLE uniquement.
          * Aucun HTML, aucune variable Blade et aucune logique métier
          * de la page existante ne sont modifiés.
          */
-
-        :root {
+.ps-stagiaire-planning{
             --skeletor-primary: #2563eb;
             --skeletor-primary-hover: #1d4ed8;
             --skeletor-bg: #f9fafb;
@@ -913,50 +643,28 @@
             --skeletor-shadow:
                 0 1px 2px rgba(0, 0, 0, .04),
                 0 1px 3px rgba(0, 0, 0, .08);
-        }
-
-        html {
+        }.ps-stagiaire-planning{
             background: var(--skeletor-bg);
-        }
-
-        body {
+        }.ps-stagiaire-planning{
             background: var(--skeletor-bg);
             color: var(--skeletor-text);
-        }
-
-        .container {
+        }.ps-stagiaire-planning .container{
             max-width: 1450px;
-        }
-
-        .header {
+        }.ps-stagiaire-planning .header{
             margin-bottom: 1.5rem;
-        }
-
-        h1 {
+        }.ps-stagiaire-planning h1{
             margin: 0 0 .25rem;
             color: var(--skeletor-text);
             font-size: 1.875rem;
             line-height: 2.25rem;
             font-weight: 700;
             letter-spacing: -.025em;
-        }
-
-        .subtitle {
+        }.ps-stagiaire-planning .subtitle{
             color: var(--skeletor-muted);
             font-size: .925rem;
-        }
-
-        .header-actions {
+        }.ps-stagiaire-planning .header-actions{
             gap: .5rem;
-        }
-
-        .need-button,
-        .follow-button,
-        .button,
-        .search-button,
-        .clear-search,
-        .candidature-pdf-button,
-        .register {
+        }.ps-stagiaire-planning .need-button, .ps-stagiaire-planning .follow-button, .ps-stagiaire-planning .button, .ps-stagiaire-planning .search-button, .ps-stagiaire-planning .clear-search, .ps-stagiaire-planning .candidature-pdf-button, .ps-stagiaire-planning .register{
             border-radius: .5rem;
             font-weight: 600;
             box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
@@ -964,70 +672,38 @@
                 background-color .15s ease,
                 border-color .15s ease,
                 color .15s ease;
-        }
-
-        .need-button,
-        .search-button {
+        }.ps-stagiaire-planning .need-button, .ps-stagiaire-planning .search-button{
             border: 1px solid var(--skeletor-primary);
             background: var(--skeletor-primary);
             color: #fff;
-        }
-
-        .need-button:hover,
-        .search-button:hover {
+        }.ps-stagiaire-planning .need-button:hover, .ps-stagiaire-planning .search-button:hover{
             border-color: var(--skeletor-primary-hover);
             background: var(--skeletor-primary-hover);
-        }
-
-        .follow-button,
-        .button,
-        .clear-search {
+        }.ps-stagiaire-planning .follow-button, .ps-stagiaire-planning .button, .ps-stagiaire-planning .clear-search{
             border: 1px solid var(--skeletor-border-strong);
             background: var(--skeletor-card);
             color: #374151;
-        }
-
-        .follow-button:hover,
-        .button:hover,
-        .clear-search:hover {
+        }.ps-stagiaire-planning .follow-button:hover, .ps-stagiaire-planning .button:hover, .ps-stagiaire-planning .clear-search:hover{
             background: var(--skeletor-subtle);
             color: var(--skeletor-text);
-        }
-
-        .portal-info {
+        }.ps-stagiaire-planning .portal-info{
             gap: 1rem;
-        }
-
-        .portal-card,
-        .portal-tools,
-        .calendar,
-        .week-calendar,
-        .sessions-date-group {
+        }.ps-stagiaire-planning .portal-card, .ps-stagiaire-planning .portal-tools, .ps-stagiaire-planning .calendar, .ps-stagiaire-planning .week-calendar, .ps-stagiaire-planning .sessions-date-group{
             border: 1px solid var(--skeletor-border);
             border-radius: var(--skeletor-radius);
             background: var(--skeletor-card);
             box-shadow: var(--skeletor-shadow);
-        }
-
-        .portal-card {
+        }.ps-stagiaire-planning .portal-card{
             padding: 1rem 1.1rem;
-        }
-
-        .portal-card strong {
+        }.ps-stagiaire-planning .portal-card strong{
             color: #1f2937;
             font-weight: 650;
-        }
-
-        .portal-card span {
+        }.ps-stagiaire-planning .portal-card span{
             color: var(--skeletor-muted);
             font-size: .875rem;
-        }
-
-        .portal-tools {
+        }.ps-stagiaire-planning .portal-tools{
             padding: 1rem;
-        }
-
-        .stage-search input[type="search"] {
+        }.ps-stagiaire-planning .stage-search input[type="search"]{
             height: 2.5rem;
             border: 1px solid var(--skeletor-border-strong);
             border-radius: .5rem;
@@ -1035,138 +711,100 @@
             color: var(--skeletor-text);
             font-size: .875rem;
             outline: none;
-        }
-
-        .stage-search input[type="search"]:focus {
+        }.ps-stagiaire-planning .stage-search input[type="search"]:focus{
             border-color: var(--skeletor-primary);
             box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
-        }
-
-        .view-switcher {
+        }.ps-stagiaire-planning .view-switcher{
             border: 1px solid var(--skeletor-border);
             border-radius: .65rem;
             background: var(--skeletor-subtle);
-        }
-
-        .view-switch {
+        }.ps-stagiaire-planning .view-switch{
             border-radius: .45rem;
             color: #4b5563;
             font-weight: 600;
-        }
-
-        .view-switch:hover {
+        }.ps-stagiaire-planning .view-switch:hover{
             color: var(--skeletor-text);
-        }
-
-        .view-switch.active {
+        }.ps-stagiaire-planning .view-switch.active{
             background: #fff;
             color: var(--skeletor-primary);
             box-shadow: var(--skeletor-shadow);
-        }
-
-        .search-summary {
+        }.ps-stagiaire-planning .search-summary{
             border: 1px solid #bfdbfe;
             border-radius: .6rem;
             background: #eff6ff;
             color: #1e3a8a;
-        }
-
-        .toolbar,
-        .week-toolbar {
+        }.ps-stagiaire-planning .toolbar, .ps-stagiaire-planning .week-toolbar{
             margin-bottom: 1rem;
-        }
-
-        .month-title,
-        .week-title {
+        }.ps-stagiaire-planning .month-title, .ps-stagiaire-planning .week-title{
             color: #1f2937;
             font-weight: 700;
-        }
-
-        .calendar,
-        .week-calendar {
+        }.ps-stagiaire-planning .calendar, .ps-stagiaire-planning .week-calendar{
             overflow: hidden;
-        }
-
-        .week-header,
-        .week-day-header,
-        .week-number,
-        .sessions-date-title {
+        }.ps-stagiaire-planning .week-header, .ps-stagiaire-planning .week-day-header, .ps-stagiaire-planning .week-number, .ps-stagiaire-planning .sessions-date-title{
             background: #f9fafb;
-        }
-
-        .week-header,
-        .week-row,
-        .week-number,
-        .day,
-        .week-day-header,
-        .week-cell,
-        .sessions-date-title,
-        .list-session-card {
+        }.ps-stagiaire-planning .week-header, .ps-stagiaire-planning .week-row, .ps-stagiaire-planning .week-number, .ps-stagiaire-planning .day, .ps-stagiaire-planning .week-day-header, .ps-stagiaire-planning .week-cell, .ps-stagiaire-planning .sessions-date-title, .ps-stagiaire-planning .list-session-card{
             border-color: var(--skeletor-border);
-        }
-
-        .day-number.today,
-        .week-day-number.today {
+        }.ps-stagiaire-planning .day-number.today, .ps-stagiaire-planning .week-day-number.today{
             background: var(--skeletor-primary);
             color: #fff;
-        }
-
-        .places.available,
-        .list-places.available {
+        }.ps-stagiaire-planning .places.available, .ps-stagiaire-planning .list-places.available{
             color: var(--skeletor-success);
-        }
-
-        .places.full,
-        .list-places.full {
+        }.ps-stagiaire-planning .places.full, .ps-stagiaire-planning .list-places.full{
             color: var(--skeletor-warning);
-        }
-
-        .flash-success {
+        }.ps-stagiaire-planning .flash-success{
             border-color: #bbf7d0;
             border-radius: var(--skeletor-radius);
             background: #f0fdf4;
             box-shadow: var(--skeletor-shadow);
-        }
-
-        .candidature-pdf-box {
+        }.ps-stagiaire-planning .candidature-pdf-box{
             border-radius: .6rem;
-        }
-
-        .sessions-date-group {
+        }.ps-stagiaire-planning .sessions-date-group{
             overflow: hidden;
-        }
-
-        .list-session-card.full {
+        }.ps-stagiaire-planning .list-session-card.full{
             background: #fffbeb;
         }
 
-        @media (max-width: 768px) {
-            body {
+        @media (max-width: 768px) {.ps-stagiaire-planning{
                 padding: 1rem .75rem 2rem;
-            }
-
-            h1 {
+            }.ps-stagiaire-planning h1{
                 font-size: 1.5rem;
                 line-height: 2rem;
             }
         }
+
     </style>
 
-</head>
-
-<body>
+    <div class="ps-stagiaire-planning">
 {{-- PORTAIL_URLS_RELATIVES_V1 --}}
 @php
     $publicRoute =
-        static fn (
+        static function (
             string $name,
             array $parameters = []
-        ): string =>
-            route(
+        ): string {
+            if (
+                $name
+                === 'fpsplanificationstage.public.calendrier'
+            ) {
+                $query =
+                    http_build_query(
+                        $parameters
+                    );
+
+                $base =
+                    request()->url();
+
+                return $query === ''
+                    ? $base
+                    : $base . '?' . $query;
+            }
+
+            return route(
                 $name,
                 $parameters,
                 false
             );
+        };
 @endphp
 
 
@@ -1179,7 +817,7 @@
             <div>
 
                 <h1>
-                    Portail des formations
+                    Planning des formations
                 </h1>
 
                 <div class="subtitle">
@@ -1239,7 +877,7 @@
                         </strong>
                     </div>
 
-                
+
                     {{-- PDF_CANDIDATURE_POPUP_V1 --}}
                     @if (session('inscription_pdf_url'))
 
@@ -1613,7 +1251,7 @@
                 as $week
             )
 
-                
+
                 {{-- CALENDRIER_ALIGNEMENT_STAGES_V1 --}}
                 @php
                     /*
@@ -1760,7 +1398,7 @@
                                 {{ $day['numero'] }}
                             </div>
 
-                            
+
                             @for (
                                 $calendarLane = 0;
                                 $calendarLane < $calendarWeekLaneCount;
@@ -1883,7 +1521,7 @@
 
                                 </div>
 
-                            
+
                                     </div>
                                 @else
                                     <div
@@ -2353,5 +1991,6 @@
     </div>
 
 @endif
-</body>
-</html>coder@73cb0f96a544:~/app$
+    </div>
+
+</x-filament-panels::page>

@@ -1,18 +1,18 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Instructeurs;
+namespace Modules\FPSplanificationstage\Filament\Resources\Instructeurs;
 
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use Modules\PlanificationStages\Filament\Resources\Instructeurs\Pages\CreateInstructeur;
-use Modules\PlanificationStages\Filament\Resources\Instructeurs\Pages\EditInstructeur;
-use Modules\PlanificationStages\Filament\Resources\Instructeurs\Pages\ListInstructeurs;
-use Modules\PlanificationStages\Filament\Resources\Instructeurs\Pages\ViewInstructeur;
-use Modules\PlanificationStages\Filament\Resources\Instructeurs\Schemas\InstructeurForm;
-use Modules\PlanificationStages\Filament\Resources\Instructeurs\Schemas\InstructeurInfolist;
-use Modules\PlanificationStages\Filament\Resources\Instructeurs\Tables\InstructeursTable;
-use Modules\PlanificationStages\Models\Instructeur;
+use Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Pages\CreateInstructeur;
+use Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Pages\EditInstructeur;
+use Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Pages\ListInstructeurs;
+use Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Pages\ViewInstructeur;
+use Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Schemas\InstructeurForm;
+use Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Schemas\InstructeurInfolist;
+use Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Tables\InstructeursTable;
+use Modules\FPSplanificationstage\Models\Instructeur;
 
 class InstructeurResource extends Resource
 {

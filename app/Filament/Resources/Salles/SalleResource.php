@@ -1,18 +1,18 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Salles;
+namespace Modules\FPSplanificationstage\Filament\Resources\Salles;
 
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use Modules\PlanificationStages\Filament\Resources\Salles\Pages\CreateSalle;
-use Modules\PlanificationStages\Filament\Resources\Salles\Pages\EditSalle;
-use Modules\PlanificationStages\Filament\Resources\Salles\Pages\ListSalles;
-use Modules\PlanificationStages\Filament\Resources\Salles\Pages\ViewSalle;
-use Modules\PlanificationStages\Filament\Resources\Salles\Schemas\SalleForm;
-use Modules\PlanificationStages\Filament\Resources\Salles\Schemas\SalleInfolist;
-use Modules\PlanificationStages\Filament\Resources\Salles\Tables\SallesTable;
-use Modules\PlanificationStages\Models\Salle;
+use Modules\FPSplanificationstage\Filament\Resources\Salles\Pages\CreateSalle;
+use Modules\FPSplanificationstage\Filament\Resources\Salles\Pages\EditSalle;
+use Modules\FPSplanificationstage\Filament\Resources\Salles\Pages\ListSalles;
+use Modules\FPSplanificationstage\Filament\Resources\Salles\Pages\ViewSalle;
+use Modules\FPSplanificationstage\Filament\Resources\Salles\Schemas\SalleForm;
+use Modules\FPSplanificationstage\Filament\Resources\Salles\Schemas\SalleInfolist;
+use Modules\FPSplanificationstage\Filament\Resources\Salles\Tables\SallesTable;
+use Modules\FPSplanificationstage\Models\Salle;
 
 class SalleResource extends Resource
 {

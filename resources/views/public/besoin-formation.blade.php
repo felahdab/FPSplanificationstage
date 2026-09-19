@@ -179,7 +179,7 @@
         <a
             class="back"
             href="{{ route(
-                'planificationstages.public.calendrier'
+                'fpsplanificationstage.public.calendrier'
             ) }}"
         >
             ← Retour au portail des formations
@@ -231,7 +231,7 @@
     <form
         method="POST"
         action="{{ route(
-            'planificationstages.public.besoin.store'
+            'fpsplanificationstage.public.besoin.store'
         ) }}"
     >
 

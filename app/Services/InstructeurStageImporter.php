@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\PlanificationStages\Services;
+namespace Modules\FPSplanificationstage\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Modules\PlanificationStages\Models\Instructeur;
-use Modules\PlanificationStages\Models\Stage;
+use Modules\FPSplanificationstage\Models\Instructeur;
+use Modules\FPSplanificationstage\Models\Stage;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use RuntimeException;
 use Throwable;

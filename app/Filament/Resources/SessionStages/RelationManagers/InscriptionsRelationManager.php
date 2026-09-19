@@ -1,15 +1,15 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\SessionStages\RelationManagers;
+namespace Modules\FPSplanificationstage\Filament\Resources\SessionStages\RelationManagers;
 
 use Filament\Actions\Action;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Modules\PlanificationStages\Filament\Resources\Inscriptions\InscriptionResource;
-use Modules\PlanificationStages\Models\Inscription;
-use Modules\PlanificationStages\Models\SessionStage;
+use Modules\FPSplanificationstage\Filament\Resources\Inscriptions\InscriptionResource;
+use Modules\FPSplanificationstage\Models\Inscription;
+use Modules\FPSplanificationstage\Models\SessionStage;
 
 class InscriptionsRelationManager extends RelationManager
 {

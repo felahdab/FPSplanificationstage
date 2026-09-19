@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PlanificationStages\Filament\Resources\Stages\Schemas;
+namespace Modules\FPSplanificationstage\Filament\Resources\Stages\Schemas;
 
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\RepeatableEntry;
