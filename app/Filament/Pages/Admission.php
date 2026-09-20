@@ -3,8 +3,15 @@
 namespace Modules\FPSplanificationstage\Filament\Pages;
 
 use Carbon\Carbon;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Collection;
 use Modules\FPSplanificationstage\Models\AdmissionMessageTemplate;
 use Modules\FPSplanificationstage\Models\Inscription;
@@ -13,7 +20,6 @@ use Modules\FPSplanificationstage\Models\Stage;
 
 class Admission extends Page
 {
-    protected string $view = 'fpsplanificationstage::filament.pages.admission';
     protected static ?string $navigationLabel = 'Admission';
     protected static string|\UnitEnum|null $navigationGroup = 'Inscriptions';
     protected static ?int $navigationSort = 20;
@@ -36,6 +42,102 @@ class Admission extends Page
     public function getTitle(): string
     {
         return 'Admission';
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('newTemplate')
+                ->label('Nouveau')
+                ->icon('heroicon-o-plus')
+                ->color('gray')
+                ->action(fn () => $this->newTemplate()),
+            Action::make('loadTemplate')
+                ->label('Charger')
+                ->action(fn () => $this->loadTemplate()),
+            Action::make('generateMessage')
+                ->label('Générer le message')
+                ->icon('heroicon-o-sparkles')
+                ->action(fn () => $this->generateMessage()),
+            Action::make('saveTemplate')
+                ->label('Enregistrer le modèle')
+                ->action(fn () => $this->saveTemplate()),
+            Action::make('deleteTemplate')
+                ->label('Supprimer le modèle')
+                ->color('danger')
+                ->visible(fn (): bool => (bool) $this->templateId)
+                ->requiresConfirmation()
+                ->modalDescription('Supprimer définitivement ce modèle ?')
+                ->action(fn () => $this->deleteTemplate()),
+        ];
+    }
+
+    public function content(Schema $schema): Schema
+    {
+        return $schema->components([
+            Section::make('Sélection')
+                ->schema([
+                    Grid::make(['lg' => 2])
+                        ->schema([
+                            Select::make('sessionId')
+                                ->label('Session')
+                                ->options($this->sessionOptions())
+                                ->placeholder('Sélectionner une session')
+                                ->searchable()
+                                ->live(),
+                            Select::make('templateId')
+                                ->label('Modèle')
+                                ->options($this->templateOptions())
+                                ->placeholder('Aucun modèle')
+                                ->searchable(),
+                        ]),
+                ]),
+            Section::make('Modèle du message')
+                ->description('Texte, ordre des blocs et champs candidats entièrement libres.')
+                ->schema([
+                    Grid::make(['lg' => 2])
+                        ->schema([
+                            TextInput::make('templateName')
+                                ->label('Nom du modèle')
+                                ->placeholder('Ex. Admission standard BIP1'),
+                            Select::make('templateStageId')
+                                ->label('Portée du modèle')
+                                ->options($this->stageOptions())
+                                ->selectablePlaceholder(false),
+                        ]),
+                    TextInput::make('subjectTemplate')
+                        ->label('Objet')
+                        ->placeholder('Ex. Admission {stage} — {session}'),
+                    Textarea::make('bodyTemplate')
+                        ->label('Corps complet du message')
+                        ->rows(14),
+                    Grid::make(['lg' => 2])
+                        ->schema([
+                            Textarea::make('admittedFormat')
+                                ->label('Format d’un candidat admis')
+                                ->rows(4),
+                            Textarea::make('refusedFormat')
+                                ->label('Format d’un candidat refusé')
+                                ->rows(4),
+                        ]),
+                    Textarea::make('variablesHelp')
+                        ->label('Variables disponibles')
+                        ->rows(6)
+                        ->disabled()
+                        ->formatStateUsing(fn (): string => $this->variableHelpText()),
+                ]),
+            Section::make('Candidats')
+                ->description('La sélection ne modifie pas les statuts administratifs.')
+                ->schema($this->candidateSchema()),
+            Section::make('Message final')
+                ->schema([
+                    TextInput::make('finalSubject')
+                        ->label('Objet final'),
+                    Textarea::make('finalBody')
+                        ->label('Message final')
+                        ->rows(18),
+                ]),
+        ]);
     }
 
     public function mount(): void
@@ -258,6 +360,61 @@ class Admission extends Page
                 '{nom}', '{prenom}', '{grade}', '{brevet}', '{specialite}', '{matricule}', '{nid}', '{unite}', '{email}', '{statut}',
             ],
         ];
+    }
+
+    public function variableHelpText(): string
+    {
+        $lines = [];
+
+        foreach ($this->placeholderHelp() as $group => $variables) {
+            $lines[] = $group . ' : ' . implode('  ', $variables);
+        }
+
+        return implode("\n", $lines);
+    }
+
+    protected function candidateSchema(): array
+    {
+        if (! $this->sessionId) {
+            return [
+                TextInput::make('candidateSelectionHint')
+                    ->label('Information')
+                    ->default('Sélectionne d’abord une session.')
+                    ->disabled(),
+            ];
+        }
+
+        if ($this->candidates()->isEmpty()) {
+            return [
+                TextInput::make('candidateSelectionHint')
+                    ->label('Information')
+                    ->default('Aucun candidat pour cette session.')
+                    ->disabled(),
+            ];
+        }
+
+        return $this->candidates()
+            ->map(function (Inscription $candidate): Section {
+                $label = trim($candidate->grade . ' ' . $candidate->nom . ' ' . $candidate->prenom);
+                $description = trim(($candidate->unite ?: 'Unité non renseignée')
+                    . ($candidate->brevet ? ' — ' . $candidate->brevet : '')
+                    . ($candidate->specialite ? ' — ' . $candidate->specialite : ''));
+
+                return Section::make($label)
+                    ->description($description)
+                    ->schema([
+                        Select::make("candidateDecisions.{$candidate->id}")
+                            ->label('Décision')
+                            ->options([
+                                'admis' => 'Admis',
+                                'refuse' => 'Refusé',
+                                'ignorer' => 'Ne pas inclure',
+                            ])
+                            ->selectablePlaceholder(false)
+                            ->default($this->candidateDecisions[$candidate->id] ?? $this->defaultDecision($candidate)),
+                    ]);
+            })
+            ->all();
     }
 
     private function selectedSession(): ?SessionStage
