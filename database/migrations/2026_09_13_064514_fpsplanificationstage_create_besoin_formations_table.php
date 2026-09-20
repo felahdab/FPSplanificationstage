@@ -23,6 +23,9 @@ return new class extends Migration
 
             // Bâtiment, unité ou organisme demandeur.
             $table->string('demandeur');
+            $table->string('contact_nom')->nullable();
+            $table->string('contact_email')->nullable();
+            $table->string('contact_telephone')->nullable();
 
             /*
              * dates_fixes :
@@ -39,7 +42,7 @@ return new class extends Migration
 
             $table->date('date_debut_souhaitee');
 
-            $table->date('date_fin_souhaitee');
+            $table->date('date_fin_souhaitee')->nullable();
 
             /*
              * normale / haute / urgente
@@ -79,6 +82,7 @@ return new class extends Migration
             $table->string('source')
                 ->default('manuel')
                 ->index();
+            $table->uuid('public_token')->nullable()->unique();
 
             /*
              * Champs utilisés pour l'import Excel

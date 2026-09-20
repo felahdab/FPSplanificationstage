@@ -27,8 +27,11 @@ return new class extends Migration
                 ->default(true)
                 ->index();
 
-            // Pour l'instant en texte.
-            // Plus tard ce champ sera relié à notre vraie table des salles.
+            $table->foreignId('salle_preferentielle_id')
+                ->nullable()
+                ->constrained('salles')
+                ->nullOnDelete();
+
             $table->string('salle_preferentielle')
                 ->nullable();
 
