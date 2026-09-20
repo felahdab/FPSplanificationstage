@@ -3,8 +3,8 @@
     @php
         $stagiaire = $this->getRecord();
 
-        $inscriptions = $stagiaire
-            ->inscriptions()
+        $inscriptions = \Modules\FPSplanificationstage\Models\Inscription::query()
+            ->where('stagiaire_id', $stagiaire->getKey())
             ->with([
                 'sessionStage.stage',
                 'sessionStage.salle',
@@ -66,7 +66,7 @@
                 </div>
 
                 <strong>
-                    {{ $stagiaire->nom_complet }}
+                    {{ trim($stagiaire->nom . ' ' . $stagiaire->prenom) }}
                 </strong>
             </div>
 
@@ -151,22 +151,22 @@
             >
                 <div>
                     <strong>Grade :</strong>
-                    {{ $stagiaire->grade ?: '—' }}
+                    {{ $stagiaire->grade?->libelle_court ?: '—' }}
                 </div>
 
                 <div>
                     <strong>Brevet :</strong>
-                    {{ $stagiaire->brevet ?: '—' }}
+                    {{ $stagiaire->brevet?->libelle_court ?: '—' }}
                 </div>
 
                 <div>
                     <strong>Spécialité :</strong>
-                    {{ $stagiaire->specialite ?: '—' }}
+                    {{ $stagiaire->specialite?->libelle_court ?: '—' }}
                 </div>
 
                 <div>
                     <strong>Bâtiment / unité :</strong>
-                    {{ $stagiaire->unite ?: '—' }}
+                    {{ $stagiaire->unite?->libelle_court ?: '—' }}
                 </div>
 
                 <div>

@@ -117,56 +117,56 @@
     <tr>
         <td class="label">Nom</td>
         <td class="value">
-            {{ $inscription->nom ?: 'Non renseigné' }}
+            {{ $inscription->stagiaire?->nom ?: 'Non renseigné' }}
         </td>
     </tr>
 
     <tr>
         <td class="label">Prénom</td>
         <td class="value">
-            {{ $inscription->prenom ?: 'Non renseigné' }}
+            {{ $inscription->stagiaire?->prenom ?: 'Non renseigné' }}
         </td>
     </tr>
 
     <tr>
         <td class="label">Grade</td>
         <td class="value">
-            {{ $inscription->grade ?: 'Non renseigné' }}
+            {{ $inscription->stagiaire?->grade?->libelle_court ?: 'Non renseigné' }}
         </td>
     </tr>
 
     <tr>
         <td class="label">Brevet</td>
         <td class="value">
-            {{ $inscription->brevet ?: 'Non renseigné' }}
+            {{ $inscription->stagiaire?->brevet?->libelle_court ?: 'Non renseigné' }}
         </td>
     </tr>
 
     <tr>
         <td class="label">Matricule</td>
         <td class="value">
-            {{ $inscription->matricule ?: 'Non renseigné' }}
+            {{ $inscription->stagiaire?->matricule ?: 'Non renseigné' }}
         </td>
     </tr>
 
     <tr>
         <td class="label">Spécialité</td>
         <td class="value">
-            {{ $inscription->specialite ?: 'Non renseigné' }}
+            {{ $inscription->stagiaire?->specialite?->libelle_court ?: 'Non renseigné' }}
         </td>
     </tr>
 
     <tr>
         <td class="label">NID</td>
         <td class="value">
-            {{ $inscription->nid ?: 'Non renseigné' }}
+            {{ $inscription->stagiaire?->nid ?: 'Non renseigné' }}
         </td>
     </tr>
 
     <tr>
         <td class="label">Bâtiment / unité</td>
         <td class="value">
-            {{ $inscription->unite ?: 'Non renseigné' }}
+            {{ $inscription->stagiaire?->unite?->libelle_court ?: 'Non renseigné' }}
         </td>
     </tr>
 </table>

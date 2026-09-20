@@ -8,51 +8,6 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (! Schema::hasTable('stagiaires')) {
-            Schema::create(
-                'stagiaires',
-                function (Blueprint $table): void {
-                    $table->id();
-
-                    $table->string('nom');
-                    $table->string('prenom');
-
-                    $table->string('grade')
-                        ->nullable();
-
-                    $table->string('brevet', 20)
-                        ->nullable();
-
-                    $table->string('specialite')
-                        ->nullable();
-
-                    $table->string('nid', 100)
-                        ->nullable()
-                        ->index();
-
-                    $table->string('matricule', 100)
-                        ->nullable()
-                        ->index();
-
-                    $table->string('unite')
-                        ->nullable();
-
-                    $table->string('email')
-                        ->nullable();
-
-                    $table->string('telephone')
-                        ->nullable();
-
-                    $table->timestamps();
-
-                    $table->index([
-                        'nom',
-                        'prenom',
-                    ]);
-                }
-            );
-        }
-
         Schema::table(
             'inscriptions',
             function (Blueprint $table): void {
@@ -66,7 +21,7 @@ return new class extends Migration
                         ->foreignId('stagiaire_id')
                         ->nullable()
                         ->after('session_stage_id')
-                        ->constrained('stagiaires')
+                        ->constrained('rh_marins')
                         ->nullOnDelete();
                 }
 
@@ -126,8 +81,5 @@ return new class extends Migration
             );
         }
 
-        Schema::dropIfExists(
-            'stagiaires'
-        );
     }
 };

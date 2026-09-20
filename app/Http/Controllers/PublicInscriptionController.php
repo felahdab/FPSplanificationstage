@@ -11,6 +11,7 @@ use Illuminate\View\View;
 use Modules\FPSplanificationstage\Models\Inscription;
 use Modules\FPSplanificationstage\Models\InscriptionPrerequis;
 use Modules\FPSplanificationstage\Models\SessionStage;
+use Modules\FPSplanificationstage\Services\StagiaireResolver;
 
 class PublicInscriptionController extends Controller
 {
@@ -158,9 +159,9 @@ class PublicInscriptionController extends Controller
                     'session_stage_id',
                     $session->id
                 )
-                ->where(
-                    'email',
-                    $validated['email']
+                ->whereHas(
+                    'stagiaire',
+                    fn ($query) => $query->where('email', $validated['email'])
                 )
                 ->whereNotIn(
                     'statut',
@@ -243,11 +244,14 @@ class PublicInscriptionController extends Controller
             ]);
         }
 
+        $stagiaire = app(StagiaireResolver::class)->resolve($validated);
+
         $inscription =
             DB::transaction(
                 function () use (
                     $validated,
                     $session,
+                    $stagiaire,
                     $demandeDerogation,
                     $prerequisManquants,
                     $reponsesPrerequis
@@ -263,44 +267,7 @@ class PublicInscriptionController extends Controller
                                 $session->id,
 
 
-                            /*
-                             * INSCRIPTION_IDENTITE_V1_PAYLOAD
-                             */
-                            'matricule' =>
-                                $validated['matricule']
-                                ?? null,
-
-                            'nid' =>
-                                $validated['nid']
-                                ?? null,
-
-                            'brevet' =>
-                                $validated['brevet']
-                                ?? null,
-
-                            'specialite' =>
-                                $validated['specialite']
-                                ?? null,
-
-                            'nom' =>
-                                $validated['nom'],
-
-                            'prenom' =>
-                                $validated['prenom'],
-
-                            'grade' =>
-                                $validated['grade']
-                                ?? null,
-
-                            'unite' =>
-                                $validated['unite'],
-
-                            'email' =>
-                                $validated['email'],
-
-                            'telephone' =>
-                                $validated['telephone']
-                                ?? null,
+                            'stagiaire_id' => $stagiaire->getKey(),
 
                             'statut' =>
                                 $statut,
