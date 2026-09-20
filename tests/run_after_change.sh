@@ -217,6 +217,7 @@ run_step \
 
             $required = [
                 "fpsplanificationstage.public.calendrier",
+                "fpsplanificationstage.public.session.show",
                 "fpsplanificationstage.public.inscription.create",
                 "fpsplanificationstage.public.besoin.create",
             ];

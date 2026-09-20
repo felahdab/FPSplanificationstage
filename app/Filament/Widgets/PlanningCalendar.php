@@ -6,13 +6,16 @@ use Guava\Calendar\Enums\CalendarViewType;
 use Guava\Calendar\Filament\CalendarWidget;
 use Guava\Calendar\ValueObjects\CalendarEvent;
 use Guava\Calendar\ValueObjects\FetchInfo;
+use Guava\Calendar\ValueObjects\EventClickInfo;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Modules\FPSplanificationstage\Filament\Resources\SessionStages\SessionStageResource;
 use Modules\FPSplanificationstage\Models\SessionStage;
 
 class PlanningCalendar extends CalendarWidget
 {
+    protected bool $eventClickEnabled = true;
+
     public ?string $stageFilter = '';
 
     public ?string $instructeurFilter = '';
@@ -81,40 +84,155 @@ class PlanningCalendar extends CalendarWidget
         }
 
         return $query
-            ->orderBy('debut')
             ->get()
+            ->sort(
+                fn (
+                    SessionStage $a,
+                    SessionStage $b
+                ): int =>
+                    $this->compareSessions(
+                        $a,
+                        $b
+                    )
+            )
             ->map(function (SessionStage $session): CalendarEvent {
                 $title = trim(
                     ($session->stage?->code_stage ? $session->stage->code_stage . ' — ' : '')
                     . ($session->stage?->libelle_court ?? 'Session')
                 );
 
-                return CalendarEvent::make()
+                return CalendarEvent::make($session)
                     ->title($title)
                     ->start($session->debut)
                     ->end($session->fin)
-                    ->backgroundColor($this->statusColor($session->statut))
+                    ->backgroundColor($this->eventColor($session))
                     ->textColor('#ffffff')
-                    ->url(
-                        SessionStageResource::getUrl(
-                            'edit',
-                            ['record' => $session->getKey()]
-                        )
-                    );
+;
             })
             ->values()
             ->all();
     }
 
-    protected function statusColor(?string $status): string
-    {
-        return match ($status) {
-            'brouillon' => '#64748b',
-            'planifiee' => '#2563eb',
-            'confirmee' => '#16a34a',
-            'annulee' => '#dc2626',
-            'terminee' => '#7c3aed',
-            default => '#64748b',
-        };
+    protected function compareSessions(
+        SessionStage $a,
+        SessionStage $b
+    ): int {
+        $startComparison =
+            $a->debut->timestamp
+            <=> $b->debut->timestamp;
+
+        if ($startComparison !== 0) {
+            return $startComparison;
+        }
+
+        /*
+         * À heure de début identique, le stage le plus long
+         * prend la première ligne du calendrier.
+         * Cela évite l'effet "escalier".
+         */
+        $durationA =
+            $a->fin->timestamp
+            - $a->debut->timestamp;
+
+        $durationB =
+            $b->fin->timestamp
+            - $b->debut->timestamp;
+
+        $durationComparison =
+            $durationB <=> $durationA;
+
+        if ($durationComparison !== 0) {
+            return $durationComparison;
+        }
+
+        return
+            ((int) ($a->id ?? PHP_INT_MAX))
+            <=>
+            ((int) ($b->id ?? PHP_INT_MAX));
     }
+
+    protected function eventColor(
+        SessionStage $session
+    ): string {
+        if ($session->statut === 'annulee') {
+            return '#dc2626';
+        }
+
+        if ($session->statut === 'terminee') {
+            return '#64748b';
+        }
+
+        if ($session->statut === 'brouillon') {
+            return '#94a3b8';
+        }
+
+        /*
+         * Planifiée / confirmée : couleur déterminée par le stage.
+         * Deux sessions du même stage ont la même couleur.
+         * Deux stages différents ont des couleurs différentes.
+         */
+        $palette = [
+            '#2563eb',
+            '#16a34a',
+            '#ea580c',
+            '#7c3aed',
+            '#0891b2',
+            '#db2777',
+            '#ca8a04',
+            '#4f46e5',
+            '#0f766e',
+            '#be123c',
+            '#6d28d9',
+            '#65a30d',
+        ];
+
+        $stageId =
+            max(
+                1,
+                (int) (
+                    $session->stage_id
+                    ?? $session->id
+                    ?? 1
+                )
+            );
+
+        $index =
+            ($stageId - 1)
+            % count($palette);
+
+        return $palette[$index];
+    }
+
+    public function onEventClick(
+        EventClickInfo $info,
+        Model $event,
+        ?string $action = null
+    ): void {
+        if (! $event instanceof SessionStage) {
+            return;
+        }
+
+        $this->redirect(
+            route(
+                'fpsplanificationstage.public.session.show',
+                [
+                    'session' =>
+                        $event->getKey(),
+                ],
+                false
+            )
+        );
+    }
+
+
+    public function getOptions(): array
+    {
+        return [
+            'hiddenDays' =>
+                $this->viewMode === 'week'
+                    ? [0, 6]
+                    : [],
+        ];
+    }
+
 }

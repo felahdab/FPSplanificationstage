@@ -783,4 +783,59 @@ class PublicPlanningController extends Controller
         );
     }
 
+
+    public function show(
+        SessionStage $session
+    ): View {
+        $session->load([
+            'stage.prerequis' =>
+                fn ($query) =>
+                    $query
+                        ->where(
+                            'actif',
+                            true
+                        )
+                        ->orderBy(
+                            'ordre'
+                        ),
+            'salle',
+        ]);
+
+        $stage = $session->stage;
+
+        if (! $stage) {
+            abort(404);
+        }
+
+        return view(
+            'fpsplanificationstage::public.formation-detail',
+            [
+                'session' => $session,
+                'stage' => $stage,
+
+                'inscriptionUrl' =>
+                    route(
+                        'fpsplanificationstage.public.inscription.create',
+                        [
+                            'session' => $session->id,
+                        ],
+                        false
+                    ),
+
+                'retourUrl' =>
+                    '/apps/fpsplanificationstage/espace-stagiaire/planning-formations',
+
+                'inscriptionPossible' =>
+                    ! in_array(
+                        $session->statut,
+                        [
+                            'annulee',
+                            'terminee',
+                        ],
+                        true
+                    ),
+            ]
+        );
+    }
+
 }
