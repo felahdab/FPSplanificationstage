@@ -21,6 +21,8 @@ class PlanningCalendar extends CalendarWidget
 
     public ?string $statutFilter = '';
 
+    public ?string $searchTerm = '';
+
     protected CalendarViewType $calendarView = CalendarViewType::DayGridMonth;
 
     protected function getEvents(FetchInfo $info): Collection | array | Builder
@@ -32,7 +34,8 @@ class PlanningCalendar extends CalendarWidget
                 'instructeurs',
             ])
             ->where('debut', '<=', $info->end)
-            ->where('fin', '>=', $info->start);
+            ->where('fin', '>=', $info->start)
+            ->whereIn('statut', ['planifiee', 'confirmee']);
 
         if ($this->stageFilter !== '') {
             $query->where('stage_id', (int) $this->stageFilter);
@@ -51,8 +54,22 @@ class PlanningCalendar extends CalendarWidget
 
         if ($this->statutFilter !== '') {
             $query->where('statut', $this->statutFilter);
-        } else {
-            $query->where('statut', '<>', 'annulee');
+        }
+
+        $searchTerm = trim((string) $this->searchTerm);
+
+        if ($searchTerm !== '') {
+            $like = '%' . $searchTerm . '%';
+
+            $query->whereHas('stage', function ($stageQuery) use ($like) {
+                $stageQuery->where(function ($where) use ($like) {
+                    $where->where('libelle_court', 'like', $like)
+                        ->orWhere('libelle_long', 'like', $like)
+                        ->orWhere('lieux_formation', 'like', $like)
+                        ->orWhere('centre_formation', 'like', $like)
+                        ->orWhere('service_emetteur', 'like', $like);
+                });
+            });
         }
 
         return $query

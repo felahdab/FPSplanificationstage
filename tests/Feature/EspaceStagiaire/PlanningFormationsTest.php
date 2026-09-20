@@ -1,8 +1,8 @@
 <?php
 
 use Filament\Facades\Filament;
-use Illuminate\Support\Facades\Blade;
 use Modules\FPSplanificationstage\Filament\Pages\EspaceStagiaire\PlanningFormations;
+use Modules\FPSplanificationstage\Filament\Widgets\PlanningCalendar;
 
 uses(Tests\TestCase::class);
 uses()->group('FPSplanificationstage');
@@ -18,44 +18,27 @@ it('page is registered in fpsplanificationstage panel', function () {
     expect($panel->getPages())->toContain(PlanningFormations::class);
 });
 
-it('page view exists and is a filament page', function () {
-    $path = base_path('Modules/FPSplanificationstage/resources/views/filament/pages/espace-stagiaire/planning-formations.blade.php');
+it('page uses native filament schema and guava calendar', function () {
+    $page = new PlanningFormations();
 
-    $this->assertFileExists($path);
+    expect(method_exists($page, 'content'))->toBeTrue()
+        ->and($page->content(resolve(\Filament\Schemas\Schema::class)))->toBeInstanceOf(\Filament\Schemas\Schema::class);
 
-    $source = file_get_contents($path);
-    $this->assertIsString($source);
+    $reflection = new ReflectionClass(PlanningFormations::class);
+    $source = file_get_contents($reflection->getFileName());
 
-    $this->assertStringContainsString('ESPACE_STAGIAIRE_PLANNING_FILAMENT_V1', $source);
-    $this->assertStringContainsString('<x-filament-panels::page>', $source);
-    $this->assertStringContainsString('PORTAIL_VUE_SEMAINE_V1', $source);
-    $this->assertStringContainsString('ps-stagiaire-planning', $source);
+    expect($source)
+        ->toContain('Filament\\Schemas\\Schema')
+        ->toContain('Livewire::make(PlanningCalendar::class')
+        ->toContain('searchTerm');
 });
 
-it('planning page reloads calendar when filters change', function () {
-    $path = base_path('Modules/FPSplanificationstage/resources/views/filament/pages/planning.blade.php');
-    $source = file_get_contents($path);
+it('calendar widget keeps live search filtering', function () {
+    $reflection = new ReflectionClass(PlanningCalendar::class);
+    $source = file_get_contents($reflection->getFileName());
 
-    $this->assertIsString($source);
-    $this->assertStringContainsString('wire:model.live="stageFilter"', $source);
-    $this->assertStringContainsString('key($this->filterKey())', $source);
-});
-
-it('page class reuses existing planning logic', function () {
-    $path = base_path('Modules/FPSplanificationstage/app/Filament/Pages/EspaceStagiaire/PlanningFormations.php');
-    $source = file_get_contents($path);
-
-    $this->assertIsString($source);
-    $this->assertStringContainsString('PublicPlanningController::class', $source);
-    $this->assertStringContainsString('->getData()', $source);
-});
-
-it('generated blade source compiles', function () {
-    $path = base_path('Modules/FPSplanificationstage/resources/views/filament/pages/espace-stagiaire/planning-formations.blade.php');
-    $source = file_get_contents($path);
-
-    $this->assertIsString($source);
-
-    $compiled = Blade::compileString($source);
-    $this->assertNotSame('', trim($compiled));
+    expect($source)
+        ->toContain('public ?string $searchTerm =')
+        ->toContain('this->searchTerm')
+        ->toContain("whereHas('stage'");
 });

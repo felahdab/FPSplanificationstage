@@ -2,14 +2,16 @@
 
 namespace Modules\FPSplanificationstage\Filament\Pages\EspaceStagiaire;
 
+use Filament\Forms\Components\TextInput;
 use Filament\Pages\Page;
-use Modules\FPSplanificationstage\Http\Controllers\PublicPlanningController;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Livewire;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Modules\FPSplanificationstage\Filament\Widgets\PlanningCalendar;
 
 class PlanningFormations extends Page
 {
-    protected string $view =
-        'fpsplanificationstage::filament.pages.espace-stagiaire.planning-formations';
-
     protected static ?string $navigationLabel =
         'Planning des formations';
 
@@ -22,28 +24,38 @@ class PlanningFormations extends Page
     protected static ?string $slug =
         'espace-stagiaire/planning-formations';
 
+    public string $searchTerm = '';
+
     public function getTitle(): string
     {
         return 'Planning des formations';
     }
 
-    /**
-     * Étape de migration :
-     * la page Filament réutilise temporairement la logique
-     * métier déjà validée du contrôleur public.
-     *
-     * Quand les quatre pages seront migrées, cette logique
-     * pourra être déplacée dans un service dédié.
-     */
-    public function getViewData(): array
+    public function content(Schema $schema): Schema
     {
-        $view =
-            app(
-                PublicPlanningController::class
-            )->index(
-                request()
-            );
-
-        return $view->getData();
+        return $schema->components([
+            Section::make('Recherche')
+                ->schema([
+                    Grid::make(['lg' => 1])
+                        ->schema([
+                            TextInput::make('searchTerm')
+                                ->label('Rechercher')
+                                ->placeholder('Nom de formation, lieu, service...')
+                                ->live(onBlur: false)
+                                ->debounce(300),
+                        ]),
+                ]),
+            Section::make('Calendrier')
+                ->schema([
+                    Livewire::make(PlanningCalendar::class, [
+                        'stageFilter' => '',
+                        'instructeurFilter' => '',
+                        'salleFilter' => '',
+                        'statutFilter' => '',
+                        'searchTerm' => $this->searchTerm,
+                    ])
+                        ->key('planning-formations-calendar-' . md5($this->searchTerm)),
+                ]),
+        ]);
     }
 }
