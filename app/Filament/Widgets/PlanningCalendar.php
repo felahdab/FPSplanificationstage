@@ -43,8 +43,7 @@ class PlanningCalendar extends CalendarWidget
                 'instructeurs',
             ])
             ->where('debut', '<=', $info->end)
-            ->where('fin', '>=', $info->start)
-            ->whereIn('statut', ['planifiee', 'confirmee']);
+            ->where('fin', '>=', $info->start);
 
         if ($this->stageFilter !== '') {
             $query->where('stage_id', (int) $this->stageFilter);
