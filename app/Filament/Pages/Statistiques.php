@@ -114,6 +114,104 @@ class Statistiques extends Page
         return $years;
     }
 
+    public function statSections(): array
+    {
+        $stats = $this->statsData();
+
+        return [
+            [
+                'title' => 'Sessions',
+                'items' => [
+                    [
+                        'value' => $stats['sessions_programmees'],
+                        'label' => 'Sessions programmées en ' . $stats['year'],
+                        'tone' => 'border-l-4 border-blue-500',
+                    ],
+                    [
+                        'value' => $stats['sessions_realisees'],
+                        'label' => 'Sessions réalisées',
+                        'tone' => 'border-l-4 border-green-500',
+                    ],
+                    [
+                        'value' => $stats['sessions_a_venir'],
+                        'label' => 'Sessions à venir',
+                        'tone' => 'border-l-4 border-blue-500',
+                    ],
+                    [
+                        'value' => $stats['sessions_annulees'],
+                        'label' => 'Sessions annulées',
+                        'tone' => 'border-l-4 border-red-500',
+                    ],
+                    [
+                        'value' => $stats['sessions_en_cours'],
+                        'label' => 'Sessions actuellement en cours',
+                        'tone' => 'border-l-4 border-amber-500',
+                    ],
+                ],
+            ],
+            [
+                'title' => 'Stagiaires et remplissage',
+                'items' => [
+                    [
+                        'value' => $stats['stagiaires_reserves'],
+                        'label' => 'Places réservées',
+                        'tone' => 'border-l-4 border-blue-500',
+                    ],
+                    [
+                        'value' => $stats['stagiaires_confirmes'],
+                        'label' => 'Stagiaires confirmés',
+                        'tone' => 'border-l-4 border-green-500',
+                    ],
+                    [
+                        'value' => $stats['liste_attente'],
+                        'label' => 'En liste d’attente',
+                        'tone' => 'border-l-4 border-amber-500',
+                    ],
+                    [
+                        'value' => $stats['capacite_totale'],
+                        'label' => 'Capacité totale programmée',
+                        'tone' => 'border-l-4 border-slate-500',
+                    ],
+                    [
+                        'value' => $stats['places_occupees'],
+                        'label' => 'Places occupées',
+                        'tone' => 'border-l-4 border-blue-500',
+                    ],
+                    [
+                        'value' => $stats['places_restantes'],
+                        'label' => 'Places encore disponibles',
+                        'tone' => 'border-l-4 border-slate-500',
+                    ],
+                    [
+                        'value' => $stats['taux_remplissage'] . ' %',
+                        'label' => 'Taux de remplissage',
+                        'tone' => 'border-l-4 border-green-500',
+                    ],
+                ],
+            ],
+            [
+                'title' => 'Besoins de formation',
+                'items' => [
+                    [
+                        'value' => $stats['besoins_total'],
+                        'label' => 'Besoins reçus en ' . $stats['year'],
+                        'tone' => 'border-l-4 border-slate-500',
+                    ],
+                    [
+                        'value' => $stats['besoins_a_planifier'],
+                        'label' => 'Besoins à planifier',
+                        'tone' => 'border-l-4 border-amber-500',
+                    ],
+                    [
+                        'value' => $stats['besoins_planifies'],
+                        'label' => 'Besoins planifiés',
+                        'tone' => 'border-l-4 border-green-500',
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function statsData(): array
     {
         $yearStart =
