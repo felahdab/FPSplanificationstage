@@ -23,7 +23,16 @@ class PlanningCalendar extends CalendarWidget
 
     public ?string $searchTerm = '';
 
-    protected CalendarViewType $calendarView = CalendarViewType::DayGridMonth;
+    public ?string $viewMode = 'month';
+
+    public function getCalendarView(): CalendarViewType
+    {
+        return match ($this->viewMode) {
+            'week' => CalendarViewType::DayGridWeek,
+            'list' => CalendarViewType::ListMonth,
+            default => CalendarViewType::DayGridMonth,
+        };
+    }
 
     protected function getEvents(FetchInfo $info): Collection | array | Builder
     {
