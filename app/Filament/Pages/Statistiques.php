@@ -3,16 +3,18 @@
 namespace Modules\FPSplanificationstage\Filament\Pages;
 
 use Carbon\Carbon;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 use Modules\FPSplanificationstage\Models\BesoinFormation;
 use Modules\FPSplanificationstage\Models\Inscription;
 use Modules\FPSplanificationstage\Models\SessionStage;
 
 class Statistiques extends Page
 {
-    protected string $view =
-        'fpsplanificationstage::filament.pages.statistiques';
-
     protected static ?string $navigationLabel =
         'Statistiques';
 
@@ -33,6 +35,79 @@ class Statistiques extends Page
     public function getTitle(): string
     {
         return 'Statistiques';
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('previousYear')
+                ->label('Année précédente')
+                ->color('gray')
+                ->icon('heroicon-o-chevron-left')
+                ->action(fn () => $this->previousYear()),
+            Action::make('currentYear')
+                ->label('Année actuelle')
+                ->action(fn () => $this->currentYear()),
+            Action::make('nextYear')
+                ->label('Année suivante')
+                ->color('gray')
+                ->icon('heroicon-o-chevron-right')
+                ->iconPosition('after')
+                ->action(fn () => $this->nextYear()),
+        ];
+    }
+
+    public function content(Schema $schema): Schema
+    {
+        $stats = $this->statsData();
+
+        $sections = [];
+
+        foreach ($this->statSections() as $section) {
+            $sections[] = Section::make($section['title'])
+                ->schema(
+                    array_map(
+                        fn (array $item): Stat => Stat::make(
+                            $item['label'],
+                            $item['value']
+                        )
+                            ->color($this->statColor($item['tone'])),
+                        $section['items']
+                    )
+                )
+                ->columns(4)
+                ->gridContainer();
+        }
+
+        return $schema->components([
+            Section::make('Statistiques de l\'année ' . $stats['year'])
+                ->description('Les statistiques sont calculées pour l’année sélectionnée. Une session est considérée comme réalisée lorsque sa date de fin est passée et qu’elle n’est pas annulée.')
+                ->schema([
+                    Select::make('selectedYear')
+                        ->label('Année')
+                        ->options(array_combine($this->availableYears(), $this->availableYears()))
+                        ->native(false)
+                        ->live(),
+                ]),
+            ...$sections,
+        ]);
+    }
+
+    protected function statColor(string $tone): string
+    {
+        if (str_contains($tone, 'red')) {
+            return 'danger';
+        }
+
+        if (str_contains($tone, 'green')) {
+            return 'success';
+        }
+
+        if (str_contains($tone, 'amber')) {
+            return 'warning';
+        }
+
+        return 'info';
     }
 
     public function previousYear(): void
