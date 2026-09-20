@@ -23,40 +23,11 @@ return new class extends Migration
                     ->constrained('session_stages')
                     ->restrictOnDelete();
 
-                /*
-                 * Identité du stagiaire.
-                 *
-                 * L'identifiant annuaire servira
-                 * plus tard pour le préremplissage
-                 * depuis l'annuaire.
-                 */
                 $table
-                    ->string('identifiant_annuaire')
+                    ->foreignId('stagiaire_id')
                     ->nullable()
-                    ->index();
-
-                $table
-                    ->string('nom');
-
-                $table
-                    ->string('prenom');
-
-                $table
-                    ->string('grade')
-                    ->nullable();
-
-                $table
-                    ->string('unite')
-                    ->nullable();
-
-                $table
-                    ->string('email')
-                    ->nullable()
-                    ->index();
-
-                $table
-                    ->string('telephone')
-                    ->nullable();
+                    ->constrained('rh_marins')
+                    ->nullOnDelete();
 
                 /*
                  * Workflow :
@@ -71,6 +42,11 @@ return new class extends Migration
                 $table
                     ->string('statut')
                     ->default('attente_nemo')
+                    ->index();
+
+                $table
+                    ->string('presence', 20)
+                    ->default('non_renseignee')
                     ->index();
 
                 /*

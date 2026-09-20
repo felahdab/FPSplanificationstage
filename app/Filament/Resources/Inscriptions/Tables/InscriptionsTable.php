@@ -31,9 +31,7 @@ class InscriptionsTable
                     ->sortable()
                     ->weight('bold'),
 
-                TextColumn::make(
-                    'nom'
-                )
+                TextColumn::make('stagiaire.nom')
                     ->label(
                         'Stagiaire'
                     )
@@ -45,21 +43,14 @@ class InscriptionsTable
                             $record
                                 ->nom_complet
                     )
-                    ->searchable([
-                        'nom',
-                        'prenom',
-                    ])
+                    ->searchable()
                     ->sortable(),
 
-                TextColumn::make(
-                    'grade'
-                )
+                TextColumn::make('stagiaire.grade.libelle_court')
                     ->label('Grade')
                     ->placeholder('—'),
 
-                TextColumn::make(
-                    'unite'
-                )
+                TextColumn::make('stagiaire.unite.libelle_court')
                     ->label(
                         'Bâtiment / unité'
                     )
@@ -733,7 +724,7 @@ class InscriptionsTable
                                         }
 
                                         if (
-                                            $inscription->email
+                                            $inscription->stagiaire?->email
                                         ) {
                                             $doublon =
                                                 Inscription::query()
@@ -748,7 +739,7 @@ class InscriptionsTable
                                                     )
                                                     ->where(
                                                         'email',
-                                                        $inscription->email
+                                                        $inscription->stagiaire?->email
                                                     )
                                                     ->whereNotIn(
                                                         'statut',

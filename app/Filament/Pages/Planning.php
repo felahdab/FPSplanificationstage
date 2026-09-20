@@ -105,6 +105,19 @@ class Planning extends Page
         $this->statutFilter = '';
     }
 
+    public function filterKey(): string
+    {
+        return md5(implode(
+            '|',
+            [
+                $this->stageFilter,
+                $this->instructeurFilter,
+                $this->salleFilter,
+                $this->statutFilter,
+            ]
+        ));
+    }
+
     public function filterOptions(): array
     {
         return [

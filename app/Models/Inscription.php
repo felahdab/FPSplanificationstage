@@ -2,7 +2,7 @@
 
 namespace Modules\FPSplanificationstage\Models;
 
-use Modules\FPSplanificationstage\Models\Concerns\ResolvesStagiaire;
+use Modules\RH\Models\Marin;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Inscription extends Model
 {
     
-    use ResolvesStagiaire;
 protected $table = 'inscriptions';
 
     protected $fillable = [
@@ -20,17 +19,6 @@ protected $table = 'inscriptions';
         'code_inscription',
         'session_stage_id',
 
-        // INSCRIPTION_IDENTITE_V1
-        'matricule',
-        'nid',
-        'brevet',
-        'specialite',
-        'nom',
-        'prenom',
-        'grade',
-        'unite',
-        'email',
-        'telephone',
         'statut',
         'nemo_recu',
         'nemo_recu_at',
@@ -182,13 +170,30 @@ protected $table = 'inscriptions';
 
     public function getNomCompletAttribute(): string
     {
+        $stagiaire = $this->stagiaire;
+
         return trim(
             mb_strtoupper(
-                $this->nom
+                $stagiaire?->nom ?? ''
             )
             . ' '
-            . $this->prenom
+            . ($stagiaire?->prenom ?? '')
         );
+    }
+
+    public function getNomAttribute(): ?string
+    {
+        return $this->stagiaire?->nom;
+    }
+
+    public function getPrenomAttribute(): ?string
+    {
+        return $this->stagiaire?->prenom;
+    }
+
+    public function getEmailAttribute(): ?string
+    {
+        return $this->stagiaire?->email;
     }
 
     public function reserveUnePlace(): bool
@@ -206,9 +211,9 @@ protected $table = 'inscriptions';
     public function stagiaire(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(
-            Stagiaire::class,
+            Marin::class,
             'stagiaire_id'
-        );
+        )->withoutGlobalScopes();
     }
 
 }

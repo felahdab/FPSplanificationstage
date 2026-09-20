@@ -12,6 +12,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Modules\FPSplanificationstage\Models\Inscription;
 use Modules\FPSplanificationstage\Models\SessionStage;
+use Modules\RH\Models\Marin;
 
 class InscriptionForm
 {
@@ -95,95 +96,43 @@ class InscriptionForm
                     ->schema([
 
 
-                        Select::make(
-                            'grade'
-                        )
-                            // GRADE_MENU_DEROULANT_V1_1_ADMIN
-                            ->label('Grade')
-                            ->options([
-                                'MOT' => 'MOT',
-                                'QM2' => 'QM2',
-                                'QM1' => 'QM1',
-                                'SM' => 'SM',
-                                'MT' => 'MT',
-                                'PM' => 'PM',
-                                'MP' => 'MP',
-                                'MJR' => 'MJR',
-                            ])
-                            ->placeholder(
-                                'Sélectionner un grade'
-                            ),
-
-                        /*
-                         * INSCRIPTION_IDENTITE_V1_ADMIN
-                         */
-                        TextInput::make(
-                            'matricule'
-                        )
-                            ->label('Matricule')
-                            ->maxLength(100),
-
-                        TextInput::make(
-                            'nid'
-                        )
-                            ->label('NID')
-                            ->maxLength(100),
-
-                        Select::make(
-                            'brevet'
-                        )
-                            ->label('Brevet')
-                            ->options([
-                                'FEM' => 'FEM',
-                                'BAT' => 'BAT',
-                                'BS' => 'BS',
-                                'BM' => 'BM',
-                            ])
-                            ->placeholder(
-                                'Sélectionner un brevet'
-                            ),
-
-                        TextInput::make(
-                            'specialite'
-                        )
-                            ->label('Spécialité')
-                            ->maxLength(255),
-
-                        TextInput::make(
-                            'nom'
-                        )
-                            ->label('Nom')
-                            ->required()
-                            ->maxLength(255),
-
-                        TextInput::make(
-                            'prenom'
-                        )
-                            ->label('Prénom')
-                            ->required()
-                            ->maxLength(255),
-
-                        TextInput::make(
-                            'unite'
-                        )
-                            ->label(
-                                'Bâtiment / unité'
+                        Select::make('stagiaire_id')
+                            ->label('Stagiaire')
+                            ->options(
+                                fn (): array => Marin::withoutGlobalScopes()
+                                    ->with([
+                                        'grade',
+                                        'specialite',
+                                        'brevet',
+                                        'unite',
+                                    ])
+                                    ->orderBy('nom')
+                                    ->orderBy('prenom')
+                                    ->get()
+                                    ->mapWithKeys(
+                                        fn (Marin $marin): array => [
+                                            $marin->getKey() => trim(
+                                                $marin->nom . ' '
+                                                . $marin->prenom
+                                            )
+                                            . (
+                                                $marin->matricule
+                                                    ? ' — ' . $marin->matricule
+                                                    : ''
+                                            )
+                                            . (
+                                                $marin->nid
+                                                    ? ' — NID ' . $marin->nid
+                                                    : ''
+                                            ),
+                                        ]
+                                    )
+                                    ->all()
                             )
-                            ->maxLength(255),
-
-                        TextInput::make(
-                            'email'
-                        )
-                            ->label('E-mail')
-                            ->email()
-                            ->maxLength(255),
-
-                        TextInput::make(
-                            'telephone'
-                        )
-                            ->label('Téléphone')
-                            ->maxLength(255),
-
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->live(),
                     ])
                     ->columns(2),
 

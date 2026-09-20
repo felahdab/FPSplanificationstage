@@ -47,6 +47,10 @@ return new class extends Migration
 
             $table->unsignedSmallInteger('capacite_max')->nullable();
             $table->unsignedSmallInteger('capacite_min')->nullable();
+            $table->foreignId('salle_preferentielle_id')
+                ->nullable()
+                ->constrained('salles')
+                ->nullOnDelete();
 
             // Population
             $table->boolean('ouvert_off')->default(false);
@@ -70,6 +74,32 @@ return new class extends Migration
             $table->string('catalogue_match_key')->nullable()->index();
             $table->string('catalogue_hash', 64)->nullable()->index();
             $table->timestamp('dernier_import_at')->nullable();
+
+            $table->string('fif_generation', 30)->nullable();
+            $table->text('intitule_formation')->nullable();
+            $table->string('service_emetteur')->nullable();
+            $table->text('si_enregistrement_qualification')->nullable();
+            $table->text('echelle_grades')->nullable();
+            $table->text('niveau_brevet')->nullable();
+            $table->text('lieux_formation')->nullable();
+            $table->text('fonctions_visees')->nullable();
+            $table->longText('objectif_formation')->nullable();
+            $table->longText('domaines_competences_vises')->nullable();
+            $table->longText('criteres_certification')->nullable();
+            $table->text('evaluation_diagnostique')->nullable();
+            $table->text('evaluation_formative')->nullable();
+            $table->text('evaluation_certificative')->nullable();
+            $table->text('evaluation_format')->nullable();
+            $table->text('pedagogie_groupes')->nullable();
+            $table->text('pedagogie_visite')->nullable();
+            $table->text('pedagogie_video')->nullable();
+            $table->text('pedagogie_tableau_interactif')->nullable();
+            $table->longText('pedagogie_autre')->nullable();
+            $table->json('fif_validation')->nullable();
+            $table->json('fif_donnees_source')->nullable();
+            $table->string('fif_source_fichier')->nullable();
+            $table->string('fif_import_hash', 64)->nullable()->index();
+            $table->timestamp('fif_imported_at')->nullable();
 
             $table->timestamps();
         });

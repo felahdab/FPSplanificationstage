@@ -2,36 +2,24 @@
 
 namespace Modules\FPSplanificationstage\Services;
 
-use Modules\FPSplanificationstage\Models\Inscription;
-use Modules\FPSplanificationstage\Models\Stagiaire;
+use Modules\RH\Models\Marin;
 
 class StagiaireResolver
 {
-    public function resolveForInscription(
-        Inscription $inscription
-    ): ?Stagiaire {
-        $nom = $this->clean(
-            $inscription->nom
-        );
-
-        $prenom = $this->clean(
-            $inscription->prenom
-        );
+    public function resolve(array $identity): Marin
+    {
+        $nom = $this->clean($identity['nom'] ?? null);
+        $prenom = $this->clean($identity['prenom'] ?? null);
 
         if (
             $nom === null
             || $prenom === null
         ) {
-            return null;
+            throw new \InvalidArgumentException('Le nom et le prénom du marin sont obligatoires.');
         }
 
-        $nid = $this->clean(
-            $inscription->nid
-        );
-
-        $matricule = $this->clean(
-            $inscription->matricule
-        );
+        $nid = $this->clean($identity['nid'] ?? null);
+        $matricule = $this->clean($identity['matricule'] ?? null);
 
         /*
          * Ordre de fiabilité :
@@ -44,13 +32,11 @@ class StagiaireResolver
 
         if ($nid !== null) {
             $stagiaire =
-                Stagiaire::query()
+                Marin::withoutGlobalScopes()
                     ->whereRaw(
                         'UPPER(TRIM(nid)) = ?',
                         [
-                            mb_strtoupper(
-                                $nid
-                            ),
+                            mb_strtoupper($nid),
                         ]
                     )
                     ->first();
@@ -61,13 +47,11 @@ class StagiaireResolver
             && $matricule !== null
         ) {
             $stagiaire =
-                Stagiaire::query()
+                Marin::withoutGlobalScopes()
                     ->whereRaw(
                         'UPPER(TRIM(matricule)) = ?',
                         [
-                            mb_strtoupper(
-                                $matricule
-                            ),
+                            mb_strtoupper($matricule),
                         ]
                     )
                     ->first();
@@ -75,21 +59,17 @@ class StagiaireResolver
 
         if (! $stagiaire) {
             $candidats =
-                Stagiaire::query()
+                Marin::withoutGlobalScopes()
                     ->whereRaw(
                         'UPPER(TRIM(nom)) = ?',
                         [
-                            mb_strtoupper(
-                                $nom
-                            ),
+                            mb_strtoupper($nom),
                         ]
                     )
                     ->whereRaw(
                         'UPPER(TRIM(prenom)) = ?',
                         [
-                            mb_strtoupper(
-                                $prenom
-                            ),
+                            mb_strtoupper($prenom),
                         ]
                     )
                     ->limit(2)
@@ -106,36 +86,13 @@ class StagiaireResolver
 
         if (! $stagiaire) {
             $stagiaire =
-                Stagiaire::create([
+                Marin::withoutGlobalScopes()->create([
                     'nom' => $nom,
                     'prenom' => $prenom,
-                    'grade' =>
-                        $this->clean(
-                            $inscription->grade
-                        ),
-                    'brevet' =>
-                        $this->clean(
-                            $inscription->brevet
-                        ),
-                    'specialite' =>
-                        $this->clean(
-                            $inscription->specialite
-                        ),
                     'nid' => $nid,
                     'matricule' =>
                         $matricule,
-                    'unite' =>
-                        $this->clean(
-                            $inscription->unite
-                        ),
-                    'email' =>
-                        $this->clean(
-                            $inscription->email
-                        ),
-                    'telephone' =>
-                        $this->clean(
-                            $inscription->telephone
-                        ),
+                    'email' => $this->clean($identity['email'] ?? null),
                 ]);
         } else {
             /*
@@ -153,19 +110,11 @@ class StagiaireResolver
 
             foreach (
                 [
-                    'grade',
-                    'brevet',
-                    'specialite',
-                    'unite',
                     'email',
-                    'telephone',
                 ]
                 as $field
             ) {
-                $value =
-                    $this->clean(
-                        $inscription->{$field}
-                    );
+                $value = $this->clean($identity[$field] ?? null);
 
                 if ($value !== null) {
                     $data[$field] =
@@ -197,19 +146,6 @@ class StagiaireResolver
             $stagiaire->update(
                 $data
             );
-        }
-
-        if (
-            (int) $inscription
-                ->stagiaire_id
-            !== (int) $stagiaire->id
-        ) {
-            $inscription
-                ->forceFill([
-                    'stagiaire_id' =>
-                        $stagiaire->id,
-                ])
-                ->saveQuietly();
         }
 
         return $stagiaire;

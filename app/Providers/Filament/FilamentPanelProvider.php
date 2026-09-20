@@ -30,6 +30,7 @@ use Modules\FPSplanificationstage\Filament\Pages\Dashboard;
 use Modules\FPSplanificationstage\Filament\Pages\Planning;
 use Modules\FPSplanificationstage\Filament\Pages\EspaceStagiaire\PlanningFormations;
 use Modules\FPSplanificationstage\Filament\Pages\Statistiques;
+use Modules\FPSplanificationstage\Filament\Pages\ReservationsSalles;
 
 class FilamentPanelProvider extends PanelProvider
 {
@@ -86,6 +87,7 @@ class FilamentPanelProvider extends PanelProvider
                 Statistiques::class,
                 \Modules\FPSplanificationstage\Filament\Pages\Admission::class,
                 PlanningFormations::class,
+                ReservationsSalles::class
             ])
             ->discoverWidgets(
                 in:

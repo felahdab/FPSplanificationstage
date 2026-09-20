@@ -1,95 +1,60 @@
 <?php
 
-namespace Modules\FPSplanificationstage\Tests\Unit;
-
 use Modules\FPSplanificationstage\Services\SessionStageAlternativeFinder;
-use PHPUnit\Framework\TestCase;
 
-class SessionStageAlternativeFinderTest extends TestCase
-{
-    public function test_empty_suggestions_produce_empty_message(): void
-    {
-        $service = new SessionStageAlternativeFinder();
+uses()->group('FPSplanificationstage');
 
-        self::assertSame(
-            '',
-            $service->formatForNotification([])
-        );
-    }
+it('empty suggestions produce empty message', function () {
+    $service = new SessionStageAlternativeFinder();
 
-    public function test_rooms_and_dates_are_formatted_for_notification(): void
-    {
-        $service = new SessionStageAlternativeFinder();
+    expect($service->formatForNotification([]))->toBe('');
+});
 
-        $message = $service->formatForNotification([
-            'salles' => [
-                [
-                    'id' => 1,
-                    'label' => 'A101 — Salle Alpha (20 pers.)',
-                ],
-                [
-                    'id' => 2,
-                    'label' => 'B202 — Salle Bravo (30 pers.)',
-                ],
-            ],
-            'dates' => [
-                [
-                    'debut' => '2026-09-21 08:00:00',
-                    'fin' => '2026-09-21 16:00:00',
-                    'label' => '21/09/2026 de 08:00 à 16:00',
-                ],
-            ],
-        ]);
+it('rooms and dates are formatted for notification', function () {
+    $service = new SessionStageAlternativeFinder();
 
-        self::assertSame(
-            implode("\n", [
-                'Salles disponibles :',
-                '• A101 — Salle Alpha (20 pers.)',
-                '• B202 — Salle Bravo (30 pers.)',
-                '',
-                'Créneaux disponibles :',
-                '• 21/09/2026 de 08:00 à 16:00',
-            ]),
-            $message
-        );
-    }
+    $message = $service->formatForNotification([
+        'salles' => [
+            ['id' => 1, 'label' => 'A101 — Salle Alpha (20 pers.)'],
+            ['id' => 2, 'label' => 'B202 — Salle Bravo (30 pers.)'],
+        ],
+        'dates' => [
+            ['debut' => '2026-09-21 08:00:00', 'fin' => '2026-09-21 16:00:00', 'label' => '21/09/2026 de 08:00 à 16:00'],
+        ],
+    ]);
 
-    public function test_only_rooms_do_not_add_dates_section(): void
-    {
-        $service = new SessionStageAlternativeFinder();
+    expect($message)->toBe(implode("\n", [
+        'Salles disponibles :',
+        '• A101 — Salle Alpha (20 pers.)',
+        '• B202 — Salle Bravo (30 pers.)',
+        '',
+        'Créneaux disponibles :',
+        '• 21/09/2026 de 08:00 à 16:00',
+    ]));
+});
 
-        $message = $service->formatForNotification([
-            'salles' => [
-                [
-                    'id' => 1,
-                    'label' => 'Salle Alpha',
-                ],
-            ],
-            'dates' => [],
-        ]);
+it('only rooms do not add dates section', function () {
+    $service = new SessionStageAlternativeFinder();
 
-        self::assertSame(
-            "Salles disponibles :\n• Salle Alpha",
-            $message
-        );
-    }
+    $message = $service->formatForNotification([
+        'salles' => [
+            ['id' => 1, 'label' => 'Salle Alpha'],
+        ],
+        'dates' => [],
+    ]);
 
-    public function test_only_dates_do_not_add_rooms_section(): void
-    {
-        $service = new SessionStageAlternativeFinder();
+    expect($message)->toBe("Salles disponibles :\n• Salle Alpha");
+});
 
-        $message = $service->formatForNotification([
-            'salles' => [],
-            'dates' => [
-                [
-                    'label' => '22/09/2026 de 08:00 à 16:00',
-                ],
-            ],
-        ]);
+it('only dates do not add rooms section', function () {
+    $service = new SessionStageAlternativeFinder();
 
-        self::assertSame(
-            "Créneaux disponibles :\n• 22/09/2026 de 08:00 à 16:00",
-            $message
-        );
-    }
-}
+    $message = $service->formatForNotification([
+        'salles' => [],
+        'dates' => [
+            ['label' => '22/09/2026 de 08:00 à 16:00'],
+        ],
+    ]);
+
+    expect($message)->toBe("Créneaux disponibles :\n• 22/09/2026 de 08:00 à 16:00");
+});

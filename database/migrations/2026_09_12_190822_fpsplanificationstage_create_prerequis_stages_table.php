@@ -22,6 +22,8 @@ return new class extends Migration
             $table->boolean('obligatoire')->default(true);
 
             $table->boolean('actif')->default(true);
+            $table->string('source')->default('manuel')->index();
+            $table->string('source_colonne')->nullable();
 
             $table->timestamps();
 

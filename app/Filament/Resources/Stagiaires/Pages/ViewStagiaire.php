@@ -15,8 +15,8 @@ class ViewStagiaire extends ViewRecord
 
     public function getTitle(): string
     {
-        return $this
-            ->getRecord()
-            ->nom_complet;
+        $record = $this->getRecord();
+
+        return trim($record->nom . ' ' . $record->prenom);
     }
 }

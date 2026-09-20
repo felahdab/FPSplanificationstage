@@ -3,16 +3,18 @@
 namespace Modules\FPSplanificationstage\Filament\Pages;
 
 use Carbon\Carbon;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 use Modules\FPSplanificationstage\Models\BesoinFormation;
 use Modules\FPSplanificationstage\Models\Inscription;
 use Modules\FPSplanificationstage\Models\SessionStage;
 
 class Statistiques extends Page
 {
-    protected string $view =
-        'fpsplanificationstage::filament.pages.statistiques';
-
     protected static ?string $navigationLabel =
         'Statistiques';
 
@@ -33,6 +35,79 @@ class Statistiques extends Page
     public function getTitle(): string
     {
         return 'Statistiques';
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('previousYear')
+                ->label('Année précédente')
+                ->color('gray')
+                ->icon('heroicon-o-chevron-left')
+                ->action(fn () => $this->previousYear()),
+            Action::make('currentYear')
+                ->label('Année actuelle')
+                ->action(fn () => $this->currentYear()),
+            Action::make('nextYear')
+                ->label('Année suivante')
+                ->color('gray')
+                ->icon('heroicon-o-chevron-right')
+                ->iconPosition('after')
+                ->action(fn () => $this->nextYear()),
+        ];
+    }
+
+    public function content(Schema $schema): Schema
+    {
+        $stats = $this->statsData();
+
+        $sections = [];
+
+        foreach ($this->statSections() as $section) {
+            $sections[] = Section::make($section['title'])
+                ->schema(
+                    array_map(
+                        fn (array $item): Stat => Stat::make(
+                            $item['label'],
+                            $item['value']
+                        )
+                            ->color($this->statColor($item['tone'])),
+                        $section['items']
+                    )
+                )
+                ->columns(4)
+                ->gridContainer();
+        }
+
+        return $schema->components([
+            Section::make('Statistiques de l\'année ' . $stats['year'])
+                ->description('Les statistiques sont calculées pour l’année sélectionnée. Une session est considérée comme réalisée lorsque sa date de fin est passée et qu’elle n’est pas annulée.')
+                ->schema([
+                    Select::make('selectedYear')
+                        ->label('Année')
+                        ->options(array_combine($this->availableYears(), $this->availableYears()))
+                        ->native(false)
+                        ->live(),
+                ]),
+            ...$sections,
+        ]);
+    }
+
+    protected function statColor(string $tone): string
+    {
+        if (str_contains($tone, 'red')) {
+            return 'danger';
+        }
+
+        if (str_contains($tone, 'green')) {
+            return 'success';
+        }
+
+        if (str_contains($tone, 'amber')) {
+            return 'warning';
+        }
+
+        return 'info';
     }
 
     public function previousYear(): void
@@ -112,6 +187,104 @@ class Statistiques extends Page
         }
 
         return $years;
+    }
+
+    public function statSections(): array
+    {
+        $stats = $this->statsData();
+
+        return [
+            [
+                'title' => 'Sessions',
+                'items' => [
+                    [
+                        'value' => $stats['sessions_programmees'],
+                        'label' => 'Sessions programmées en ' . $stats['year'],
+                        'tone' => 'border-l-4 border-blue-500',
+                    ],
+                    [
+                        'value' => $stats['sessions_realisees'],
+                        'label' => 'Sessions réalisées',
+                        'tone' => 'border-l-4 border-green-500',
+                    ],
+                    [
+                        'value' => $stats['sessions_a_venir'],
+                        'label' => 'Sessions à venir',
+                        'tone' => 'border-l-4 border-blue-500',
+                    ],
+                    [
+                        'value' => $stats['sessions_annulees'],
+                        'label' => 'Sessions annulées',
+                        'tone' => 'border-l-4 border-red-500',
+                    ],
+                    [
+                        'value' => $stats['sessions_en_cours'],
+                        'label' => 'Sessions actuellement en cours',
+                        'tone' => 'border-l-4 border-amber-500',
+                    ],
+                ],
+            ],
+            [
+                'title' => 'Stagiaires et remplissage',
+                'items' => [
+                    [
+                        'value' => $stats['stagiaires_reserves'],
+                        'label' => 'Places réservées',
+                        'tone' => 'border-l-4 border-blue-500',
+                    ],
+                    [
+                        'value' => $stats['stagiaires_confirmes'],
+                        'label' => 'Stagiaires confirmés',
+                        'tone' => 'border-l-4 border-green-500',
+                    ],
+                    [
+                        'value' => $stats['liste_attente'],
+                        'label' => 'En liste d’attente',
+                        'tone' => 'border-l-4 border-amber-500',
+                    ],
+                    [
+                        'value' => $stats['capacite_totale'],
+                        'label' => 'Capacité totale programmée',
+                        'tone' => 'border-l-4 border-slate-500',
+                    ],
+                    [
+                        'value' => $stats['places_occupees'],
+                        'label' => 'Places occupées',
+                        'tone' => 'border-l-4 border-blue-500',
+                    ],
+                    [
+                        'value' => $stats['places_restantes'],
+                        'label' => 'Places encore disponibles',
+                        'tone' => 'border-l-4 border-slate-500',
+                    ],
+                    [
+                        'value' => $stats['taux_remplissage'] . ' %',
+                        'label' => 'Taux de remplissage',
+                        'tone' => 'border-l-4 border-green-500',
+                    ],
+                ],
+            ],
+            [
+                'title' => 'Besoins de formation',
+                'items' => [
+                    [
+                        'value' => $stats['besoins_total'],
+                        'label' => 'Besoins reçus en ' . $stats['year'],
+                        'tone' => 'border-l-4 border-slate-500',
+                    ],
+                    [
+                        'value' => $stats['besoins_a_planifier'],
+                        'label' => 'Besoins à planifier',
+                        'tone' => 'border-l-4 border-amber-500',
+                    ],
+                    [
+                        'value' => $stats['besoins_planifies'],
+                        'label' => 'Besoins planifiés',
+                        'tone' => 'border-l-4 border-green-500',
+                    ],
+                ],
+            ],
+        ];
     }
 
     public function statsData(): array

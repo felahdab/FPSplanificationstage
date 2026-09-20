@@ -2,14 +2,18 @@
 
 namespace Modules\FPSplanificationstage\Filament\Pages\EspaceStagiaire;
 
+use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Pages\Page;
-use Modules\FPSplanificationstage\Http\Controllers\PublicPlanningController;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Livewire;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Modules\FPSplanificationstage\Filament\Widgets\PlanningCalendar;
 
 class PlanningFormations extends Page
 {
-    protected string $view =
-        'fpsplanificationstage::filament.pages.espace-stagiaire.planning-formations';
-
     protected static ?string $navigationLabel =
         'Planning des formations';
 
@@ -22,28 +26,79 @@ class PlanningFormations extends Page
     protected static ?string $slug =
         'espace-stagiaire/planning-formations';
 
+    public string $searchTerm = '';
+
+    public string $viewMode = 'month';
+
     public function getTitle(): string
     {
         return 'Planning des formations';
     }
 
-    /**
-     * Étape de migration :
-     * la page Filament réutilise temporairement la logique
-     * métier déjà validée du contrôleur public.
-     *
-     * Quand les quatre pages seront migrées, cette logique
-     * pourra être déplacée dans un service dédié.
-     */
-    public function getViewData(): array
+    protected function getHeaderActions(): array
     {
-        $view =
-            app(
-                PublicPlanningController::class
-            )->index(
-                request()
-            );
+        return [
+            Action::make('exprimerBesoin')
+                ->label('Exprimer un besoin de stage')
+                ->icon('heroicon-o-plus-circle')
+                ->url(route('fpsplanificationstage.public.besoin.create', [], false))
+                ->color('success'),
+            Action::make('suivreBesoin')
+                ->label('Suivre un besoin')
+                ->icon('heroicon-o-magnifying-glass')
+                ->url(route('fpsplanificationstage.public.besoin.suivi.form', [], false))
+                ->color('gray'),
+        ];
+    }
 
-        return $view->getData();
+    public function content(Schema $schema): Schema
+    {
+        return $schema->components([
+            Grid::make(['lg' => 3])
+                ->schema([
+                    Section::make('Vous souhaitez vous inscrire ?')
+                        ->description('Choisissez directement une session disponible dans le calendrier ci-dessous.')
+                        ->compact(),
+                    Section::make('Aucune session ne correspond à votre besoin ?')
+                        ->description('Votre bâtiment ou votre unité peut transmettre directement une expression de besoin.')
+                        ->compact(),
+                    Section::make('Vous avez déjà exprimé un besoin ?')
+                        ->description('Utilisez votre référence BES-xxxxxx et votre adresse e-mail pour suivre son avancement.')
+                        ->compact(),
+                ]),
+            Section::make('Recherche')
+                ->schema([
+                    Grid::make(['lg' => 2])
+                        ->schema([
+                            TextInput::make('searchTerm')
+                                ->label('Rechercher')
+                                ->placeholder('Nom de formation, lieu, service...')
+                                ->live(onBlur: false)
+                                ->debounce(300),
+                            Select::make('viewMode')
+                                ->label('Vue')
+                                ->options([
+                                    'month' => 'Mois',
+                                    'week' => 'Semaine',
+                                    'list' => 'Liste',
+                                ])
+                                ->native(false)
+                                ->default('month')
+                                ->live(),
+                        ]),
+                ]),
+            Section::make('Calendrier')
+                ->schema([
+                    Livewire::make(PlanningCalendar::class, [
+                        'stageFilter' => '',
+                        'instructeurFilter' => '',
+                        'salleFilter' => '',
+                        'statutFilter' => '',
+                        'searchTerm' => $this->searchTerm,
+                        'viewMode' => $this->viewMode,
+                    ])
+                        ->key('planning-formations-calendar-' . md5($this->searchTerm . '-' . $this->viewMode)),
+                ]),
+        ]);
     }
 }

@@ -8,12 +8,12 @@ use Filament\Tables\Table;
 use Modules\FPSplanificationstage\Filament\Resources\Stagiaires\Pages\ListStagiaires;
 use Modules\FPSplanificationstage\Filament\Resources\Stagiaires\Pages\ViewStagiaire;
 use Modules\FPSplanificationstage\Filament\Resources\Stagiaires\Tables\StagiairesTable;
-use Modules\FPSplanificationstage\Models\Stagiaire;
+use Modules\RH\Models\Marin;
 
 class StagiaireResource extends Resource
 {
     protected static ?string $model =
-        Stagiaire::class;
+        Marin::class;
 
     protected static ?string $navigationLabel =
         'Historique stagiaires';

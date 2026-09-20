@@ -5,7 +5,7 @@ namespace Modules\FPSplanificationstage\Filament\Resources\Stagiaires\Tables;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Modules\FPSplanificationstage\Models\Stagiaire;
+use Modules\RH\Models\Marin;
 
 class StagiairesTable
 {
@@ -19,10 +19,9 @@ class StagiairesTable
                     ->formatStateUsing(
                         fn (
                             ?string $state,
-                            Stagiaire $record
+                            Marin $record
                         ): string =>
-                            $record
-                                ->nom_complet
+                            trim($record->nom . ' ' . $record->prenom)
                     )
                     ->searchable([
                         'nom',
@@ -45,21 +44,19 @@ class StagiairesTable
                     ->searchable()
                     ->placeholder('—'),
 
-                TextColumn::make('grade')
+                TextColumn::make('grade.libelle_court')
                     ->label('Grade')
                     ->placeholder('—'),
 
-                TextColumn::make('brevet')
+                TextColumn::make('brevet.libelle_court')
                     ->label('Brevet')
                     ->placeholder('—'),
 
-                TextColumn::make(
-                    'specialite'
-                )
+                TextColumn::make('specialite.libelle_court')
                     ->label('Spécialité')
                     ->placeholder('—'),
 
-                TextColumn::make('unite')
+                TextColumn::make('unite.libelle_court')
                     ->label(
                         'Bâtiment / unité'
                     )

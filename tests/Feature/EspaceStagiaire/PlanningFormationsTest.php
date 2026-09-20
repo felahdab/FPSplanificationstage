@@ -1,143 +1,84 @@
 <?php
 
-namespace Modules\FPSplanificationstage\Tests\Feature\EspaceStagiaire;
-
 use Filament\Facades\Filament;
-use Illuminate\Support\Facades\Blade;
+use Guava\Calendar\ValueObjects\FetchInfo;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\FPSplanificationstage\Filament\Pages\EspaceStagiaire\PlanningFormations;
-use Tests\TestCase;
+use Modules\FPSplanificationstage\Filament\Widgets\PlanningCalendar;
+use Modules\FPSplanificationstage\Models\SessionStage;
+use Modules\FPSplanificationstage\Models\Stage;
 
-class PlanningFormationsTest extends TestCase
-{
-    public function test_page_metadata_matches_espace_stagiaire(): void
-    {
-        $this->assertSame(
-            'Planning des formations',
-            PlanningFormations::getNavigationLabel()
-        );
+uses(Tests\TestCase::class);
+uses(RefreshDatabase::class);
+uses()->group('FPSplanificationstage');
 
-        $this->assertSame(
-            'Espace stagiaire',
-            PlanningFormations::getNavigationGroup()
-        );
+it('page metadata matches espace stagiaire', function () {
+    expect(PlanningFormations::getNavigationLabel())->toBe('Planning des formations')
+        ->and(PlanningFormations::getNavigationGroup())->toBe('Espace stagiaire');
+});
+
+it('page is registered in fpsplanificationstage panel', function () {
+    $panel = Filament::getPanel('fpsplanificationstage');
+
+    expect($panel->getPages())->toContain(PlanningFormations::class);
+});
+
+it('page uses native filament schema and guava calendar', function () {
+    $page = new PlanningFormations();
+
+    expect(method_exists($page, 'content'))->toBeTrue()
+        ->and($page->content(resolve(\Filament\Schemas\Schema::class)))->toBeInstanceOf(\Filament\Schemas\Schema::class);
+
+    $reflection = new ReflectionClass(PlanningFormations::class);
+    $source = file_get_contents($reflection->getFileName());
+
+    expect($source)
+        ->toContain('Filament\\Schemas\\Schema')
+        ->toContain('Livewire::make(PlanningCalendar::class')
+        ->toContain('searchTerm');
+});
+
+it('calendar widget keeps live search filtering', function () {
+    $reflection = new ReflectionClass(PlanningCalendar::class);
+    $source = file_get_contents($reflection->getFileName());
+
+    expect($source)
+        ->toContain('public ?string $searchTerm =')
+        ->toContain('this->searchTerm')
+        ->toContain("whereHas('stage'");
+});
+
+it('shows every session when all statuses are selected', function () {
+    app('url')->resolveMissingNamedRoutesUsing(
+        fn (): string => '/testing/session-stages'
+    );
+
+    $stage = Stage::create([
+        'code_stage' => 'STG-ALL-STATUSES',
+        'libelle_court' => 'Tous les statuts',
+        'actif' => true,
+    ]);
+
+    foreach (['brouillon', 'planifiee', 'confirmee', 'annulee', 'terminee'] as $status) {
+        SessionStage::create([
+            'stage_id' => $stage->id,
+            'debut' => '2026-09-15 09:00:00',
+            'fin' => '2026-09-15 17:00:00',
+            'statut' => $status,
+        ]);
     }
 
-    public function test_page_is_registered_in_fpsplanificationstage_panel(): void
-    {
-        $panel =
-            Filament::getPanel(
-                'fpsplanificationstage'
-            );
+    $widget = new PlanningCalendar();
+    $widget->statutFilter = '';
 
-        $this->assertContains(
-            PlanningFormations::class,
-            $panel->getPages()
-        );
-    }
+    $method = (new ReflectionClass($widget))->getMethod('getEvents');
+    $events = $method->invoke(
+        $widget,
+        new FetchInfo([
+            'startStr' => '2026-09-01T00:00:00',
+            'endStr' => '2026-10-01T00:00:00',
+        ])
+    );
 
-    public function test_page_view_exists_and_is_a_filament_page(): void
-    {
-        $path =
-            base_path(
-                'Modules/FPSplanificationstage/'
-                . 'resources/views/filament/pages/'
-                . 'espace-stagiaire/'
-                . 'planning-formations.blade.php'
-            );
-
-        $this->assertFileExists(
-            $path
-        );
-
-        $source =
-            file_get_contents(
-                $path
-            );
-
-        $this->assertIsString(
-            $source
-        );
-
-        $this->assertStringContainsString(
-            'ESPACE_STAGIAIRE_PLANNING_FILAMENT_V1',
-            $source
-        );
-
-        $this->assertStringContainsString(
-            '<x-filament-panels::page>',
-            $source
-        );
-
-        $this->assertStringContainsString(
-            'PORTAIL_VUE_SEMAINE_V1',
-            $source
-        );
-
-        $this->assertStringContainsString(
-            'ps-stagiaire-planning',
-            $source
-        );
-    }
-
-    public function test_page_class_reuses_existing_planning_logic(): void
-    {
-        $path =
-            base_path(
-                'Modules/FPSplanificationstage/'
-                . 'app/Filament/Pages/'
-                . 'EspaceStagiaire/'
-                . 'PlanningFormations.php'
-            );
-
-        $source =
-            file_get_contents(
-                $path
-            );
-
-        $this->assertIsString(
-            $source
-        );
-
-        $this->assertStringContainsString(
-            'PublicPlanningController::class',
-            $source
-        );
-
-        $this->assertStringContainsString(
-            '->getData()',
-            $source
-        );
-    }
-
-    public function test_generated_blade_source_compiles(): void
-    {
-        $path =
-            base_path(
-                'Modules/FPSplanificationstage/'
-                . 'resources/views/filament/pages/'
-                . 'espace-stagiaire/'
-                . 'planning-formations.blade.php'
-            );
-
-        $source =
-            file_get_contents(
-                $path
-            );
-
-        $this->assertIsString(
-            $source
-        );
-
-        $compiled =
-            Blade::compileString(
-                $source
-            );
-
-        $this->assertNotSame(
-            '',
-            trim(
-                $compiled
-            )
-        );
-    }
-}
+    expect($events)->toHaveCount(5);
+});
