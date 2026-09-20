@@ -102,9 +102,9 @@ run_step \
     sh -c '
         cd "'"$DOCKER_DIR"'"
         docker compose exec -T php \
-            vendor/bin/phpunit \
+            vendor/bin/pest \
             Modules/FPSplanificationstage/tests/Unit \
-            --do-not-cache-result
+            --do-not-record-test-run-history
     '
 
 run_step \
@@ -112,9 +112,9 @@ run_step \
     sh -c '
         cd "'"$DOCKER_DIR"'"
         docker compose exec -T php \
-            vendor/bin/phpunit \
+            vendor/bin/pest \
             Modules/FPSplanificationstage/tests/Feature \
-            --do-not-cache-result
+            --do-not-record-test-run-history
     '
 
 run_step \
