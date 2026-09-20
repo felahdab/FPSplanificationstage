@@ -1,159 +1,77 @@
 <?php
 
-namespace Modules\FPSplanificationstage\Tests\Unit;
-
-use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
+use RecursiveDirectoryIterator as DirectoryIterator;
 use RecursiveIteratorIterator;
 
-class ModuleIdentifiersTest extends TestCase
+uses()->group('FPSplanificationstage');
+
+function moduleRoot(): string
 {
-    private function moduleRoot(): string
-    {
-        return dirname(__DIR__, 2);
-    }
+    return dirname(__DIR__, 2);
+}
 
-    public function test_module_json_uses_new_module_identity(): void
-    {
-        $data = json_decode(
-            file_get_contents(
-                $this->moduleRoot() . '/module.json'
-            ),
-            true,
-            512,
-            JSON_THROW_ON_ERROR
+it('module json uses new module identity', function () {
+    $data = json_decode(
+        file_get_contents(moduleRoot() . '/module.json'),
+        true,
+        512,
+        JSON_THROW_ON_ERROR
+    );
+
+    expect($data['name'])->toBe('FPSplanificationstage')
+        ->and($data['alias'])->toBe('fpsplanificationstage')
+        ->and($data['providers'])->toContain('Modules\\FPSplanificationstage\\Providers\\FPSplanificationstageServiceProvider')
+        ->toContain('Modules\\FPSplanificationstage\\Providers\\Filament\\FilamentPanelProvider');
+});
+
+it('module composer uses new psr4 namespace', function () {
+    $data = json_decode(
+        file_get_contents(moduleRoot() . '/composer.json'),
+        true,
+        512,
+        JSON_THROW_ON_ERROR
+    );
+
+    expect($data['name'])->toBe('nwidart/fpsplanificationstage')
+        ->and($data['autoload']['psr-4'])->toHaveKey('Modules\\FPSplanificationstage\\')
+        ->not->toHaveKey('Modules\\PlanificationStages\\');
+});
+
+it('active source does not reference old php namespace', function () {
+    $root = moduleRoot();
+    $directories = ['app', 'config', 'routes', 'resources', 'database/seeders'];
+    $violations = [];
+
+    foreach ($directories as $directory) {
+        $path = $root . '/' . $directory;
+
+        if (! is_dir($path)) {
+            continue;
+        }
+
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS)
         );
 
-        self::assertSame(
-            'FPSplanificationstage',
-            $data['name']
-        );
-
-        self::assertSame(
-            'fpsplanificationstage',
-            $data['alias']
-        );
-
-        self::assertContains(
-            'Modules\\FPSplanificationstage\\Providers\\FPSplanificationstageServiceProvider',
-            $data['providers']
-        );
-
-        self::assertContains(
-            'Modules\\FPSplanificationstage\\Providers\\Filament\\FilamentPanelProvider',
-            $data['providers']
-        );
-    }
-
-    public function test_module_composer_uses_new_psr4_namespace(): void
-    {
-        $data = json_decode(
-            file_get_contents(
-                $this->moduleRoot() . '/composer.json'
-            ),
-            true,
-            512,
-            JSON_THROW_ON_ERROR
-        );
-
-        self::assertSame(
-            'nwidart/fpsplanificationstage',
-            $data['name']
-        );
-
-        self::assertArrayHasKey(
-            'Modules\\FPSplanificationstage\\',
-            $data['autoload']['psr-4']
-        );
-
-        self::assertArrayNotHasKey(
-            'Modules\\PlanificationStages\\',
-            $data['autoload']['psr-4']
-        );
-    }
-
-    public function test_active_source_does_not_reference_old_php_namespace(): void
-    {
-        $root = $this->moduleRoot();
-
-        $directories = [
-            'app',
-            'config',
-            'routes',
-            'resources',
-            'database/seeders',
-        ];
-
-        $violations = [];
-
-        foreach ($directories as $directory) {
-            $path = $root . '/' . $directory;
-
-            if (! is_dir($path)) {
+        foreach ($iterator as $file) {
+            if (! $file->isFile()) {
                 continue;
             }
 
-            $iterator = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator(
-                    $path,
-                    RecursiveDirectoryIterator::SKIP_DOTS
-                )
-            );
+            $extension = strtolower($file->getExtension());
+            $allowed = ['php', 'blade.php', 'json', 'js'];
 
-            foreach ($iterator as $file) {
-                if (! $file->isFile()) {
-                    continue;
-                }
+            if (! in_array($extension, $allowed, true) && ! str_ends_with($file->getFilename(), '.blade.php')) {
+                continue;
+            }
 
-                $extension = strtolower(
-                    $file->getExtension()
-                );
-
-                if (! in_array(
-                    $extension,
-                    [
-                        'php',
-                        'blade.php',
-                        'json',
-                        'js',
-                    ],
-                    true
-                )) {
-                    $name = $file->getFilename();
-
-                    if (! str_ends_with(
-                        $name,
-                        '.blade.php'
-                    )) {
-                        continue;
-                    }
-                }
-
-                $content = file_get_contents(
-                    $file->getPathname()
-                );
-
-                if (
-                    str_contains(
-                        $content,
-                        'Modules\\PlanificationStages'
-                    )
-                ) {
-                    $violations[] =
-                        str_replace(
-                            $root . '/',
-                            '',
-                            $file->getPathname()
-                        );
-                }
+            $content = file_get_contents($file->getPathname());
+            if (str_contains((string) $content, 'Modules\\PlanificationStages')) {
+                $violations[] = str_replace($root . '/', '', $file->getPathname());
             }
         }
-
-        self::assertSame(
-            [],
-            $violations,
-            'Ancien namespace actif détecté : '
-                . implode(', ', $violations)
-        );
     }
-}
+
+    expect($violations)->toBe([]);
+});

@@ -1,165 +1,61 @@
 <?php
 
-namespace Modules\FPSplanificationstage\Tests\Feature\EspaceStagiaire;
-
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Blade;
 use Modules\FPSplanificationstage\Filament\Pages\EspaceStagiaire\PlanningFormations;
-use Tests\TestCase;
 
-class PlanningFormationsTest extends TestCase
-{
-    public function test_page_metadata_matches_espace_stagiaire(): void
-    {
-        $this->assertSame(
-            'Planning des formations',
-            PlanningFormations::getNavigationLabel()
-        );
+uses(Tests\TestCase::class);
+uses()->group('FPSplanificationstage');
 
-        $this->assertSame(
-            'Espace stagiaire',
-            PlanningFormations::getNavigationGroup()
-        );
-    }
+it('page metadata matches espace stagiaire', function () {
+    expect(PlanningFormations::getNavigationLabel())->toBe('Planning des formations')
+        ->and(PlanningFormations::getNavigationGroup())->toBe('Espace stagiaire');
+});
 
-    public function test_page_is_registered_in_fpsplanificationstage_panel(): void
-    {
-        $panel =
-            Filament::getPanel(
-                'fpsplanificationstage'
-            );
+it('page is registered in fpsplanificationstage panel', function () {
+    $panel = Filament::getPanel('fpsplanificationstage');
 
-        $this->assertContains(
-            PlanningFormations::class,
-            $panel->getPages()
-        );
-    }
+    expect($panel->getPages())->toContain(PlanningFormations::class);
+});
 
-    public function test_page_view_exists_and_is_a_filament_page(): void
-    {
-        $path =
-            base_path(
-                'Modules/FPSplanificationstage/'
-                . 'resources/views/filament/pages/'
-                . 'espace-stagiaire/'
-                . 'planning-formations.blade.php'
-            );
+it('page view exists and is a filament page', function () {
+    $path = base_path('Modules/FPSplanificationstage/resources/views/filament/pages/espace-stagiaire/planning-formations.blade.php');
 
-        $this->assertFileExists(
-            $path
-        );
+    $this->assertFileExists($path);
 
-        $source =
-            file_get_contents(
-                $path
-            );
+    $source = file_get_contents($path);
+    $this->assertIsString($source);
 
-        $this->assertIsString(
-            $source
-        );
+    $this->assertStringContainsString('ESPACE_STAGIAIRE_PLANNING_FILAMENT_V1', $source);
+    $this->assertStringContainsString('<x-filament-panels::page>', $source);
+    $this->assertStringContainsString('PORTAIL_VUE_SEMAINE_V1', $source);
+    $this->assertStringContainsString('ps-stagiaire-planning', $source);
+});
 
-        $this->assertStringContainsString(
-            'ESPACE_STAGIAIRE_PLANNING_FILAMENT_V1',
-            $source
-        );
+it('planning page reloads calendar when filters change', function () {
+    $path = base_path('Modules/FPSplanificationstage/resources/views/filament/pages/planning.blade.php');
+    $source = file_get_contents($path);
 
-        $this->assertStringContainsString(
-            '<x-filament-panels::page>',
-            $source
-        );
+    $this->assertIsString($source);
+    $this->assertStringContainsString('wire:model.live="stageFilter"', $source);
+    $this->assertStringContainsString('key($this->filterKey())', $source);
+});
 
-        $this->assertStringContainsString(
-            'PORTAIL_VUE_SEMAINE_V1',
-            $source
-        );
+it('page class reuses existing planning logic', function () {
+    $path = base_path('Modules/FPSplanificationstage/app/Filament/Pages/EspaceStagiaire/PlanningFormations.php');
+    $source = file_get_contents($path);
 
-        $this->assertStringContainsString(
-            'ps-stagiaire-planning',
-            $source
-        );
-    }
+    $this->assertIsString($source);
+    $this->assertStringContainsString('PublicPlanningController::class', $source);
+    $this->assertStringContainsString('->getData()', $source);
+});
 
-    public function test_planning_page_reloads_calendar_when_filters_change(): void
-    {
-        $path =
-            base_path(
-                'Modules/FPSplanificationstage/'
-                . 'resources/views/filament/pages/'
-                . 'planning.blade.php'
-            );
+it('generated blade source compiles', function () {
+    $path = base_path('Modules/FPSplanificationstage/resources/views/filament/pages/espace-stagiaire/planning-formations.blade.php');
+    $source = file_get_contents($path);
 
-        $source = file_get_contents($path);
+    $this->assertIsString($source);
 
-        $this->assertIsString($source);
-        $this->assertStringContainsString(
-            'wire:model.live="stageFilter"',
-            $source
-        );
-        $this->assertStringContainsString(
-            'key($this->filterKey())',
-            $source
-        );
-    }
-
-    public function test_page_class_reuses_existing_planning_logic(): void
-    {
-        $path =
-            base_path(
-                'Modules/FPSplanificationstage/'
-                . 'app/Filament/Pages/'
-                . 'EspaceStagiaire/'
-                . 'PlanningFormations.php'
-            );
-
-        $source =
-            file_get_contents(
-                $path
-            );
-
-        $this->assertIsString(
-            $source
-        );
-
-        $this->assertStringContainsString(
-            'PublicPlanningController::class',
-            $source
-        );
-
-        $this->assertStringContainsString(
-            '->getData()',
-            $source
-        );
-    }
-
-    public function test_generated_blade_source_compiles(): void
-    {
-        $path =
-            base_path(
-                'Modules/FPSplanificationstage/'
-                . 'resources/views/filament/pages/'
-                . 'espace-stagiaire/'
-                . 'planning-formations.blade.php'
-            );
-
-        $source =
-            file_get_contents(
-                $path
-            );
-
-        $this->assertIsString(
-            $source
-        );
-
-        $compiled =
-            Blade::compileString(
-                $source
-            );
-
-        $this->assertNotSame(
-            '',
-            trim(
-                $compiled
-            )
-        );
-    }
-}
+    $compiled = Blade::compileString($source);
+    $this->assertNotSame('', trim($compiled));
+});
