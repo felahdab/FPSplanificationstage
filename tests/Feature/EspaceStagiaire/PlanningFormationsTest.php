@@ -79,6 +79,28 @@ class PlanningFormationsTest extends TestCase
         );
     }
 
+    public function test_planning_page_reloads_calendar_when_filters_change(): void
+    {
+        $path =
+            base_path(
+                'Modules/FPSplanificationstage/'
+                . 'resources/views/filament/pages/'
+                . 'planning.blade.php'
+            );
+
+        $source = file_get_contents($path);
+
+        $this->assertIsString($source);
+        $this->assertStringContainsString(
+            'wire:model.live="stageFilter"',
+            $source
+        );
+        $this->assertStringContainsString(
+            'key($this->filterKey())',
+            $source
+        );
+    }
+
     public function test_page_class_reuses_existing_planning_logic(): void
     {
         $path =
