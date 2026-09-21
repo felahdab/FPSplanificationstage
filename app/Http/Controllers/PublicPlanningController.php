@@ -756,33 +756,11 @@ class PublicPlanningController extends Controller
                 $complete,
 
             'inscription_url' =>
-                $this->publicRelativeRoute(
-                    'fpsplanificationstage.public.inscription.create',
-                    [
-                        'session' =>
-                            $session->id,
-                    ]
-                ),
+                '/apps/fpsplanificationstage/espace-stagiaire/planning-formations/sessions/'
+                . $session->id
+                . '/inscription',
         ];
     }
-    /*
-     * PORTAIL_URLS_RELATIVES_V1
-     *
-     * Les routes du module portent déjà le préfixe /apps.
-     * absolute=false évite de rajouter le /apps présent
-     * dans APP_URL.
-     */
-    private function publicRelativeRoute(
-        string $name,
-        array $parameters = []
-    ): string {
-        return route(
-            $name,
-            $parameters,
-            false
-        );
-    }
-
 
     public function show(
         SessionStage $session
@@ -814,13 +792,9 @@ class PublicPlanningController extends Controller
                 'stage' => $stage,
 
                 'inscriptionUrl' =>
-                    route(
-                        'fpsplanificationstage.public.inscription.create',
-                        [
-                            'session' => $session->id,
-                        ],
-                        false
-                    ),
+                    '/apps/fpsplanificationstage/espace-stagiaire/planning-formations/sessions/'
+                    . $session->id
+                    . '/inscription',
 
                 'retourUrl' =>
                     '/apps/fpsplanificationstage/espace-stagiaire/planning-formations',

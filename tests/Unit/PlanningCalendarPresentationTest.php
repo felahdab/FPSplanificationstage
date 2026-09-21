@@ -138,7 +138,7 @@ it('keeps the click toward the public detail page', function () {
 
     expect($source)
         ->toContain(
-            'fpsplanificationstage.public.session.show'
+            '/apps/fpsplanificationstage/espace-stagiaire/planning-formations/sessions/'
         )
         ->not->toContain(
             'SessionStageResource::getUrl'

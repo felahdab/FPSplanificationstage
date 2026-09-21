@@ -41,12 +41,12 @@ class PlanningFormations extends Page
             Action::make('exprimerBesoin')
                 ->label('Exprimer un besoin de stage')
                 ->icon('heroicon-o-plus-circle')
-                ->url(route('fpsplanificationstage.public.besoin.create', [], false))
+                ->url('/apps/fpsplanificationstage/espace-stagiaire/planning-formations/besoins/nouveau')
                 ->color('success'),
             Action::make('suivreBesoin')
                 ->label('Suivre un besoin')
                 ->icon('heroicon-o-magnifying-glass')
-                ->url(route('fpsplanificationstage.public.besoin.suivi.form', [], false))
+                ->url('/apps/fpsplanificationstage/espace-stagiaire/planning-formations/besoins/suivi')
                 ->color('gray'),
         ];
     }

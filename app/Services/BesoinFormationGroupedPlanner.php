@@ -1452,16 +1452,13 @@ class BesoinFormationGroupedPlanner
     private function priorityWeight(
         ?string $priorite
     ): int {
-        return match ($priorite) {
-            'urgente' =>
-                3,
-
-            'haute' =>
-                2,
-
-            default =>
-                1,
-        };
+        /*
+         * PRIORITE_NEUTRALISEE_V1
+         *
+         * La colonne historique reste en base pour compatibilité,
+         * mais elle n'influence plus le moteur de planification.
+         */
+        return 0;
     }
 
     private function echecGroupe(

@@ -213,14 +213,7 @@ class PlanningCalendar extends CalendarWidget
         }
 
         $this->redirect(
-            route(
-                'fpsplanificationstage.public.session.show',
-                [
-                    'session' =>
-                        $event->getKey(),
-                ],
-                false
-            )
+            ('/apps/fpsplanificationstage/espace-stagiaire/planning-formations/sessions/' . $event->getKey())
         );
     }
 

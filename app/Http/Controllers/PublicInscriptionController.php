@@ -343,7 +343,7 @@ class PublicInscriptionController extends Controller
          */
         $pdfUrl =
             \Illuminate\Support\Facades\URL::temporarySignedRoute(
-                'fpsplanificationstage.public.inscription.confirmation',
+                'fpsplanificationstage.public.inscription.pdf',
                 now()->addHour(),
                 [
                     'code' =>
@@ -355,10 +355,7 @@ class PublicInscriptionController extends Controller
                 ],
                 false
             );
-return redirect()
-            ->route(
-                'fpsplanificationstage.public.calendrier'
-            )
+return redirect()->to('/apps/fpsplanificationstage/espace-stagiaire/planning-formations')
             ->with(
                 'inscription_success',
                 'Votre candidature a bien été enregistrée.'

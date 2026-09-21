@@ -5,12 +5,14 @@ namespace Modules\FPSplanificationstage\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Modules\FPSplanificationstage\Models\BesoinFormation;
 use Modules\FPSplanificationstage\Models\Stage;
+use Modules\FPSplanificationstage\Services\BesoinPeriodeService;
 
 class PublicBesoinFormationController extends Controller
 {
@@ -39,6 +41,33 @@ class PublicBesoinFormationController extends Controller
     public function store(
         Request $request
     ): RedirectResponse {
+        if (
+            ! $request->has('besoins')
+            && $request->has('stage_id')
+        ) {
+            $request->merge([
+                'besoins' => [[
+                    'stage_id' =>
+                        $request->input('stage_id'),
+
+                    'type_periode' =>
+                        $request->input('type_periode'),
+
+                    'date_debut_souhaitee' =>
+                        $request->input('date_debut_souhaitee'),
+
+                    'date_fin_souhaitee' =>
+                        $request->input('date_fin_souhaitee'),
+
+                    'nombre_stagiaires' =>
+                        $request->input('nombre_stagiaires'),
+
+                    'commentaire' =>
+                        $request->input('commentaire'),
+                ]],
+            ]);
+        }
+
         $validated =
             $request->validate(
                 [
@@ -66,7 +95,14 @@ class PublicBesoinFormationController extends Controller
                         'max:255',
                     ],
 
-                    'stage_id' => [
+                    'besoins' => [
+                        'required',
+                        'array',
+                        'min:1',
+                        'max:20',
+                    ],
+
+                    'besoins.*.stage_id' => [
                         'required',
                         'integer',
 
@@ -82,43 +118,34 @@ class PublicBesoinFormationController extends Controller
                         ),
                     ],
 
-                    'type_periode' => [
+                    'besoins.*.type_periode' => [
                         'required',
                         Rule::in([
                             'dates_fixes',
                             'plage',
+                            'plage_demarrage',
                         ]),
                     ],
 
-                    'date_debut_souhaitee' => [
+                    'besoins.*.date_debut_souhaitee' => [
                         'required',
                         'date',
                         'after_or_equal:today',
                     ],
 
-                    'date_fin_souhaitee' => [
-                        'required_unless:type_periode,dates_fixes',
+                    'besoins.*.date_fin_souhaitee' => [
+                        'nullable',
                         'date',
-                        'after_or_equal:date_debut_souhaitee',
                     ],
 
-                    'priorite' => [
-                        'required',
-                        Rule::in([
-                            'normale',
-                            'haute',
-                            'urgente',
-                        ]),
-                    ],
-
-                    'nombre_stagiaires' => [
+                    'besoins.*.nombre_stagiaires' => [
                         'required',
                         'integer',
                         'min:1',
                         'max:999',
                     ],
 
-                    'commentaire' => [
+                    'besoins.*.commentaire' => [
                         'nullable',
                         'string',
                         'max:5000',
@@ -126,74 +153,143 @@ class PublicBesoinFormationController extends Controller
                 ]
             );
 
-        $besoin =
-            BesoinFormation::create([
-                'stage_id' =>
-                    $validated['stage_id'],
+        foreach (
+            $validated['besoins']
+            as $index => $besoinData
+        ) {
+            $periodeError =
+                BesoinPeriodeService::validateValues(
+                    $besoinData['stage_id'],
+                    $besoinData['type_periode'],
+                    $besoinData['date_debut_souhaitee'],
+                    $besoinData['date_fin_souhaitee'] ?? null
+                );
 
-                'demandeur' =>
-                    $validated['demandeur'],
+            if ($periodeError !== null) {
+                throw ValidationException::withMessages([
+                    "besoins.$index.date_fin_souhaitee" =>
+                        $periodeError,
+                ]);
+            }
+        }
 
-                'contact_nom' =>
-                    $validated['contact_nom'],
+        $created =
+            DB::transaction(
+                function () use (
+                    $validated
+                ): array {
+                    $created = [];
 
-                'contact_email' =>
-                    $validated['contact_email'],
+                    foreach (
+                        $validated['besoins']
+                        as $besoinData
+                    ) {
+                        $besoin =
+                            BesoinFormation::create([
+                                'stage_id' =>
+                                    $besoinData[
+                                        'stage_id'
+                                    ],
 
-                'contact_telephone' =>
-                    $validated[
-                        'contact_telephone'
-                    ]
-                    ?? null,
+                                'demandeur' =>
+                                    $validated[
+                                        'demandeur'
+                                    ],
 
-                'type_periode' =>
-                    $validated[
-                        'type_periode'
-                    ],
+                                'contact_nom' =>
+                                    $validated[
+                                        'contact_nom'
+                                    ],
 
-                'date_debut_souhaitee' =>
-                    $validated[
-                        'date_debut_souhaitee'
-                    ],
+                                'contact_email' =>
+                                    $validated[
+                                        'contact_email'
+                                    ],
 
-                'date_fin_souhaitee' =>
-                    $validated[
-                        'date_fin_souhaitee'
-                    ],
+                                'contact_telephone' =>
+                                    $validated[
+                                        'contact_telephone'
+                                    ]
+                                    ?? null,
 
-                'priorite' =>
-                    $validated['priorite'],
+                                'type_periode' =>
+                                    $besoinData[
+                                        'type_periode'
+                                    ],
 
-                'nombre_stagiaires' =>
-                    $validated[
-                        'nombre_stagiaires'
-                    ],
+                                'date_debut_souhaitee' =>
+                                    $besoinData[
+                                        'date_debut_souhaitee'
+                                    ],
 
-                'statut' =>
-                    'a_planifier',
+                                'date_fin_souhaitee' =>
+                                    $besoinData[
+                                        'date_fin_souhaitee'
+                                    ]
+                                    ?? null,
 
-                'session_stage_id' =>
-                    null,
+                                'priorite' =>
+                                    'normale',
 
-                'commentaire' =>
-                    $validated['commentaire']
-                    ?? null,
+                                'nombre_stagiaires' =>
+                                    $besoinData[
+                                        'nombre_stagiaires'
+                                    ],
 
-                'source' =>
-                    'portail',
+                                'statut' =>
+                                    'a_planifier',
 
-                'public_token' =>
-                    (string) Str::uuid(),
-            ]);
+                                'session_stage_id' =>
+                                    null,
+
+                                'commentaire' =>
+                                    $besoinData[
+                                        'commentaire'
+                                    ]
+                                    ?? null,
+
+                                'source' =>
+                                    'portail',
+
+                                'public_token' =>
+                                    (string) Str::uuid(),
+                            ]);
+
+                        $besoin->load('stage');
+
+                        $created[] = [
+                            'code_besoin' =>
+                                $besoin
+                                    ->code_besoin,
+
+                            'public_token' =>
+                                $besoin
+                                    ->public_token,
+
+                            'stage' =>
+                                $besoin
+                                    ->stage
+                                    ?->libelle_court
+                                ?? 'Stage',
+                        ];
+                    }
+
+                    return $created;
+                }
+            );
+
+        $first =
+            $created[0];
 
         return redirect()
-            ->route(
-                'fpsplanificationstage.public.besoin.confirmation',
-                [
-                    'token' =>
-                        $besoin
-                            ->public_token,
-                ]
+            ->to(
+                '/apps/fpsplanificationstage/espace-stagiaire/planning-formations/besoins/'
+                . $first['public_token']
+                . '/confirmation'
+            )
+            ->with(
+                'besoins_crees',
+                $created
             );
     }
 
@@ -283,15 +379,11 @@ class PublicBesoinFormationController extends Controller
             ]);
         }
 
-        return redirect()
-            ->route(
-                'fpsplanificationstage.public.besoin.suivi',
-                [
-                    'token' =>
-                        $besoin
-                            ->public_token,
-                ]
-            );
+        return redirect()->to(
+            '/apps/fpsplanificationstage/espace-stagiaire/planning-formations/besoins/'
+            . $besoin->public_token
+            . '/suivi'
+        );
     }
 
     public function suivi(

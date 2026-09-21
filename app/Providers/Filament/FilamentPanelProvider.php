@@ -31,6 +31,13 @@ use Modules\FPSplanificationstage\Filament\Pages\Planning;
 use Modules\FPSplanificationstage\Filament\Pages\EspaceStagiaire\PlanningFormations;
 use Modules\FPSplanificationstage\Filament\Pages\Statistiques;
 use Modules\FPSplanificationstage\Filament\Pages\ReservationsSalles;
+use Modules\FPSplanificationstage\Filament\Public\Pages\BesoinConfirmation;
+use Modules\FPSplanificationstage\Filament\Public\Pages\BesoinNouveau;
+use Modules\FPSplanificationstage\Filament\Public\Pages\BesoinSuivi;
+use Modules\FPSplanificationstage\Filament\Public\Pages\BesoinSuiviRecherche;
+use Modules\FPSplanificationstage\Filament\Public\Pages\Inscription;
+use Modules\FPSplanificationstage\Filament\Public\Pages\InscriptionConfirmation;
+use Modules\FPSplanificationstage\Filament\Public\Pages\SessionDetail;
 
 class FilamentPanelProvider extends PanelProvider
 {
@@ -87,7 +94,14 @@ class FilamentPanelProvider extends PanelProvider
                 Statistiques::class,
                 \Modules\FPSplanificationstage\Filament\Pages\Admission::class,
                 PlanningFormations::class,
-                ReservationsSalles::class
+                ReservationsSalles::class,
+                SessionDetail::class,
+                Inscription::class,
+                InscriptionConfirmation::class,
+                BesoinNouveau::class,
+                BesoinSuiviRecherche::class,
+                BesoinConfirmation::class,
+                BesoinSuivi::class
             ])
             ->discoverWidgets(
                 in:

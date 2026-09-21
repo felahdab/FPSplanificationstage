@@ -1,98 +1,60 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\View\View;
-use Modules\FPSplanificationstage\Filament\Widgets\PlanningCalendar;
-use Modules\FPSplanificationstage\Http\Controllers\PublicInscriptionController;
-use Modules\FPSplanificationstage\Http\Controllers\PublicPlanningController;
-use Modules\FPSplanificationstage\Models\SessionStage;
-use Modules\FPSplanificationstage\Models\Stage;
+use Filament\Pages\Page;
+use Illuminate\Support\Facades\Route;
+use Modules\FPSplanificationstage\Filament\Public\Pages\BesoinConfirmation;
+use Modules\FPSplanificationstage\Filament\Public\Pages\BesoinNouveau;
+use Modules\FPSplanificationstage\Filament\Public\Pages\BesoinSuivi;
+use Modules\FPSplanificationstage\Filament\Public\Pages\BesoinSuiviRecherche;
+use Modules\FPSplanificationstage\Filament\Public\Pages\Inscription;
+use Modules\FPSplanificationstage\Filament\Public\Pages\InscriptionConfirmation;
+use Modules\FPSplanificationstage\Filament\Public\Pages\SessionDetail;
 
-uses(Tests\TestCase::class);
-uses(RefreshDatabase::class);
-uses()->group('FPSplanificationstage');
-
-function createPublicNavigationFixture(): SessionStage
-{
-    $stage = Stage::create([
-        'code_stage' => 'STG-PUBLIC-NAV',
-        'libelle_court' => 'Formation navigation publique',
-        'libelle_long' => 'Description complète de la formation.',
-        'objectif_formation' => 'Objectif de la formation.',
-        'actif' => true,
-    ]);
-
-    return SessionStage::create([
-        'stage_id' => $stage->id,
-        'debut' => '2026-10-12 08:00:00',
-        'fin' => '2026-10-16 16:00:00',
-        'capacite_max' => 12,
-        'statut' => 'planifiee',
-    ]);
-}
-
-it('public routes are registered on the expected controllers', function () {
-    $routes = app('router')->getRoutes();
-
-    expect(
-        $routes
-            ->getByName('fpsplanificationstage.public.session.show')
-            ?->getActionName()
-    )->toContain('PublicPlanningController@show');
-
-    expect(
-        $routes
-            ->getByName('fpsplanificationstage.public.inscription.create')
-            ?->getActionName()
-    )->toContain('PublicInscriptionController@create');
+it('all migrated screens remain filament pages', function (): void {
+    foreach ([
+        SessionDetail::class,
+        Inscription::class,
+        InscriptionConfirmation::class,
+        BesoinNouveau::class,
+        BesoinSuiviRecherche::class,
+        BesoinConfirmation::class,
+        BesoinSuivi::class,
+    ] as $pageClass) {
+        expect(is_subclass_of($pageClass, Page::class))
+            ->toBeTrue();
+    }
 });
 
-it('detail controller renders description and registration link', function () {
-    $session = createPublicNavigationFixture();
+it('keeps action routes below the main planning path', function (): void {
+    foreach ([
+        'fpsplanificationstage.public.inscription.store'
+            => [
+                'apps/fpsplanificationstage/espace-stagiaire/planning-formations/sessions/{session}/inscription',
+                'POST',
+            ],
 
-    $view = app(PublicPlanningController::class)
-        ->show($session);
+        'fpsplanificationstage.public.besoin.store'
+            => [
+                'apps/fpsplanificationstage/espace-stagiaire/planning-formations/besoins/nouveau',
+                'POST',
+            ],
 
-    expect($view)
-        ->toBeInstanceOf(View::class)
-        ->and($view->name())
-        ->toBe('fpsplanificationstage::public.formation-detail');
+        'fpsplanificationstage.public.besoin.suivi.rechercher'
+            => [
+                'apps/fpsplanificationstage/espace-stagiaire/planning-formations/besoins/suivi',
+                'POST',
+            ],
 
-    $html = $view->render();
+        'fpsplanificationstage.public.inscription.pdf'
+            => [
+                'apps/fpsplanificationstage/espace-stagiaire/planning-formations/inscriptions/{code}/pdf',
+                'GET',
+            ],
+    ] as $name => [$expectedUri, $method]) {
+        $route = Route::getRoutes()->getByName($name);
 
-    expect($html)
-        ->toContain('Formation navigation publique')
-        ->toContain('Description complète de la formation.')
-        ->toContain('Objectif de la formation.')
-        ->toContain("Je m'inscris à cette formation")
-        ->toContain(
-            route(
-                'fpsplanificationstage.public.inscription.create',
-                ['session' => $session->id],
-                false
-            )
-        );
-});
-
-it('existing inscription controller still accepts the same session', function () {
-    $session = createPublicNavigationFixture();
-
-    $view = app(PublicInscriptionController::class)
-        ->create($session);
-
-    expect($view)
-        ->toBeInstanceOf(View::class)
-        ->and($view->name())
-        ->toBe('fpsplanificationstage::public.inscription');
-});
-
-it('calendar links to public detail instead of admin edit', function () {
-    $source = file_get_contents(
-        (new ReflectionClass(PlanningCalendar::class))
-            ->getFileName()
-    );
-
-    expect($source)
-        ->toContain('fpsplanificationstage.public.session.show')
-        ->not->toContain('SessionStageResource::getUrl');
+        expect($route)->not->toBeNull();
+        expect($route->uri())->toBe($expectedUri);
+        expect($route->methods())->toContain($method);
+    }
 });

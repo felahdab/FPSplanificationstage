@@ -81,7 +81,7 @@ class BesoinFormationsTable
                                     'Date de début imposée',
 
                                 'plage' =>
-                                    'Plage de disponibilité',
+                                    'Période disponible',
 
                                 'plage_demarrage' =>
                                     'Plage de démarrage',
@@ -130,48 +130,6 @@ class BesoinFormationsTable
                             (int) $state > 0
                                 ? 'warning'
                                 : 'success'
-                    ),
-
-                TextColumn::make(
-                    'priorite'
-                )
-                    ->label('Priorité')
-                    ->badge()
-                    ->formatStateUsing(
-                        fn (
-                            ?string $state
-                        ): string =>
-                            match ($state) {
-                                'normale' =>
-                                    'Normale',
-
-                                'haute' =>
-                                    'Haute',
-
-                                'urgente' =>
-                                    'Urgente',
-
-                                default =>
-                                    $state ?? '—',
-                            }
-                    )
-                    ->color(
-                        fn (
-                            ?string $state
-                        ): string =>
-                            match ($state) {
-                                'normale' =>
-                                    'gray',
-
-                                'haute' =>
-                                    'warning',
-
-                                'urgente' =>
-                                    'danger',
-
-                                default =>
-                                    'gray',
-                            }
                     ),
 
                 TextColumn::make(
@@ -245,20 +203,6 @@ class BesoinFormationsTable
                             'Conflit',
                     ]),
 
-                SelectFilter::make(
-                    'priorite'
-                )
-                    ->label('Priorité')
-                    ->options([
-                        'normale' =>
-                            'Normale',
-
-                        'haute' =>
-                            'Haute',
-
-                        'urgente' =>
-                            'Urgente',
-                    ]),
             ])
             ->toolbarActions([
                 \Filament\Actions\BulkAction::make(

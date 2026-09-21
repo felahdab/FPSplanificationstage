@@ -175,10 +175,10 @@ class BesoinFormationForm
                                     'Date de début imposée',
 
                                 'plage' =>
-                                    'Plage de disponibilité',
+                                    'Période disponible',
 
                                 'plage_demarrage' =>
-                                    'Plage de démarrage',
+                                    'Période de démarrage',
                             ])
                             ->default('dates_fixes')
                             ->required()
@@ -259,25 +259,6 @@ class BesoinFormationForm
                 )
                     ->columns(2)
                     ->schema([
-
-                        Select::make(
-                            'priorite'
-                        )
-                            ->label('Priorité')
-                            ->options([
-                                'normale' =>
-                                    'Normale',
-
-                                'haute' =>
-                                    'Haute',
-
-                                'urgente' =>
-                                    'Urgente',
-                            ])
-                            ->default(
-                                'normale'
-                            )
-                            ->required(),
 
                         TextInput::make(
                             'nombre_stagiaires'

@@ -216,10 +216,10 @@ run_step \
             $kernel->bootstrap();
 
             $required = [
-                "fpsplanificationstage.public.calendrier",
-                "fpsplanificationstage.public.session.show",
-                "fpsplanificationstage.public.inscription.create",
-                "fpsplanificationstage.public.besoin.create",
+                "fpsplanificationstage.public.inscription.store",
+                "fpsplanificationstage.public.besoin.store",
+                "fpsplanificationstage.public.besoin.suivi.rechercher",
+                "fpsplanificationstage.public.inscription.pdf",
             ];
 
             $routes = $app

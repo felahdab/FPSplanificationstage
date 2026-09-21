@@ -7,7 +7,6 @@
     "providers": [
         "Modules\\FPSplanificationstage\\Providers\\FPSplanificationstageServiceProvider",
         "Modules\\FPSplanificationstage\\Providers\\Filament\\FilamentPanelProvider"
-
     ],
     "files": []
 }

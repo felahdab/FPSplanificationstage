@@ -3,145 +3,52 @@
 use Illuminate\Support\Facades\Route;
 use Modules\FPSplanificationstage\Http\Controllers\PublicBesoinFormationController;
 use Modules\FPSplanificationstage\Http\Controllers\PublicInscriptionController;
-use Modules\FPSplanificationstage\Http\Controllers\PublicPlanningController;
 
 /*
 |--------------------------------------------------------------------------
-| Interface publique des stages
+| Actions du portail de formation
 |--------------------------------------------------------------------------
+|
+| Toutes les pages GET sont maintenant de vraies pages Filament du panel
+| fpsplanificationstage, sous :
+|
+| /apps/fpsplanificationstage/espace-stagiaire/planning-formations/...
+|
+| Il n'existe plus de second panel /apps/formations.
 */
 
-/*
- * Portail / calendrier.
- */
-Route::get(
-    '/formations',
-    [
-        PublicPlanningController::class,
-        'index',
-    ]
-)->name(
-    'fpsplanificationstage.public.calendrier'
-);
-
-/*
- * Expression de besoin.
- */
-Route::get(
-    '/formations/besoins/nouveau',
-    [
-        PublicBesoinFormationController::class,
-        'create',
-    ]
-)->name(
-    'fpsplanificationstage.public.besoin.create'
-);
-
 Route::post(
-    '/formations/besoins/nouveau',
+    '/fpsplanificationstage/espace-stagiaire/planning-formations/besoins/nouveau',
     [
         PublicBesoinFormationController::class,
         'store',
     ]
 )
-    ->middleware(
-        'throttle:20,1'
-    )
-    ->name(
-        'fpsplanificationstage.public.besoin.store'
-    );
-
-/*
- * Recherche du suivi avec :
- * BES-xxxxxx + adresse e-mail.
- */
-Route::get(
-    '/formations/besoins/suivi',
-    [
-        PublicBesoinFormationController::class,
-        'suiviForm',
-    ]
-)->name(
-    'fpsplanificationstage.public.besoin.suivi.form'
-);
+    ->middleware('throttle:20,1')
+    ->name('fpsplanificationstage.public.besoin.store');
 
 Route::post(
-    '/formations/besoins/suivi',
+    '/fpsplanificationstage/espace-stagiaire/planning-formations/besoins/suivi',
     [
         PublicBesoinFormationController::class,
         'rechercherSuivi',
     ]
 )
-    ->middleware(
-        'throttle:10,1'
-    )
-    ->name(
-        'fpsplanificationstage.public.besoin.suivi.rechercher'
-    );
-
-/*
- * Pages accessibles grâce au jeton
- * public non prédictible.
- */
-Route::get(
-    '/formations/besoins/{token}/confirmation',
-    [
-        PublicBesoinFormationController::class,
-        'confirmation',
-    ]
-)->name(
-    'fpsplanificationstage.public.besoin.confirmation'
-);
-
-Route::get(
-    '/formations/besoins/{token}/suivi',
-    [
-        PublicBesoinFormationController::class,
-        'suivi',
-    ]
-)->name(
-    'fpsplanificationstage.public.besoin.suivi'
-);
-
-/*
- * Inscriptions aux sessions.
- */
-Route::get(
-    '/formations/sessions/{session}/inscription',
-    [
-        PublicInscriptionController::class,
-        'create',
-    ]
-)->name(
-    'fpsplanificationstage.public.inscription.create'
-);
+    ->middleware('throttle:10,1')
+    ->name('fpsplanificationstage.public.besoin.suivi.rechercher');
 
 Route::post(
-    '/formations/sessions/{session}/inscription',
+    '/fpsplanificationstage/espace-stagiaire/planning-formations/sessions/{session}/inscription',
     [
         PublicInscriptionController::class,
         'store',
     ]
-)->name(
-    'fpsplanificationstage.public.inscription.store'
-);
+)->name('fpsplanificationstage.public.inscription.store');
 
 Route::get(
-    '/formations/inscriptions/{code}/confirmation',
+    '/fpsplanificationstage/espace-stagiaire/planning-formations/inscriptions/{code}/pdf',
     [
         PublicInscriptionController::class,
         'confirmation',
     ]
-)->name(
-    'fpsplanificationstage.public.inscription.confirmation'
-);
-
-\Illuminate\Support\Facades\Route::get(
-    '/formations/sessions/{session}',
-    [
-        \Modules\FPSplanificationstage\Http\Controllers\PublicPlanningController::class,
-        'show',
-    ]
-)->name(
-    'fpsplanificationstage.public.session.show'
-);
+)->name('fpsplanificationstage.public.inscription.pdf');

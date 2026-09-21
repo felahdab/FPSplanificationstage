@@ -46,14 +46,10 @@ class BesoinFormationBulkPlanner
                     function (
                         BesoinFormation $record
                     ): string {
-                        $priority =
-                            match (
-                                $record->priorite
-                            ) {
-                                'urgente' => 0,
-                                'haute' => 1,
-                                default => 2,
-                            };
+                        /* PRIORITE_NEUTRALISEE_V1
+                         * La priorité historique n'influence plus l'ordre.
+                         */
+                        $priority = 0;
 
                         $date =
                             $record

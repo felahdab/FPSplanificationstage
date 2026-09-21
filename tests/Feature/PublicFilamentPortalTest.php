@@ -1,0 +1,129 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+it('does not register a second public filament panel provider', function (): void {
+    $moduleRoot = dirname(__DIR__, 2);
+
+    $module = json_decode(
+        file_get_contents($moduleRoot . '/module.json'),
+        true,
+        512,
+        JSON_THROW_ON_ERROR
+    );
+
+    expect($module['providers'] ?? [])
+        ->not->toContain(
+            'Modules\\FPSplanificationstage\\Providers\\Filament\\PublicFilamentPanelProvider'
+        );
+});
+
+it('registers all detail pages below the main training planning', function (): void {
+    $routes = collect(Route::getRoutes()->getRoutes());
+
+    foreach ([
+        'apps/fpsplanificationstage/espace-stagiaire/planning-formations',
+        'apps/fpsplanificationstage/espace-stagiaire/planning-formations/sessions/{session}',
+        'apps/fpsplanificationstage/espace-stagiaire/planning-formations/sessions/{session}/inscription',
+        'apps/fpsplanificationstage/espace-stagiaire/planning-formations/inscriptions/{code}/confirmation',
+        'apps/fpsplanificationstage/espace-stagiaire/planning-formations/besoins/nouveau',
+        'apps/fpsplanificationstage/espace-stagiaire/planning-formations/besoins/suivi',
+        'apps/fpsplanificationstage/espace-stagiaire/planning-formations/besoins/{token}/confirmation',
+        'apps/fpsplanificationstage/espace-stagiaire/planning-formations/besoins/{token}/suivi',
+    ] as $uri) {
+        expect(
+            $routes->contains(
+                fn ($route): bool =>
+                    $route->uri() === $uri
+                    && in_array('GET', $route->methods(), true)
+            )
+        )->toBeTrue("Route GET manquante : {$uri}");
+    }
+});
+
+it('removes the old apps formations entry point', function (): void {
+    $routes = collect(Route::getRoutes()->getRoutes());
+
+    expect(
+        $routes->contains(
+            fn ($route): bool =>
+                $route->uri() === 'apps/formations'
+                && in_array('GET', $route->methods(), true)
+        )
+    )->toBeFalse();
+});
+
+it('supports several training needs in one public submission', function (): void {
+    $moduleRoot = dirname(__DIR__, 2);
+
+    $form = file_get_contents(
+        $moduleRoot
+        . '/resources/views/filament/public/besoin-formation.blade.php'
+    );
+
+    $controller = file_get_contents(
+        $moduleRoot
+        . '/app/Http/Controllers/PublicBesoinFormationController.php'
+    );
+
+    expect($form)
+        ->toContain('id="add-besoin-stage"')
+        ->toContain('name="besoins[')
+        ->toContain('besoin-stage-template');
+
+    expect($controller)
+        ->toContain("'besoins' => [")
+        ->toContain('DB::transaction(')
+        ->toContain("\$validated['besoins']");
+});
+
+it('uses the three business planning modes without public priority', function (): void {
+    $moduleRoot =
+        dirname(
+            __DIR__,
+            2
+        );
+
+    $form =
+        file_get_contents(
+            $moduleRoot
+            . '/resources/views/filament/public/besoin-formation.blade.php'
+        );
+
+    $controller =
+        file_get_contents(
+            $moduleRoot
+            . '/app/Http/Controllers/PublicBesoinFormationController.php'
+        );
+
+    $bulkPlanner =
+        file_get_contents(
+            $moduleRoot
+            . '/app/Services/BesoinFormationBulkPlanner.php'
+        );
+
+    $groupedPlanner =
+        file_get_contents(
+            $moduleRoot
+            . '/app/Services/BesoinFormationGroupedPlanner.php'
+        );
+
+    expect($form)
+        ->toContain('Date de début imposée')
+        ->toContain('Période disponible')
+        ->toContain('Période de démarrage')
+        ->toContain('value="plage_demarrage"')
+        ->not->toContain('Priorité')
+        ->not->toContain('[priorite]');
+
+    expect($controller)
+        ->toContain("'plage_demarrage'")
+        ->not->toContain("'besoins.*.priorite'");
+
+    expect($bulkPlanner)
+        ->toContain('PRIORITE_NEUTRALISEE_V1');
+
+    expect($groupedPlanner)
+        ->toContain('PRIORITE_NEUTRALISEE_V1')
+        ->toContain('return 0;');
+});

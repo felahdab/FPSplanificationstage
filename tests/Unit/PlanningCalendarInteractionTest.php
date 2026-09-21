@@ -56,7 +56,7 @@ it('enables clicks and attaches the session model', function () {
             'CalendarEvent::make($session)'
         )
         ->toContain(
-            'fpsplanificationstage.public.session.show'
+            '/apps/fpsplanificationstage/espace-stagiaire/planning-formations/sessions/'
         )
         ->not->toContain(
             '->url('

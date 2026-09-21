@@ -154,13 +154,13 @@ class BesoinPeriodeService
 
         if ($type === self::TYPE_PLAGE_DEMARRAGE) {
             return sprintf(
-                'Durée : %s jour(s). Le début peut être choisi dans cette plage ; la fin du stage peut dépasser la plage.',
+                'Durée : %s jour(s). Le début peut être choisi dans cette période ; la fin du stage peut dépasser cette période.',
                 $dureeLabel
             );
         }
 
         return sprintf(
-            'Durée : %s jour(s). La plage de disponibilité doit contenir au minimum %d jour(s) ouvré(s) et le stage complet doit y tenir.',
+            'Durée : %s jour(s). La période disponible doit contenir au minimum %d jour(s) ouvré(s) et le stage complet doit y tenir.',
             $dureeLabel,
             self::minimumWorkingDays($duree)
         );
@@ -173,7 +173,7 @@ class BesoinPeriodeService
         mixed $end
     ): ?string {
         if (! in_array($type, self::allowedTypes(), true)) {
-            return 'Type de période invalide.';
+            return 'Mode de planification invalide.';
         }
 
         if (! $stageId) {
@@ -207,13 +207,13 @@ class BesoinPeriodeService
         }
 
         if (! $end) {
-            return 'La date de fin de la plage est obligatoire.';
+            return 'La date de fin de la période est obligatoire.';
         }
 
         $endDate = Carbon::parse($end)->startOfDay();
 
         if ($endDate->lt($startDate)) {
-            return 'La date de fin de la plage doit être postérieure ou égale à la date de début.';
+            return 'La date de fin de la période doit être postérieure ou égale à la date de début.';
         }
 
         /*
@@ -236,7 +236,7 @@ class BesoinPeriodeService
                 );
 
                 return sprintf(
-                    'Plage de disponibilité trop courte : %d jour(s) ouvré(s) sélectionné(s), minimum %d pour un stage de %s jour(s)%s.',
+                    'Période disponible trop courte : %d jour(s) ouvré(s) sélectionné(s), minimum %d pour un stage de %s jour(s)%s.',
                     $selected,
                     $minimum,
                     $dureeLabel,
