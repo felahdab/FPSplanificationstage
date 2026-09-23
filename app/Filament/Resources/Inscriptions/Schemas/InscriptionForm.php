@@ -3,6 +3,7 @@
 namespace Modules\FPSplanificationstage\Filament\Resources\Inscriptions\Schemas;
 
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -366,14 +367,10 @@ class InscriptionForm
                         Select::make(
                             'statut'
                         )
-                            ->label('Statut')
+                            ->label(
+                                'Situation particulière'
+                            )
                             ->options([
-                                'attente_nemo' =>
-                                    'Attente NEMO',
-
-                                'confirmee' =>
-                                    'Confirmée',
-
                                 'attente_derogation' =>
                                     'Attente dérogation',
 
@@ -386,10 +383,29 @@ class InscriptionForm
                                 'annulee' =>
                                     'Annulée',
                             ])
-                            ->default(
-                                'attente_nemo'
+                            ->placeholder(
+                                'Aucune — déterminée par le NEMO'
                             )
-                            ->required(),
+                            ->afterStateHydrated(
+                                function (
+                                    Select $component,
+                                    ?Inscription $record
+                                ): void {
+                                    if (
+                                        ! $record
+                                        || in_array(
+                                            $record->statut,
+                                            [
+                                                'attente_nemo',
+                                                'confirmee',
+                                            ],
+                                            true
+                                        )
+                                    ) {
+                                        $component->state(null);
+                                    }
+                                }
+                            ),
 
                         Toggle::make(
                             'nemo_recu'
@@ -397,7 +413,11 @@ class InscriptionForm
                             ->label(
                                 'NEMO reçu'
                             )
-                            ->default(false),
+                            ->helperText(
+                                'Décochez : attente NEMO. Cochez : inscription confirmée.'
+                            )
+                            ->default(false)
+                            ->live(),
 
                         Toggle::make(
                             'derogation_demandee'
@@ -424,12 +444,44 @@ class InscriptionForm
                                 'refusee' =>
                                     'Refusée',
                             ])
+                            ->live()
                             ->visible(
                                 fn ($get): bool =>
                                     (bool) $get(
                                         'derogation_demandee'
                                     )
                             ),
+
+                        FileUpload::make(
+                            'derogation_document'
+                        )
+                            ->label(
+                                'Document de dérogation accepté'
+                            )
+                            ->helperText(
+                                'Formats acceptés : PDF, JPEG ou PNG (10 Mo maximum).'
+                            )
+                            ->disk('local')
+                            ->directory(
+                                'inscriptions/derogations'
+                            )
+                            ->acceptedFileTypes([
+                                'application/pdf',
+                                'image/jpeg',
+                                'image/png',
+                            ])
+                            ->maxSize(10240)
+                            ->previewable(false)
+                            ->visible(
+                                fn ($get): bool =>
+                                    (bool) $get(
+                                        'derogation_demandee'
+                                    )
+                                    && $get(
+                                        'derogation_statut'
+                                    ) === 'acceptee'
+                            )
+                            ->columnSpanFull(),
 
                         Textarea::make(
                             'derogation_motif'

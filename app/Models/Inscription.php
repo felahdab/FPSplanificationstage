@@ -25,6 +25,7 @@ protected $table = 'inscriptions';
         'derogation_demandee',
         'derogation_statut',
         'derogation_motif',
+        'derogation_document',
         'commentaire',
         'source',
     ];
@@ -59,6 +60,45 @@ protected $table = 'inscriptions';
                 ) {
                     $inscription->nemo_recu_at =
                         null;
+                }
+
+                $derogationTerminee =
+                    $inscription->statut
+                    === 'attente_derogation'
+                    && in_array(
+                        $inscription
+                            ->derogation_statut,
+                        [
+                            'acceptee',
+                            'refusee',
+                        ],
+                        true
+                    );
+
+                if (
+                    $derogationTerminee
+                    && $inscription
+                        ->derogation_statut
+                    === 'refusee'
+                ) {
+                    $inscription->statut =
+                        'refusee';
+                } elseif (
+                    blank($inscription->statut)
+                    || $derogationTerminee
+                    || in_array(
+                        $inscription->statut,
+                        [
+                            'attente_nemo',
+                            'confirmee',
+                        ],
+                        true
+                    )
+                ) {
+                    $inscription->statut =
+                        $inscription->nemo_recu
+                            ? 'confirmee'
+                            : 'attente_nemo';
                 }
 
                 $statutsReservantUnePlace = [

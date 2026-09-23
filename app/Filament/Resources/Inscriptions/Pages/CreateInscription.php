@@ -44,7 +44,7 @@ class CreateInscription extends CreateRecord
                 $session->id,
 
             'statut' =>
-                'attente_nemo',
+                null,
 
             'nemo_recu' =>
                 false,

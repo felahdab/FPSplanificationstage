@@ -4,9 +4,12 @@ namespace Modules\FPSplanificationstage\Filament\Resources\Inscriptions\Pages;
 
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
+use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Facades\Storage;
 use Modules\FPSplanificationstage\Filament\Resources\Inscriptions\InscriptionResource;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class EditInscription extends EditRecord
 {
@@ -47,8 +50,32 @@ class EditInscription extends EditRecord
                 ->modalSubmitActionLabel(
                     'Accepter'
                 )
+                ->schema([
+                    FileUpload::make(
+                        'derogation_document'
+                    )
+                        ->label(
+                            'Document de dérogation accepté'
+                        )
+                        ->helperText(
+                            'Facultatif — PDF, JPEG ou PNG (10 Mo maximum).'
+                        )
+                        ->disk('local')
+                        ->directory(
+                            'inscriptions/derogations'
+                        )
+                        ->acceptedFileTypes([
+                            'application/pdf',
+                            'image/jpeg',
+                            'image/png',
+                        ])
+                        ->maxSize(10240)
+                        ->previewable(false),
+                ])
                 ->action(
-                    function (): void {
+                    function (
+                        array $data
+                    ): void {
                         $record =
                             $this
                                 ->record
@@ -66,9 +93,16 @@ class EditInscription extends EditRecord
 
                             'statut' =>
                                 $nouveauStatut,
+
+                            'derogation_document' =>
+                                $data[
+                                    'derogation_document'
+                                ]
+                                ?? null,
                         ]);
 
                         $record->refresh();
+                        $this->record->refresh();
 
                         /*
                          * Le modèle vérifie également
@@ -109,6 +143,7 @@ class EditInscription extends EditRecord
                         $this->refreshFormData([
                             'statut',
                             'derogation_statut',
+                            'derogation_document',
                         ]);
                     }
                 ),
@@ -169,6 +204,64 @@ class EditInscription extends EditRecord
                             'statut',
                             'derogation_statut',
                         ]);
+                    }
+                ),
+
+            Action::make(
+                'telechargerDerogation'
+            )
+                ->label(
+                    'Télécharger la dérogation'
+                )
+                ->icon(
+                    'heroicon-o-arrow-down-tray'
+                )
+                ->visible(
+                    fn (): bool =>
+                        filled(
+                            $this
+                                ->record
+                                ->derogation_document
+                        )
+                )
+                ->action(
+                    function (): StreamedResponse {
+                        $path =
+                            $this
+                                ->record
+                                ->derogation_document;
+
+                        abort_unless(
+                            is_string($path)
+                            && Storage::disk(
+                                'local'
+                            )->exists($path),
+                            404
+                        );
+
+                        $extension =
+                            pathinfo(
+                                $path,
+                                PATHINFO_EXTENSION
+                            );
+
+                        $nomFichier =
+                            'derogation-'
+                            . $this
+                                ->record
+                                ->code_inscription
+                            . (
+                                $extension !== ''
+                                    ? '.' . $extension
+                                    : ''
+                            );
+
+                        return Storage::disk(
+                            'local'
+                        )->download(
+                            $path,
+                            $nomFichier
+                        );
                     }
                 ),
 
