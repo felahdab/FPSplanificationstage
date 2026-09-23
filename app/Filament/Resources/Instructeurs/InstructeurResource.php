@@ -5,19 +5,18 @@ namespace Modules\FPSplanificationstage\Filament\Resources\Instructeurs;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Pages\CreateInstructeur;
-use Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Pages\EditInstructeur;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Pages\ListInstructeurs;
 use Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Pages\ViewInstructeur;
-use Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Schemas\InstructeurForm;
 use Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Schemas\InstructeurInfolist;
 use Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Tables\InstructeursTable;
-use Modules\FPSplanificationstage\Models\Instructeur;
+use Modules\RH\Models\Marin;
 
 class InstructeurResource extends Resource
 {
     protected static ?string $model =
-        Instructeur::class;
+        Marin::class;
 
     protected static ?string $navigationLabel =
         'Instructeurs';
@@ -33,11 +32,32 @@ class InstructeurResource extends Resource
 
     protected static ?int $navigationSort = 20;
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where(
+                fn (Builder $query): Builder => $query
+                    ->whereIn(
+                        'rh_marins.id',
+                        DB::table('instructeur_stage')
+                            ->select('instructeur_id')
+                    )
+                    ->orWhereIn(
+                        'rh_marins.id',
+                        DB::table('instructeur_session_stage')
+                            ->select('instructeur_id')
+                    )
+                    ->orWhereIn(
+                        'rh_marins.id',
+                        DB::table('indisponibilite_instructeurs')
+                            ->select('instructeur_id')
+                    )
+            );
+    }
+
     public static function form(Schema $schema): Schema
     {
-        return InstructeurForm::configure(
-            $schema
-        );
+        return $schema;
     }
 
     public static function infolist(Schema $schema): Schema
@@ -65,14 +85,8 @@ class InstructeurResource extends Resource
             'index' =>
                 ListInstructeurs::route('/'),
 
-            'create' =>
-                CreateInstructeur::route('/create'),
-
             'view' =>
                 ViewInstructeur::route('/{record}'),
-
-            'edit' =>
-                EditInstructeur::route('/{record}/edit'),
         ];
     }
 }

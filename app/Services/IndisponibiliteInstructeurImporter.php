@@ -4,7 +4,7 @@ namespace Modules\FPSplanificationstage\Services;
 
 use Illuminate\Support\Str;
 use Modules\FPSplanificationstage\Models\IndisponibiliteInstructeur;
-use Modules\FPSplanificationstage\Models\Instructeur;
+use Modules\RH\Models\Marin;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 use RuntimeException;
@@ -66,7 +66,7 @@ class IndisponibiliteInstructeurImporter
                     $prenom
                 );
 
-                if (! $instructeur instanceof Instructeur) {
+                if (! $instructeur instanceof Marin) {
                     throw new RuntimeException(
                         'Instructeur introuvable ou ambigu.'
                     );
@@ -218,10 +218,13 @@ class IndisponibiliteInstructeurImporter
         ?string $identifiant,
         ?string $nom,
         ?string $prenom
-    ): Instructeur|false|null {
+    ): Marin|false|null {
         if ($identifiant !== null) {
-            $matches = Instructeur::query()
-                ->where('identifiant_interne', $identifiant)
+            $matches = Marin::withoutGlobalScopes()
+                ->whereRaw(
+                    'UPPER(TRIM(matricule)) = ?',
+                    [mb_strtoupper($identifiant)]
+                )
                 ->get();
 
             if ($matches->count() > 1) {
@@ -234,14 +237,14 @@ class IndisponibiliteInstructeurImporter
         }
 
         if ($nom !== null && $prenom !== null) {
-            $matches = Instructeur::query()
+            $matches = Marin::withoutGlobalScopes()
                 ->whereRaw(
-                    'LOWER(nom) = ?',
-                    [Str::lower(Str::ascii($nom))]
+                    'UPPER(TRIM(nom)) = ?',
+                    [mb_strtoupper($nom)]
                 )
                 ->whereRaw(
-                    'LOWER(prenom) = ?',
-                    [Str::lower(Str::ascii($prenom))]
+                    'UPPER(TRIM(prenom)) = ?',
+                    [mb_strtoupper($prenom)]
                 )
                 ->get();
 

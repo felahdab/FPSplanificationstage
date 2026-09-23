@@ -5,7 +5,6 @@ namespace Modules\FPSplanificationstage\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\FPSplanificationstage\Models\BesoinFormation;
-use Modules\FPSplanificationstage\Models\Instructeur;
 use Modules\FPSplanificationstage\Models\Salle;
 use Modules\FPSplanificationstage\Models\SessionStage;
 use Modules\FPSplanificationstage\Models\Stage;
@@ -121,16 +120,12 @@ class BesoinFormationPlanner
                 $instructeurIds =
                     $stage
                         ->instructeurs()
-                        ->where(
-                            'instructeurs.actif',
-                            true
-                        )
                         ->wherePivot(
                             'actif',
                             true
                         )
                         ->pluck(
-                            'instructeurs.id'
+                            'rh_marins.id'
                         )
                         ->map(
                             fn ($id): int =>
@@ -480,28 +475,10 @@ class BesoinFormationPlanner
         $capaciteNecessaire = $stage->capacite_max;
 
         /*
-         * Préférences de salle des
-         * instructeurs associés.
+         * Les préférences de salle ne font pas partie du référentiel
+         * RH. La salle préférentielle du stage reste prioritaire.
          */
-        $sallesInstructeurs =
-            Instructeur::query()
-                ->whereIn(
-                    'id',
-                    $instructeurIds
-                )
-                ->whereNotNull(
-                    'salle_preferentielle_id'
-                )
-                ->pluck(
-                    'salle_preferentielle_id'
-                )
-                ->map(
-                    fn ($id): int =>
-                        (int) $id
-                )
-                ->unique()
-                ->values()
-                ->all();
+        $sallesInstructeurs = [];
 
         $salles =
             Salle::query()

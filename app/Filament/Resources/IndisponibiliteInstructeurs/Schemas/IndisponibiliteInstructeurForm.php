@@ -36,7 +36,8 @@ class IndisponibiliteInstructeurForm
                             ->searchable([
                                 'nom',
                                 'prenom',
-                                'identifiant_interne',
+                                'matricule',
+                                'nid',
                             ])
                             ->preload()
                             ->required(),

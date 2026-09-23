@@ -2,11 +2,7 @@
 
 namespace Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -16,26 +12,23 @@ class InstructeursTable
     {
         return $table
             ->columns([
-                TextColumn::make('identifiant_interne')
+                TextColumn::make('matricule')
+                    ->label('Matricule')
+                    ->searchable(),
+                TextColumn::make('nid')
+                    ->label('NID')
                     ->searchable(),
                 TextColumn::make('nom')
                     ->searchable(),
                 TextColumn::make('prenom')
                     ->searchable(),
                 TextColumn::make('email')
-                    ->label('Email address')
+                    ->label('Adresse e-mail')
                     ->searchable(),
-                IconColumn::make('actif')
-                    ->boolean(),
-                TextColumn::make('salle_preferentielle')
-                    ->searchable(),
-                TextColumn::make('import_match_key')
-                    ->searchable(),
-                TextColumn::make('import_hash')
-                    ->searchable(),
-                TextColumn::make('dernier_import_at')
-                    ->dateTime()
-                    ->sortable(),
+                TextColumn::make('grade.libelle_court')
+                    ->label('Grade'),
+                TextColumn::make('unite.libelle_court')
+                    ->label('Unité'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -50,12 +43,6 @@ class InstructeursTable
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
     }
 }

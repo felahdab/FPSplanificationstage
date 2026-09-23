@@ -3,7 +3,6 @@
 namespace Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Pages;
 
 use Filament\Actions\Action;
-use Filament\Actions\CreateAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
@@ -123,9 +122,6 @@ class ListInstructeurs extends ListRecords
                             ->delete($uploadedPath);
                     }
                 }),
-
-            CreateAction::make()
-                ->label('Créer un instructeur'),
         ];
     }
 }

@@ -4,9 +4,9 @@ namespace Modules\FPSplanificationstage\Services;
 
 use Carbon\Carbon;
 use Modules\FPSplanificationstage\Models\IndisponibiliteInstructeur;
-use Modules\FPSplanificationstage\Models\Instructeur;
 use Modules\FPSplanificationstage\Models\Salle;
 use Modules\FPSplanificationstage\Models\SessionStage;
+use Modules\RH\Models\Marin;
 
 class SessionStageConflictDetector
 {
@@ -170,7 +170,7 @@ class SessionStageConflictDetector
             return;
         }
 
-        $instructeurs = Instructeur::query()
+        $instructeurs = Marin::query()
             ->whereIn('id', $instructeurIds)
             ->get()
             ->keyBy('id');
@@ -219,7 +219,7 @@ class SessionStageConflictDetector
                     'instructeurs',
                     fn ($query) =>
                         $query->where(
-                            'instructeurs.id',
+                            'rh_marins.id',
                             $instructeurId
                         )
                 );

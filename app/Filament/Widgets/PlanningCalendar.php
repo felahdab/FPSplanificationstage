@@ -59,7 +59,7 @@ class PlanningCalendar extends CalendarWidget
         if ($this->instructeurFilter !== '') {
             $query->whereHas(
                 'instructeurs',
-                fn ($query) => $query->where('instructeurs.id', (int) $this->instructeurFilter)
+                fn ($query) => $query->where('rh_marins.id', (int) $this->instructeurFilter)
             );
         }
 

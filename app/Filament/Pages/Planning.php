@@ -5,10 +5,10 @@ namespace Modules\FPSplanificationstage\Filament\Pages;
 use Carbon\Carbon;
 use Filament\Pages\Page;
 use Modules\FPSplanificationstage\Filament\Resources\SessionStages\SessionStageResource;
-use Modules\FPSplanificationstage\Models\Instructeur;
 use Modules\FPSplanificationstage\Models\Salle;
 use Modules\FPSplanificationstage\Models\SessionStage;
 use Modules\FPSplanificationstage\Models\Stage;
+use Modules\RH\Models\Marin;
 
 class Planning extends Page
 {
@@ -137,13 +137,25 @@ class Planning extends Page
                 )
                 ->all(),
 
-            'instructeurs' => Instructeur::query()
-                ->where('actif', true)
+            'instructeurs' => Marin::query()
+                ->whereIn(
+                    'rh_marins.id',
+                    SessionStage::query()
+                        ->join(
+                            'instructeur_session_stage',
+                            'session_stages.id',
+                            '=',
+                            'instructeur_session_stage.session_stage_id'
+                        )
+                        ->select(
+                            'instructeur_session_stage.instructeur_id'
+                        )
+                )
                 ->orderBy('nom')
                 ->orderBy('prenom')
                 ->get()
                 ->map(
-                    fn (Instructeur $instructeur): array => [
+                    fn (Marin $instructeur): array => [
                         'id' => $instructeur->id,
                         'label' => trim(
                             mb_strtoupper(
@@ -583,7 +595,7 @@ class Planning extends Page
                 'instructeurs',
                 fn ($query) =>
                     $query->where(
-                        'instructeurs.id',
+                        'rh_marins.id',
                         $instructeurId
                     )
             );

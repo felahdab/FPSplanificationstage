@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Modules\RH\Models\Marin;
 
 class SessionStage extends Model
 {
@@ -69,8 +70,10 @@ class SessionStage extends Model
     public function instructeurs(): BelongsToMany
     {
         return $this->belongsToMany(
-            Instructeur::class,
-            'instructeur_session_stage'
+            Marin::class,
+            'instructeur_session_stage',
+            'session_stage_id',
+            'instructeur_id'
         )
             ->withPivot('role')
             ->withTimestamps();

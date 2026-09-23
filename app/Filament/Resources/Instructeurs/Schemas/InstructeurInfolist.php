@@ -2,7 +2,6 @@
 
 namespace Modules\FPSplanificationstage\Filament\Resources\Instructeurs\Schemas;
 
-use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -12,26 +11,25 @@ class InstructeurInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('identifiant_interne')
+                TextEntry::make('matricule')
+                    ->label('Matricule')
+                    ->placeholder('-'),
+                TextEntry::make('nid')
+                    ->label('NID')
                     ->placeholder('-'),
                 TextEntry::make('nom'),
                 TextEntry::make('prenom'),
                 TextEntry::make('email')
-                    ->label('Email address')
+                    ->label('Adresse e-mail')
                     ->placeholder('-'),
-                IconEntry::make('actif')
-                    ->boolean(),
-                TextEntry::make('salle_preferentielle')
+                TextEntry::make('grade.libelle_court')
+                    ->label('Grade')
                     ->placeholder('-'),
-                TextEntry::make('commentaire')
-                    ->placeholder('-')
-                    ->columnSpanFull(),
-                TextEntry::make('import_match_key')
+                TextEntry::make('specialite.libelle_court')
+                    ->label('Spécialité')
                     ->placeholder('-'),
-                TextEntry::make('import_hash')
-                    ->placeholder('-'),
-                TextEntry::make('dernier_import_at')
-                    ->dateTime()
+                TextEntry::make('unite.libelle_court')
+                    ->label('Unité')
                     ->placeholder('-'),
                 TextEntry::make('created_at')
                     ->dateTime()

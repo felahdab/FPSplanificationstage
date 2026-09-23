@@ -16,12 +16,12 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Modules\FPSplanificationstage\Models\Instructeur;
 use Modules\FPSplanificationstage\Models\Salle;
 use Modules\FPSplanificationstage\Models\SessionStage;
 use Modules\FPSplanificationstage\Models\Stage;
 use Modules\FPSplanificationstage\Services\SessionStageAlternativeFinder;
 use Modules\FPSplanificationstage\Services\SessionStageConflictDetector;
+use Modules\RH\Models\Marin;
 
 class SessionStageForm
 {
@@ -179,16 +179,12 @@ class SessionStageForm
                                     $instructeurIds =
                                         $stage
                                             ->instructeurs()
-                                            ->where(
-                                                'instructeurs.actif',
-                                                true
-                                            )
                                             ->wherePivot(
                                                 'actif',
                                                 true
                                             )
                                             ->pluck(
-                                                'instructeurs.id'
+                                                'rh_marins.id'
                                             )
                                             ->all();
 
@@ -332,16 +328,12 @@ class SessionStageForm
                                     'nom',
 
                                 modifyQueryUsing:
-                                    fn ($query) =>
-                                        $query->where(
-                                            'actif',
-                                            true
-                                        )
+                                    fn ($query) => $query
                             )
                             ->multiple()
                             ->getOptionLabelFromRecordUsing(
                                 fn (
-                                    Instructeur $record
+                                    Marin $record
                                 ): string =>
                                     trim(
                                         mb_strtoupper(
@@ -353,10 +345,10 @@ class SessionStageForm
                                     )
                                     . (
                                         $record
-                                            ->identifiant_interne
+                                            ->matricule
                                             ? ' — '
                                                 . $record
-                                                    ->identifiant_interne
+                                                    ->matricule
                                             : ''
                                     )
                             )

@@ -4,8 +4,8 @@ namespace Modules\FPSplanificationstage\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Modules\FPSplanificationstage\Models\Instructeur;
 use Modules\FPSplanificationstage\Models\Stage;
+use Modules\RH\Models\Marin;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use RuntimeException;
 use Throwable;
@@ -91,97 +91,28 @@ class InstructeurStageImporter
                     )
                 );
 
-                $matchKey = $this->makeInstructeurMatchKey(
-                    $nom,
-                    $prenom
-                );
-
-                $payload = [
-                    'identifiant_interne' => $identifiant,
+                $instructeur = app(
+                    StagiaireResolver::class
+                )->resolve([
                     'nom' => $nom,
                     'prenom' => $prenom,
+                    'matricule' => $identifiant,
                     'email' => $email,
+                ]);
 
-                    'actif' => $this->booleanValue(
-                        $this->value(
-                            $row,
-                            $columns,
-                            'actif'
-                        ),
-                        true
-                    ),
-
-                    'salle_preferentielle' =>
-                        $this->stringValue(
-                            $this->value(
-                                $row,
-                                $columns,
-                                'salle preferentielle'
-                            )
-                        ),
-
-                    'commentaire' => $this->stringValue(
-                        $this->value(
-                            $row,
-                            $columns,
-                            'commentaire'
-                        )
-                    ),
-
-                    'import_match_key' => $matchKey,
-                    'dernier_import_at' => now(),
-                ];
-
-                $hashData = $payload;
-                unset($hashData['dernier_import_at']);
-
-                $hash = hash(
-                    'sha256',
-                    json_encode(
-                        $hashData,
-                        JSON_UNESCAPED_UNICODE |
-                        JSON_UNESCAPED_SLASHES
-                    )
-                );
-
-                $instructeur = $this->findInstructeur(
-                    $identifiant,
-                    $email,
-                    $matchKey
-                );
-
-                if ($instructeur === false) {
-                    throw new RuntimeException(
-                        'Plusieurs instructeurs correspondent.'
-                    );
-                }
-
-                if ($instructeur === null) {
-                    $payload['import_hash'] = $hash;
-
-                    Instructeur::create($payload);
-
+                if ($instructeur->wasRecentlyCreated) {
                     $result['instructeurs_crees']++;
 
                     continue;
                 }
 
-                if ($instructeur->import_hash === $hash) {
-                    $instructeur->forceFill([
-                        'dernier_import_at' => now(),
-                    ])->saveQuietly();
-
-                    $result['instructeurs_inchanges']++;
+                if ($instructeur->wasChanged()) {
+                    $result['instructeurs_mis_a_jour']++;
 
                     continue;
                 }
 
-                $payload['import_hash'] = $hash;
-
-                $instructeur->fill($payload);
-                $instructeur->save();
-
-                $result['instructeurs_mis_a_jour']++;
+                $result['instructeurs_inchanges']++;
             } catch (Throwable $e) {
                 $result['erreurs'][] =
                     "Instructeurs ligne {$excelRow} : {$e->getMessage()}";
@@ -244,7 +175,7 @@ class InstructeurStageImporter
                         : null
                 );
 
-                if (! $instructeur instanceof Instructeur) {
+                if (! $instructeur instanceof Marin) {
                     throw new RuntimeException(
                         'Instructeur introuvable ou ambigu.'
                     );
@@ -425,12 +356,12 @@ class InstructeurStageImporter
         ?string $identifiant,
         ?string $email,
         ?string $matchKey
-    ): Instructeur|false|null {
+    ): Marin|false|null {
         if ($identifiant !== null) {
-            $matches = Instructeur::query()
-                ->where(
-                    'identifiant_interne',
-                    $identifiant
+            $matches = Marin::withoutGlobalScopes()
+                ->whereRaw(
+                    'UPPER(TRIM(matricule)) = ?',
+                    [mb_strtoupper($identifiant)]
                 )
                 ->get();
 
@@ -444,8 +375,11 @@ class InstructeurStageImporter
         }
 
         if ($email !== null) {
-            $matches = Instructeur::query()
-                ->where('email', $email)
+            $matches = Marin::withoutGlobalScopes()
+                ->whereRaw(
+                    'LOWER(TRIM(email)) = ?',
+                    [mb_strtolower($email)]
+                )
                 ->get();
 
             if ($matches->count() > 1) {
@@ -458,25 +392,10 @@ class InstructeurStageImporter
         }
 
         if ($matchKey !== null) {
-            $matches = Instructeur::query()
-                ->where(
-                    'import_match_key',
-                    $matchKey
-                )
-                ->get();
-
-            if ($matches->count() > 1) {
-                return false;
-            }
-
-            if ($matches->count() === 1) {
-                return $matches->first();
-            }
-
             [$nom, $prenom] =
                 explode('|', $matchKey, 2);
 
-            $matches = Instructeur::query()
+            $matches = Marin::withoutGlobalScopes()
                 ->whereRaw(
                     'LOWER(nom) = ?',
                     [$nom]

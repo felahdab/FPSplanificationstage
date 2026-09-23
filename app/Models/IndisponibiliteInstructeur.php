@@ -4,6 +4,7 @@ namespace Modules\FPSplanificationstage\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\RH\Models\Marin;
 
 class IndisponibiliteInstructeur extends Model
 {
@@ -34,6 +35,9 @@ class IndisponibiliteInstructeur extends Model
 
     public function instructeur(): BelongsTo
     {
-        return $this->belongsTo(Instructeur::class);
+        return $this->belongsTo(
+            Marin::class,
+            'instructeur_id'
+        );
     }
 }
