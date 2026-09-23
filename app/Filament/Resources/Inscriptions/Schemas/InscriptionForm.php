@@ -405,6 +405,12 @@ class InscriptionForm
                                         $component->state(null);
                                     }
                                 }
+                            )
+                            ->visible(
+                                fn ($get): bool =>
+                                    ! (bool) $get(
+                                        'nemo_recu'
+                                    )
                             ),
 
                         Toggle::make(

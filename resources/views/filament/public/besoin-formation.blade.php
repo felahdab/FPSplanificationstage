@@ -122,7 +122,7 @@
                                 </x-filament::input.wrapper>
                             </div>
 
-                            <div>
+                            <div data-period-type style="grid-column:1/-1;">
                                 <label style="display:block;font-weight:700;margin-bottom:.35rem;">Quand ce stage peut-il être planifié ? *</label>
                                 <x-filament::input.wrapper>
                                     <x-filament::input.select name="besoins[{{ $index }}][type_periode]">
@@ -275,7 +275,7 @@
                             </select>
                         </div>
 
-                        <div>
+                        <div data-period-type style="grid-column:1/-1;">
                             <label style="display:block;font-weight:700;margin-bottom:.35rem;">Quand ce stage peut-il être planifié ? *</label>
                             <select
                                 name="besoins[__INDEX__][type_periode]"

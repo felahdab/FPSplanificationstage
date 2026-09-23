@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
+uses(Tests\TestCase::class);
+uses()->group('FPSplanificationstage');
+
 it('does not register a second public filament panel provider', function (): void {
     $moduleRoot = dirname(__DIR__, 2);
 
@@ -115,6 +118,13 @@ it('uses the three business planning modes without public priority', function ()
         ->toContain('value="plage_demarrage"')
         ->not->toContain('Priorité')
         ->not->toContain('[priorite]');
+
+    expect(
+        substr_count(
+            $form,
+            'data-period-type style="grid-column:1/-1;"'
+        )
+    )->toBe(2);
 
     expect($controller)
         ->toContain("'plage_demarrage'")

@@ -145,6 +145,9 @@ it(
                 'statut',
                 null
             )
+            ->assertSchemaComponentVisible(
+                'statut'
+            )
             ->fillForm([
                 'nemo_recu' =>
                     true,
@@ -152,6 +155,9 @@ it(
                 'statut' =>
                     null,
             ])
+            ->assertSchemaComponentHidden(
+                'statut'
+            )
             ->call('save')
             ->assertHasNoFormErrors();
 
