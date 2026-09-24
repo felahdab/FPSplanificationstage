@@ -1,0 +1,465 @@
+<?php
+
+use App\Models\Permission;
+use App\Models\User;
+use Filament\Actions\Testing\TestAction;
+use Filament\Facades\Filament;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Str;
+use Modules\FPSplanificationstage\Filament\Public\Pages\Inscription as PublicInscriptionPage;
+use Modules\FPSplanificationstage\Filament\Resources\Inscriptions\Pages\ListInscriptions;
+use Modules\FPSplanificationstage\Models\Inscription;
+use Modules\FPSplanificationstage\Models\SessionStage;
+use Modules\FPSplanificationstage\Models\Stage;
+use Modules\FPSplanificationstage\Services\MarinDepuisInscriptionService;
+use Modules\RH\Models\Marin;
+
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\get;
+use function Pest\Laravel\post;
+use function Pest\Livewire\livewire;
+
+uses(Tests\TestCase::class, RefreshDatabase::class);
+uses()->group('FPSplanificationstage');
+
+beforeEach(function (): void {
+    Filament::setCurrentPanel(
+        Filament::getPanel(
+            'fpsplanificationstage'
+        )
+    );
+});
+
+function creerSessionPourInscriptionMindef(): SessionStage
+{
+    $suffixe = Str::lower(
+        Str::random(6)
+    );
+
+    $stage = Stage::create([
+        'code_stage' =>
+            'STG-MINDEF-' . $suffixe,
+
+        'libelle_court' =>
+            'Stage Mindef ' . $suffixe,
+
+        'actif' =>
+            true,
+    ]);
+
+    return SessionStage::create([
+        'stage_id' =>
+            $stage->id,
+
+        'debut' =>
+            '2027-01-11 09:00:00',
+
+        'fin' =>
+            '2027-01-15 17:00:00',
+
+        'capacite_max' =>
+            20,
+
+        'statut' =>
+            'planifiee',
+    ]);
+}
+
+it(
+    'redirige vers la connexion locale lorsque MindefConnect n est pas configure',
+    function (): void {
+        config()->set(
+            'services.keycloak.client_id',
+            null
+        );
+
+        $session =
+            creerSessionPourInscriptionMindef();
+
+        get(
+            PublicInscriptionPage::getUrl(
+                [
+                    'session' =>
+                        $session->id,
+                ],
+                panel:
+                    'fpsplanificationstage'
+            )
+        )->assertRedirect(
+            route(
+                'login'
+            )
+        );
+
+        $compteLocal =
+            User::factory()
+                ->create([
+                    'sub' =>
+                        null,
+                ]);
+
+        actingAs(
+            $compteLocal
+        );
+
+        get(
+            PublicInscriptionPage::getUrl(
+                [
+                    'session' =>
+                        $session->id,
+                ],
+                panel:
+                    'fpsplanificationstage'
+            )
+        )->assertRedirect(
+            route(
+                'login'
+            )
+        );
+
+    }
+);
+
+it(
+    'redirige directement vers MindefConnect lorsqu il est configure',
+    function (): void {
+        config()->set(
+            'services.keycloak',
+            [
+                'client_id' =>
+                    'skeletor-test',
+
+                'client_secret' =>
+                    'secret-test',
+
+                'redirect' =>
+                    'https://skeletor.test/auth/callback',
+
+                'base_url' =>
+                    'https://mindefconnect.test',
+
+                'realms' =>
+                    'skeletor',
+            ]
+        );
+
+        $session =
+            creerSessionPourInscriptionMindef();
+
+        get(
+            PublicInscriptionPage::getUrl(
+                [
+                    'session' =>
+                        $session->id,
+                ],
+                panel:
+                    'fpsplanificationstage'
+            )
+        )->assertRedirect(
+            route(
+                'keycloak.login.redirect'
+            )
+        );
+    }
+);
+
+it(
+    'affiche le formulaire avec l identite du compte MindefConnect',
+    function (): void {
+        $session =
+            creerSessionPourInscriptionMindef();
+
+        $compteMindef =
+            User::factory()
+                ->create([
+                    'sub' =>
+                        'mindef-' . Str::uuid(),
+                ]);
+
+        actingAs(
+            $compteMindef
+        );
+
+        get(
+            PublicInscriptionPage::getUrl(
+                [
+                    'session' =>
+                        $session->id,
+                ],
+                panel:
+                    'fpsplanificationstage'
+            )
+        )
+            ->assertSuccessful()
+            ->assertSee(
+                $compteMindef->email
+            );
+    }
+);
+
+it(
+    'conserve l inscription MindefConnect sans creer automatiquement une fiche RH',
+    function (): void {
+        $session =
+            creerSessionPourInscriptionMindef();
+
+        $candidat =
+            User::factory()
+                ->create([
+                    'sub' =>
+                        'mindef-' . Str::uuid(),
+
+                    'nom' =>
+                        'DURAND',
+
+                    'prenom' =>
+                        'Alice',
+
+                    'email' =>
+                        'alice.'
+                        . Str::lower(
+                            Str::random(6)
+                        )
+                        . '@example.test',
+                ]);
+
+        actingAs(
+            $candidat
+        );
+
+        post(
+            route(
+                'fpsplanificationstage.public.inscription.store',
+                [
+                    'session' =>
+                        $session->id,
+                ]
+            ),
+            [
+                'nom' =>
+                    'Identité modifiée',
+
+                'prenom' =>
+                    'Non autorisée',
+
+                'email' =>
+                    'usurpation@example.test',
+
+                'nid' =>
+                    'NID-MINDEF',
+
+                'matricule' =>
+                    'MAT-MINDEF',
+
+                'unite' =>
+                    'Unité test',
+            ]
+        )
+            ->assertRedirect(
+                '/apps/fpsplanificationstage/espace-stagiaire/planning-formations'
+            );
+
+        $inscription =
+            Inscription::query()
+                ->where(
+                    'session_stage_id',
+                    $session->id
+                )
+                ->firstOrFail();
+
+        expect($inscription->stagiaire_id)
+            ->toBeNull()
+            ->and($inscription->candidat_user_id)
+            ->toBe($candidat->id)
+            ->and($inscription->candidat_nom)
+            ->toBe('DURAND')
+            ->and($inscription->candidat_prenom)
+            ->toBe('Alice')
+            ->and($inscription->candidat_email)
+            ->toBe($candidat->email)
+            ->and($inscription->nom_complet)
+            ->toBe('DURAND Alice');
+
+        expect(
+            Marin::withoutGlobalScopes()
+                ->where(
+                    'email',
+                    $candidat->email
+                )
+                ->exists()
+        )->toBeFalse();
+    }
+);
+
+it(
+    'reserve le bouton de creation RH aux utilisateurs autorises et rattache le marin',
+    function (): void {
+        Queue::fake();
+
+        $session =
+            creerSessionPourInscriptionMindef();
+
+        $candidat =
+            User::factory()
+                ->create([
+                    'sub' =>
+                        'mindef-' . Str::uuid(),
+                ]);
+
+        $inscription =
+            Inscription::create([
+                'session_stage_id' =>
+                    $session->id,
+
+                'candidat_user_id' =>
+                    $candidat->id,
+
+                'candidat_nom' =>
+                    'MARTIN',
+
+                'candidat_prenom' =>
+                    'Louise',
+
+                'candidat_email' =>
+                    'louise.'
+                    . Str::lower(
+                        Str::random(6)
+                    )
+                    . '@example.test',
+
+                'candidat_nid' =>
+                    'NID-CREATION',
+
+                'candidat_matricule' =>
+                    'MAT-CREATION',
+
+                'candidat_unite' =>
+                    'Unité test',
+
+                'statut' =>
+                    'attente_nemo',
+
+                'source' =>
+                    'public',
+            ]);
+
+        $sansPermission =
+            User::factory()
+                ->create();
+
+        actingAs(
+            $sansPermission
+        );
+
+        livewire(
+            ListInscriptions::class
+        )->assertActionHidden(
+            TestAction::make(
+                'creerMarin'
+            )->table(
+                $inscription
+            )
+        );
+
+        expect(
+            fn () => app(
+                MarinDepuisInscriptionService::class
+            )->creer(
+                $inscription,
+                [
+                    'nom' =>
+                        'MARTIN',
+
+                    'prenom' =>
+                        'Louise',
+
+                    'email' =>
+                        $inscription
+                            ->candidat_email,
+                ]
+            )
+        )->toThrow(
+            AuthorizationException::class
+        );
+
+        $gestionnaire =
+            User::factory()
+                ->create();
+
+        $permission =
+            Permission::firstOrCreate([
+                'name' =>
+                    'rh::marins.create',
+
+                'guard_name' =>
+                    'web',
+            ]);
+
+        $gestionnaire->givePermissionTo(
+            $permission
+        );
+
+        actingAs(
+            $gestionnaire
+        );
+
+        livewire(
+            ListInscriptions::class
+        )
+            ->assertActionVisible(
+                TestAction::make(
+                    'creerMarin'
+                )->table(
+                    $inscription
+                )
+            )
+            ->callAction(
+                TestAction::make(
+                    'creerMarin'
+                )->table(
+                    $inscription
+                ),
+                [
+                    'nom' =>
+                        'MARTIN',
+
+                    'prenom' =>
+                        'Louise',
+
+                    'email' =>
+                        $inscription
+                            ->candidat_email,
+
+                    'nid' =>
+                        'NID-CREATION',
+
+                    'matricule' =>
+                        'MAT-CREATION',
+                ]
+            )
+            ->assertHasNoActionErrors();
+
+        $inscription->refresh();
+
+        $marin =
+            Marin::withoutGlobalScopes()
+                ->findOrFail(
+                    $inscription
+                        ->stagiaire_id
+                );
+
+        expect($marin->nom)
+            ->toBe('MARTIN')
+            ->and($marin->prenom)
+            ->toBe('Louise')
+            ->and($marin->user_id)
+            ->toBe($candidat->id)
+            ->and($marin->email)
+            ->toBe(
+                $inscription
+                    ->candidat_email
+            );
+    }
+);

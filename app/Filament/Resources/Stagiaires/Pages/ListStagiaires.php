@@ -12,6 +12,6 @@ class ListStagiaires extends ListRecords
 
     public function getTitle(): string
     {
-        return 'Historique stagiaires';
+        return 'Historique des formations';
     }
 }

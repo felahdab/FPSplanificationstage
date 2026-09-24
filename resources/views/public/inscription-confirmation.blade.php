@@ -91,6 +91,15 @@
         {{ $inscription->sessionStage?->code_session }}
     </p>
 
+    @if ($inscription->stage_deja_effectue)
+
+        <p style="padding:1rem;border:1px solid #fbbf24;border-radius:.6rem;background:#fffbeb;color:#92400e;">
+            <strong>Candidature non prioritaire :</strong>
+            vous avez déjà effectué ce stage.
+        </p>
+
+    @endif
+
     @if (
         $inscription->statut
         === 'liste_attente'

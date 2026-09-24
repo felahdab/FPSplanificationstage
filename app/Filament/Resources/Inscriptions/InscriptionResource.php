@@ -30,7 +30,7 @@ class InscriptionResource extends Resource
         'inscriptions';
 
     protected static string|\UnitEnum|null $navigationGroup =
-        'Inscriptions';
+        'Inscriptions / Admission';
 
     protected static ?int $navigationSort =
         10;

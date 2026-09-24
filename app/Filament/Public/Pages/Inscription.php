@@ -3,6 +3,7 @@
 namespace Modules\FPSplanificationstage\Filament\Public\Pages;
 
 use Modules\FPSplanificationstage\Http\Controllers\PublicInscriptionController;
+use Modules\FPSplanificationstage\Http\Middleware\RequireMindefConnectAuthentication;
 use Modules\FPSplanificationstage\Models\SessionStage;
 
 class Inscription extends PublicPage
@@ -10,6 +11,10 @@ class Inscription extends PublicPage
     protected string $view = 'fpsplanificationstage::filament.public.inscription';
 
     protected static ?string $slug = 'espace-stagiaire/planning-formations/sessions/{session}/inscription';
+
+    protected static string|array $routeMiddleware = [
+        RequireMindefConnectAuthentication::class,
+    ];
 
     public function mount(int|string $session): void
     {

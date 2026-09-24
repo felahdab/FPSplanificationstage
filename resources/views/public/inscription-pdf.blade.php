@@ -58,6 +58,15 @@
             font-weight: bold;
         }
 
+        .priority-warning {
+            margin-bottom: 22px;
+            padding: 12px 14px;
+            background: #fffbeb;
+            border: 1px solid #fbbf24;
+            border-radius: 6px;
+            color: #92400e;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -113,60 +122,67 @@
     </div>
 </div>
 
+@if ($inscription->stage_deja_effectue)
+    <div class="priority-warning">
+        <strong>Candidature non prioritaire :</strong>
+        vous avez déjà effectué ce stage.
+    </div>
+@endif
+
 <table>
     <tr>
         <td class="label">Nom</td>
         <td class="value">
-            {{ $inscription->stagiaire?->nom ?: 'Non renseigné' }}
+            {{ $inscription->nom ?: 'Non renseigné' }}
         </td>
     </tr>
 
     <tr>
         <td class="label">Prénom</td>
         <td class="value">
-            {{ $inscription->stagiaire?->prenom ?: 'Non renseigné' }}
+            {{ $inscription->prenom ?: 'Non renseigné' }}
         </td>
     </tr>
 
     <tr>
         <td class="label">Grade</td>
         <td class="value">
-            {{ $inscription->stagiaire?->grade?->libelle_court ?: 'Non renseigné' }}
+            {{ $inscription->grade ?: 'Non renseigné' }}
         </td>
     </tr>
 
     <tr>
         <td class="label">Brevet</td>
         <td class="value">
-            {{ $inscription->stagiaire?->brevet?->libelle_court ?: 'Non renseigné' }}
+            {{ $inscription->brevet ?: 'Non renseigné' }}
         </td>
     </tr>
 
     <tr>
         <td class="label">Matricule</td>
         <td class="value">
-            {{ $inscription->stagiaire?->matricule ?: 'Non renseigné' }}
+            {{ $inscription->matricule ?: 'Non renseigné' }}
         </td>
     </tr>
 
     <tr>
         <td class="label">Spécialité</td>
         <td class="value">
-            {{ $inscription->stagiaire?->specialite?->libelle_court ?: 'Non renseigné' }}
+            {{ $inscription->specialite ?: 'Non renseigné' }}
         </td>
     </tr>
 
     <tr>
         <td class="label">NID</td>
         <td class="value">
-            {{ $inscription->stagiaire?->nid ?: 'Non renseigné' }}
+            {{ $inscription->nid ?: 'Non renseigné' }}
         </td>
     </tr>
 
     <tr>
         <td class="label">Bâtiment / unité</td>
         <td class="value">
-            {{ $inscription->stagiaire?->unite?->libelle_court ?: 'Non renseigné' }}
+            {{ $inscription->unite ?: 'Non renseigné' }}
         </td>
     </tr>
 </table>

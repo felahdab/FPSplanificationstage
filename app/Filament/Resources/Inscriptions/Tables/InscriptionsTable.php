@@ -4,14 +4,22 @@ namespace Modules\FPSplanificationstage\Filament\Resources\Inscriptions\Tables;
 
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Modules\FPSplanificationstage\Models\Inscription;
 use Modules\FPSplanificationstage\Models\SessionStage;
+use Modules\FPSplanificationstage\Services\MarinDepuisInscriptionService;
+use Modules\RH\Models\Brevet;
+use Modules\RH\Models\Grade;
+use Modules\RH\Models\Specialite;
+use Modules\RH\Models\Unite;
 
 class InscriptionsTable
 {
@@ -31,31 +39,65 @@ class InscriptionsTable
                     ->sortable()
                     ->weight('bold'),
 
-                TextColumn::make('stagiaire.nom')
+                TextColumn::make('candidat_nom')
                     ->label(
                         'Stagiaire'
                     )
-                    ->formatStateUsing(
+                    ->state(
                         fn (
-                            ?string $state,
                             Inscription $record
                         ): string =>
                             $record
                                 ->nom_complet
                     )
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable([
+                        'candidat_nom',
+                        'candidat_prenom',
+                        'candidat_email',
+                    ]),
 
-                TextColumn::make('stagiaire.grade.libelle_court')
+                TextColumn::make('candidat_grade')
                     ->label('Grade')
+                    ->state(
+                        fn (
+                            Inscription $record
+                        ): ?string =>
+                            $record->grade
+                    )
                     ->placeholder('—'),
 
-                TextColumn::make('stagiaire.unite.libelle_court')
+                TextColumn::make('candidat_unite')
                     ->label(
                         'Bâtiment / unité'
                     )
+                    ->state(
+                        fn (
+                            Inscription $record
+                        ): ?string =>
+                            $record->unite
+                    )
                     ->searchable()
                     ->placeholder('—'),
+
+                TextColumn::make('fiche_rh')
+                    ->label('Fiche RH')
+                    ->state(
+                        fn (
+                            Inscription $record
+                        ): string =>
+                            $record->stagiaire_id
+                                ? 'Existante'
+                                : 'À créer'
+                    )
+                    ->badge()
+                    ->color(
+                        fn (
+                            string $state
+                        ): string =>
+                            $state === 'Existante'
+                                ? 'success'
+                                : 'warning'
+                    ),
 
                 TextColumn::make(
                     'sessionStage.code_session'
@@ -69,6 +111,31 @@ class InscriptionsTable
                 )
                     ->label('Stage')
                     ->wrap(),
+
+                TextColumn::make(
+                    'stage_deja_effectue'
+                )
+                    ->label('Priorité')
+                    ->formatStateUsing(
+                        fn (bool $state): string =>
+                            $state
+                                ? 'Non prioritaire'
+                                : 'Prioritaire'
+                    )
+                    ->badge()
+                    ->color(
+                        fn (bool $state): string =>
+                            $state
+                                ? 'warning'
+                                : 'success'
+                    )
+                    ->icon(
+                        fn (bool $state): string =>
+                            $state
+                                ? 'heroicon-o-exclamation-triangle'
+                                : 'heroicon-o-check-circle'
+                    )
+                    ->sortable(),
 
                 TextColumn::make(
                     'sessionStage.debut'
@@ -205,6 +272,208 @@ class InscriptionsTable
                     ),
             ])
             ->recordActions([
+
+                Action::make(
+                    'creerMarin'
+                )
+                    ->label(
+                        'Créer marin'
+                    )
+                    ->icon(
+                        'heroicon-o-user-plus'
+                    )
+                    ->color('success')
+                    ->authorize(
+                        fn (): bool =>
+                            auth()->user()
+                                ?->can(
+                                    'rh::marins.create'
+                                )
+                            ?? false
+                    )
+                    ->visible(
+                        fn (
+                            Inscription $record
+                        ): bool =>
+                            $record
+                                ->stagiaire_id
+                            === null
+                    )
+                    ->modalHeading(
+                        'Créer la fiche marin'
+                    )
+                    ->modalDescription(
+                        'Les informations de la candidature sont préremplies. Vérifiez-les avant de créer la fiche dans le module RH.'
+                    )
+                    ->modalSubmitActionLabel(
+                        'Créer et rattacher'
+                    )
+                    ->fillForm(
+                        fn (
+                            Inscription $record
+                        ): array => [
+                            'nom' =>
+                                $record->nom,
+
+                            'prenom' =>
+                                $record->prenom,
+
+                            'email' =>
+                                $record->email,
+
+                            'matricule' =>
+                                $record->matricule,
+
+                            'nid' =>
+                                $record->nid,
+
+                            'grade_id' =>
+                                Grade::query()
+                                    ->where(
+                                        'libelle_court',
+                                        $record->grade
+                                    )
+                                    ->value('id'),
+
+                            'brevet_id' =>
+                                Brevet::query()
+                                    ->where(
+                                        'libelle_court',
+                                        $record->brevet
+                                    )
+                                    ->value('id'),
+
+                            'specialite_id' =>
+                                Specialite::query()
+                                    ->where(
+                                        'libelle_court',
+                                        $record
+                                            ->specialite
+                                    )
+                                    ->value('id'),
+
+                            'unite_id' =>
+                                Unite::query()
+                                    ->where(
+                                        'libelle_court',
+                                        $record->unite
+                                    )
+                                    ->value('id'),
+                        ]
+                    )
+                    ->schema([
+                        TextInput::make('nom')
+                            ->label('Nom')
+                            ->required()
+                            ->maxLength(255),
+
+                        TextInput::make('prenom')
+                            ->label('Prénom')
+                            ->required()
+                            ->maxLength(255),
+
+                        TextInput::make('email')
+                            ->label('E-mail')
+                            ->email()
+                            ->required()
+                            ->maxLength(255),
+
+                        TextInput::make('matricule')
+                            ->label('Matricule')
+                            ->maxLength(20),
+
+                        TextInput::make('nid')
+                            ->label('NID')
+                            ->maxLength(15),
+
+                        Select::make('grade_id')
+                            ->label('Grade')
+                            ->options(
+                                fn (): array =>
+                                    Grade::query()
+                                        ->orderBy('ordre')
+                                        ->pluck(
+                                            'libelle_long',
+                                            'id'
+                                        )
+                                        ->all()
+                            )
+                            ->searchable(),
+
+                        Select::make('brevet_id')
+                            ->label('Brevet')
+                            ->options(
+                                fn (): array =>
+                                    Brevet::query()
+                                        ->orderBy('ordre')
+                                        ->pluck(
+                                            'libelle_long',
+                                            'id'
+                                        )
+                                        ->all()
+                            )
+                            ->searchable(),
+
+                        Select::make('specialite_id')
+                            ->label('Spécialité')
+                            ->options(
+                                fn (): array =>
+                                    Specialite::query()
+                                        ->orderBy(
+                                            'libelle_court'
+                                        )
+                                        ->pluck(
+                                            'libelle_long',
+                                            'id'
+                                        )
+                                        ->all()
+                            )
+                            ->searchable(),
+
+                        Select::make('unite_id')
+                            ->label('Unité')
+                            ->options(
+                                fn (): array =>
+                                    Unite::query()
+                                        ->orderBy(
+                                            'libelle_court'
+                                        )
+                                        ->pluck(
+                                            'libelle_long',
+                                            'id'
+                                        )
+                                        ->all()
+                            )
+                            ->searchable(),
+                    ])
+                    ->action(
+                        function (
+                            Inscription $record,
+                            array $data
+                        ): void {
+                            $result = app(
+                                MarinDepuisInscriptionService::class
+                            )->creer(
+                                $record,
+                                $data
+                            );
+
+                            $record->refresh();
+
+                            Notification::make()
+                                ->title(
+                                    $result['created']
+                                        ? 'Marin créé'
+                                        : 'Marin existant rattaché'
+                                )
+                                ->body(
+                                    $record->nom_complet
+                                    . ' est maintenant rattaché à la candidature.'
+                                )
+                                ->success()
+                                ->send();
+                        }
+                    ),
 
                 Action::make(
                     'promouvoir'
@@ -724,7 +993,7 @@ class InscriptionsTable
                                         }
 
                                         if (
-                                            $inscription->stagiaire?->email
+                                            $inscription->email
                                         ) {
                                             $doublon =
                                                 Inscription::query()
@@ -737,9 +1006,13 @@ class InscriptionsTable
                                                         '<>',
                                                         $inscription->id
                                                     )
-                                                    ->where(
-                                                        'email',
-                                                        $inscription->stagiaire?->email
+                                                    ->duCandidat(
+                                                        $inscription
+                                                            ->candidat_user_id,
+                                                        $inscription
+                                                            ->email,
+                                                        $inscription
+                                                            ->stagiaire_id
                                                     )
                                                     ->whereNotIn(
                                                         'statut',
@@ -903,8 +1176,16 @@ class InscriptionsTable
                 EditAction::make(),
             ])
             ->defaultSort(
-                'created_at',
-                'desc'
+                fn (
+                    Builder $query
+                ): Builder =>
+                    $query
+                        ->orderBy(
+                            'stage_deja_effectue'
+                        )
+                        ->orderByDesc(
+                            'created_at'
+                        )
             );
     }
 }

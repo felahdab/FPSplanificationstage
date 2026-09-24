@@ -61,6 +61,22 @@ class CreateInscription extends CreateRecord
     {
         if (
             $this->record
+                ->stage_deja_effectue
+        ) {
+            Notification::make()
+                ->title(
+                    'Stage déjà effectué'
+                )
+                ->body(
+                    'Ce marin a déjà participé à ce stage. Cette nouvelle candidature est signalée comme non prioritaire.'
+                )
+                ->warning()
+                ->persistent()
+                ->send();
+        }
+
+        if (
+            $this->record
                 ->statut
             === 'liste_attente'
         ) {

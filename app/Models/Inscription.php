@@ -2,11 +2,13 @@
 
 namespace Modules\FPSplanificationstage\Models;
 
-use Modules\RH\Models\Marin;
-
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\FPSplanificationstage\Services\StageDejaEffectueDetector;
+use Modules\RH\Models\Marin;
 
 class Inscription extends Model
 {
@@ -15,7 +17,19 @@ protected $table = 'inscriptions';
 
     protected $fillable = [
         'presence',
+        'stage_deja_effectue',
         'stagiaire_id',
+        'candidat_user_id',
+        'candidat_nom',
+        'candidat_prenom',
+        'candidat_email',
+        'candidat_matricule',
+        'candidat_nid',
+        'candidat_grade',
+        'candidat_brevet',
+        'candidat_specialite',
+        'candidat_unite',
+        'candidat_telephone',
         'code_inscription',
         'session_stage_id',
 
@@ -39,6 +53,9 @@ protected $table = 'inscriptions';
 
         'derogation_demandee' =>
             'boolean',
+
+        'stage_deja_effectue' =>
+            'boolean',
     ];
 
     protected static function booted(): void
@@ -47,6 +64,29 @@ protected $table = 'inscriptions';
             function (
                 Inscription $inscription
             ): void {
+                if (
+                    ! $inscription->exists
+                    || $inscription->isDirty([
+                        'stagiaire_id',
+                        'session_stage_id',
+                    ])
+                ) {
+                    $inscription
+                        ->stage_deja_effectue =
+                        app(
+                            StageDejaEffectueDetector::class
+                        )->detecte(
+                            $inscription
+                                ->stagiaire_id,
+                            $inscription
+                                ->session_stage_id,
+                            $inscription->exists
+                                ? $inscription
+                                    ->getKey()
+                                : null
+                        );
+                }
+
                 if (
                     $inscription->nemo_recu
                     && ! $inscription->nemo_recu_at
@@ -190,6 +230,7 @@ protected $table = 'inscriptions';
                 }
             }
         );
+
     }
 
     public function sessionStage(): BelongsTo
@@ -210,30 +251,75 @@ protected $table = 'inscriptions';
 
     public function getNomCompletAttribute(): string
     {
-        $stagiaire = $this->stagiaire;
-
         return trim(
             mb_strtoupper(
-                $stagiaire?->nom ?? ''
+                $this->nom ?? ''
             )
             . ' '
-            . ($stagiaire?->prenom ?? '')
+            . ($this->prenom ?? '')
         );
     }
 
     public function getNomAttribute(): ?string
     {
-        return $this->stagiaire?->nom;
+        return $this->stagiaire?->nom
+            ?? $this->candidat_nom;
     }
 
     public function getPrenomAttribute(): ?string
     {
-        return $this->stagiaire?->prenom;
+        return $this->stagiaire?->prenom
+            ?? $this->candidat_prenom;
     }
 
     public function getEmailAttribute(): ?string
     {
-        return $this->stagiaire?->email;
+        return $this->stagiaire?->email
+            ?? $this->candidat_email;
+    }
+
+    public function getMatriculeAttribute(): ?string
+    {
+        return $this->stagiaire?->matricule
+            ?? $this->candidat_matricule;
+    }
+
+    public function getNidAttribute(): ?string
+    {
+        return $this->stagiaire?->nid
+            ?? $this->candidat_nid;
+    }
+
+    public function getGradeAttribute(): ?string
+    {
+        return $this->stagiaire
+            ?->grade
+            ?->libelle_court
+            ?? $this->candidat_grade;
+    }
+
+    public function getBrevetAttribute(): ?string
+    {
+        return $this->stagiaire
+            ?->brevet
+            ?->libelle_court
+            ?? $this->candidat_brevet;
+    }
+
+    public function getSpecialiteAttribute(): ?string
+    {
+        return $this->stagiaire
+            ?->specialite
+            ?->libelle_court
+            ?? $this->candidat_specialite;
+    }
+
+    public function getUniteAttribute(): ?string
+    {
+        return $this->stagiaire
+            ?->unite
+            ?->libelle_court
+            ?? $this->candidat_unite;
     }
 
     public function reserveUnePlace(): bool
@@ -254,6 +340,66 @@ protected $table = 'inscriptions';
             Marin::class,
             'stagiaire_id'
         )->withoutGlobalScopes();
+    }
+
+    public function candidatUser(): BelongsTo
+    {
+        return $this->belongsTo(
+            User::class,
+            'candidat_user_id'
+        );
+    }
+
+    public function scopeDuCandidat(
+        Builder $query,
+        ?int $userId,
+        ?string $email,
+        ?int $stagiaireId = null
+    ): Builder {
+        return $query->where(
+            function (
+                Builder $candidateQuery
+            ) use (
+                $userId,
+                $email,
+                $stagiaireId
+            ): void {
+                if ($userId) {
+                    $candidateQuery->orWhere(
+                        'candidat_user_id',
+                        $userId
+                    );
+                }
+
+                if ($stagiaireId) {
+                    $candidateQuery->orWhere(
+                        'stagiaire_id',
+                        $stagiaireId
+                    );
+                }
+
+                if ($email) {
+                    $candidateQuery
+                        ->orWhereRaw(
+                            'LOWER(candidat_email) = ?',
+                            [
+                                mb_strtolower($email),
+                            ]
+                        )
+                        ->orWhereHas(
+                            'stagiaire',
+                            fn (Builder $marinQuery) =>
+                                $marinQuery
+                                    ->whereRaw(
+                                        'LOWER(email) = ?',
+                                        [
+                                            mb_strtolower($email),
+                                        ]
+                                    )
+                        );
+                }
+            }
+        );
     }
 
 }

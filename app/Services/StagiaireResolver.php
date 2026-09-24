@@ -4,30 +4,31 @@ namespace Modules\FPSplanificationstage\Services;
 
 use Modules\RH\Models\Marin;
 
-class StagiaireResolver
+class StagiaireResolve
 {
-    public function resolve(array $identity): Marin
-    {
-        $nom = $this->clean($identity['nom'] ?? null);
-        $prenom = $this->clean($identity['prenom'] ?? null);
+    public function find(
+        array $identity
+    ): ?Marin {
+        $nom = $this->clean(
+            $identity['nom'] ?? null
+        );
 
-        if (
-            $nom === null
-            || $prenom === null
-        ) {
-            throw new \InvalidArgumentException('Le nom et le prénom du marin sont obligatoires.');
-        }
+        $prenom = $this->clean(
+            $identity['prenom'] ?? null
+        );
 
-        $nid = $this->clean($identity['nid'] ?? null);
-        $matricule = $this->clean($identity['matricule'] ?? null);
+        $nid = $this->clean(
+            $identity['nid'] ?? null
+        );
 
-        /*
-         * Ordre de fiabilité :
-         * 1. NID
-         * 2. Matricule
-         * 3. Nom + prénom uniquement si le résultat
-         *    est sans ambiguïté.
-         */
+        $matricule = $this->clean(
+            $identity['matricule'] ?? null
+        );
+
+        $email = $this->clean(
+            $identity['email'] ?? null
+        );
+
         $stagiaire = null;
 
         if ($nid !== null) {
@@ -57,7 +58,26 @@ class StagiaireResolver
                     ->first();
         }
 
-        if (! $stagiaire) {
+        if (
+            ! $stagiaire
+            && $email !== null
+        ) {
+            $stagiaire =
+                Marin::withoutGlobalScopes()
+                    ->whereRaw(
+                        'LOWER(TRIM(email)) = ?',
+                        [
+                            mb_strtolower($email),
+                        ]
+                    )
+                    ->first();
+        }
+
+        if (
+            ! $stagiaire
+            && $nom !== null
+            && $prenom !== null
+        ) {
             $candidats =
                 Marin::withoutGlobalScopes()
                     ->whereRaw(
@@ -84,69 +104,90 @@ class StagiaireResolver
             }
         }
 
+        return $stagiaire;
+    }
+
+    public function resolve(
+        array $identity
+    ): Marin {
+        $nom = $this->clean(
+            $identity['nom'] ?? null
+        );
+
+        $prenom = $this->clean(
+            $identity['prenom'] ?? null
+        );
+
+        if (
+            $nom === null
+            || $prenom === null
+        ) {
+            throw new \InvalidArgumentException(
+                'Le nom et le prénom du marin sont obligatoires.'
+            );
+        }
+
+        $nid = $this->clean(
+            $identity['nid'] ?? null
+        );
+
+        $matricule = $this->clean(
+            $identity['matricule'] ?? null
+        );
+
+        $stagiaire = $this->find(
+            $identity
+        );
+
         if (! $stagiaire) {
-            $stagiaire =
-                Marin::withoutGlobalScopes()->create([
+            return Marin::withoutGlobalScopes()
+                ->create([
                     'nom' => $nom,
                     'prenom' => $prenom,
                     'nid' => $nid,
                     'matricule' =>
                         $matricule,
-                    'email' => $this->clean($identity['email'] ?? null),
+                    'email' => $this->clean(
+                        $identity['email'] ?? null
+                    ),
                 ]);
-        } else {
-            /*
-             * Les informations descriptives sont mises
-             * à jour avec les données les plus récentes.
-             *
-             * Pour NID / matricule :
-             * on complète un champ vide, mais on
-             * n'écrase jamais un identifiant déjà connu.
-             */
-            $data = [
-                'nom' => $nom,
-                'prenom' => $prenom,
-            ];
-
-            foreach (
-                [
-                    'email',
-                ]
-                as $field
-            ) {
-                $value = $this->clean($identity[$field] ?? null);
-
-                if ($value !== null) {
-                    $data[$field] =
-                        $value;
-                }
-            }
-
-            if (
-                $this->clean(
-                    $stagiaire->nid
-                )
-                === null
-                && $nid !== null
-            ) {
-                $data['nid'] = $nid;
-            }
-
-            if (
-                $this->clean(
-                    $stagiaire->matricule
-                )
-                === null
-                && $matricule !== null
-            ) {
-                $data['matricule'] =
-                    $matricule;
-            }
-
-            $stagiaire->update(
-                $data
-            );
         }
+
+        $data = [
+            'nom' => $nom,
+            'prenom' => $prenom,
+        ];
+
+        $email = $this->clean(
+            $identity['email'] ?? null
+        );
+
+        if ($email !== null) {
+            $data['email'] = $email;
+        }
+
+        if (
+            $this->clean(
+                $stagiaire->nid
+            ) === null
+            && $nid !== null
+        ) {
+            $data['nid'] = $nid;
+        }
+
+        if (
+            $this->clean(
+                $stagiaire->matricule
+            ) === null
+            && $matricule !== null
+        ) {
+            $data['matricule'] =
+                $matricule;
+        }
+
+        $stagiaire->update(
+            $data
+        );
 
         return $stagiaire;
     }

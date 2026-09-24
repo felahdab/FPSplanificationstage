@@ -102,6 +102,18 @@
             color: #166534;
         }
 
+        .flash-warning {
+            display: flex;
+            align-items: flex-start;
+            gap: .8rem;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #fbbf24;
+            border-radius: .8rem;
+            background: #fffbeb;
+            color: #92400e;
+        }
+
         .flash-icon {
             font-size: 1.4rem;
             font-weight: 800;
@@ -893,7 +905,7 @@
     <style>
         /*
          * Couche VISUELLE uniquement.
-         * Aucun HTML, aucune variable Blade et aucune logique métier
+         * Aucun HTML, aucune variable Blade et aucune logique métie
          * de la page existante ne sont modifiés.
          */
 
@@ -1279,6 +1291,30 @@
 
     @endif
 
+    @if (session('inscription_warning'))
+
+        <div class="flash-warning">
+
+            <div class="flash-icon">
+                !
+            </div>
+
+            <div>
+
+                <div class="flash-title">
+                    Candidature non prioritaire
+                </div>
+
+                <div class="flash-reference">
+                    {{ session('inscription_warning') }}
+                </div>
+
+            </div>
+
+        </div>
+
+    @endif
+
     <div class="portal-info">
 
         <div class="portal-card">
@@ -1367,7 +1403,7 @@
                 class="search-button"
                 type="submit"
             >
-                Rechercher
+                Recherche
             </button>
 
             @if ($searchTerm !== '')
@@ -1384,7 +1420,7 @@
                         ])
                     ) }}"
                 >
-                    Effacer
+                    Efface
                 </a>
             @endif
         </form>
@@ -1427,7 +1463,7 @@
                     />
                     <path d="M16 3v4M8 3v4M3 10h18" />
                 </svg>
-                Calendrier
+                Calendrie
             </a>
 
                         {{-- PORTAIL_VUE_SEMAINE_V1 --}}
@@ -1753,7 +1789,7 @@
 
                             <div
                                 class="
-                                    day-number
+                                    day-numbe
                                     {{ $day['aujourdhui'] ? 'today' : '' }}
                                 "
                             >
@@ -1892,7 +1928,7 @@
                                         aria-hidden="true"
                                     ></div>
                                 @endif
-                            @endfor
+                            @endfo
 
                         </div>
 
@@ -2332,7 +2368,7 @@
                                 @endif
                             </div>
                         @endforeach
-                    @endfor
+                    @endfo
                 </div>
 
                 @if (! $weekHasSession)

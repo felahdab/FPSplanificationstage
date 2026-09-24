@@ -21,6 +21,11 @@
         <x-filament::section>
             <x-slot name="heading">Vos informations</x-slot>
 
+            <p style="margin-bottom:1rem;color:#475569;">
+                Votre nom, votre prénom et votre adresse électronique
+                proviennent de votre connexion MindefConnect.
+            </p>
+
             <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;">
                 @foreach ([
                     ['nom','Nom *','text'],
@@ -35,7 +40,12 @@
                     <div>
                         <label style="display:block;font-weight:700;margin-bottom:.35rem;">{{ $label }}</label>
                         <x-filament::input.wrapper>
-                            <x-filament::input type="{{ $type }}" name="{{ $name }}" value="{{ old($name) }}" />
+                            <x-filament::input
+                                type="{{ $type }}"
+                                name="{{ $name }}"
+                                value="{{ old($name, $identity[$name] ?? null) }}"
+                                @readonly(in_array($name, ['nom', 'prenom', 'email'], true))
+                            />
                         </x-filament::input.wrapper>
                     </div>
                 @endforeach
@@ -46,7 +56,7 @@
                         <x-filament::input.select name="grade">
                             <option value="">Sélectionner un grade</option>
                             @foreach (['MOT','QM2','QM1','SM','MT','PM','MP','MJR'] as $grade)
-                                <option value="{{ $grade }}" @selected(old('grade') === $grade)>{{ $grade }}</option>
+                                <option value="{{ $grade }}" @selected(old('grade', $identity['grade'] ?? null) === $grade)>{{ $grade }}</option>
                             @endforeach
                         </x-filament::input.select>
                     </x-filament::input.wrapper>
@@ -58,7 +68,7 @@
                         <x-filament::input.select name="brevet">
                             <option value="">Sélectionner un brevet</option>
                             @foreach (['FEM','BAT','BS','BM'] as $brevet)
-                                <option value="{{ $brevet }}" @selected(old('brevet') === $brevet)>{{ $brevet }}</option>
+                                <option value="{{ $brevet }}" @selected(old('brevet', $identity['brevet'] ?? null) === $brevet)>{{ $brevet }}</option>
                             @endforeach
                         </x-filament::input.select>
                     </x-filament::input.wrapper>

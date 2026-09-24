@@ -9,6 +9,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Modules\FPSplanificationstage\Models\Inscription;
@@ -96,6 +97,39 @@ class InscriptionForm
                 )
                     ->schema([
 
+                        TextEntry::make(
+                            'fiche_rh_absente'
+                        )
+                            ->label(
+                                'Fiche RH absente'
+                            )
+                            ->state(
+                                fn (
+                                    ?Inscription $record
+                                ): string =>
+                                    trim(
+                                        ($record?->candidat_nom ?? '')
+                                        . ' '
+                                        . ($record?->candidat_prenom ?? '')
+                                    )
+                                    . ' — utilisez l’action « Créer marin » depuis la liste des inscriptions.'
+                            )
+                            ->icon(
+                                'heroicon-o-exclamation-triangle'
+                            )
+                            ->color('warning')
+                            ->visible(
+                                fn (
+                                    ?Inscription $record
+                                ): bool =>
+                                    $record?->source
+                                    === 'public'
+                                    && $record
+                                        ->stagiaire_id
+                                    === null
+                            )
+                            ->columnSpanFull(),
+
 
                         Select::make('stagiaire_id')
                             ->label('Stagiaire')
@@ -132,7 +166,17 @@ class InscriptionForm
                             )
                             ->searchable()
                             ->preload()
-                            ->required()
+                            ->required(
+                                fn (
+                                    ?Inscription $record
+                                ): bool =>
+                                    ! $record
+                                    || $record->source
+                                    !== 'public'
+                                    || $record
+                                        ->stagiaire_id
+                                    !== null
+                            )
                             ->live(),
                     ])
                     ->columns(2),
@@ -363,6 +407,28 @@ class InscriptionForm
                         'Informations internes réservées aux gestionnaires.'
                     )
                     ->schema([
+
+                        TextEntry::make(
+                            'stage_deja_effectue_alerte'
+                        )
+                            ->label(
+                                'Alerte de priorité'
+                            )
+                            ->state(
+                                'Ce marin a déjà effectué ce stage. Sa nouvelle candidature ne doit pas être traitée en priorité.'
+                            )
+                            ->icon(
+                                'heroicon-o-exclamation-triangle'
+                            )
+                            ->color('warning')
+                            ->visible(
+                                fn (
+                                    ?Inscription $record
+                                ): bool =>
+                                    (bool) $record
+                                        ?->stage_deja_effectue
+                            )
+                            ->columnSpanFull(),
 
                         Select::make(
                             'statut'

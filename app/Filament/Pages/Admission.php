@@ -21,7 +21,7 @@ use Modules\FPSplanificationstage\Models\Stage;
 class Admission extends Page
 {
     protected static ?string $navigationLabel = 'Admission';
-    protected static string|\UnitEnum|null $navigationGroup = 'Inscriptions';
+    protected static string|\UnitEnum|null $navigationGroup = 'Inscriptions / Admission';
     protected static ?int $navigationSort = 20;
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-envelope-open';
 
@@ -346,7 +346,23 @@ class Admission extends Page
         }
 
         return $session->inscriptions
-            ->sortBy(fn (Inscription $candidate): string => mb_strtolower(($candidate->nom ?? '') . ' ' . ($candidate->prenom ?? '')))
+            ->sortBy(
+                fn (
+                    Inscription $candidate
+                ): string =>
+                    sprintf(
+                        '%d-%s',
+                        $candidate
+                            ->stage_deja_effectue
+                            ? 1
+                            : 0,
+                        mb_strtolower(
+                            ($candidate->nom ?? '')
+                            . ' '
+                            . ($candidate->prenom ?? '')
+                        )
+                    )
+            )
             ->values();
     }
 
@@ -400,6 +416,15 @@ class Admission extends Page
                     . ($candidate->brevet ? ' — ' . $candidate->brevet : '')
                     . ($candidate->specialite ? ' — ' . $candidate->specialite : ''));
 
+                if (
+                    $candidate
+                        ->stage_deja_effectue
+                ) {
+                    $description =
+                        '⚠ Stage déjà effectué — candidat non prioritaire. '
+                        . $description;
+                }
+
                 return Section::make($label)
                     ->description($description)
                     ->schema([
@@ -430,6 +455,13 @@ class Admission extends Page
 
     private function defaultDecision(Inscription $candidate): string
     {
+        if (
+            $candidate
+                ->stage_deja_effectue
+        ) {
+            return 'ignorer';
+        }
+
         return match ($candidate->statut) {
             'confirmee' => 'admis',
             'refusee', 'annulee' => 'refuse',

@@ -2,6 +2,7 @@
 
 namespace Modules\FPSplanificationstage\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -11,9 +12,11 @@ use Illuminate\View\View;
 use Modules\FPSplanificationstage\Models\Inscription;
 use Modules\FPSplanificationstage\Models\InscriptionPrerequis;
 use Modules\FPSplanificationstage\Models\SessionStage;
+use Modules\FPSplanificationstage\Services\CandidatureStageDejaEffectueNotifier;
 use Modules\FPSplanificationstage\Services\StagiaireResolver;
+use Modules\RH\Models\Marin;
 
-class PublicInscriptionController extends Controller
+class PublicInscriptionController extends Controlle
 {
     public function create(
         SessionStage $session
@@ -42,6 +45,11 @@ class PublicInscriptionController extends Controller
             [
                 'session' =>
                     $session,
+
+                'identity' =>
+                    $this->identityFor(
+                        auth()->user()
+                    ),
             ]
         );
     }
@@ -53,6 +61,25 @@ class PublicInscriptionController extends Controller
         $this->ensureSessionIsRegistrable(
             $session
         );
+
+        /** @var User $user */
+        $user = $request->user();
+
+        abort_unless(
+            $user,
+            403
+        );
+
+        $request->merge([
+            'nom' =>
+                $user->nom,
+
+            'prenom' =>
+                $user->prenom,
+
+            'email' =>
+                $user->email,
+        ]);
 
         $session->load([
             'stage.prerequis' =>
@@ -153,15 +180,26 @@ class PublicInscriptionController extends Controller
                 ],
             ]);
 
+        $stagiaire =
+            Marin::fromUser(
+                $use
+            )
+            ?? app(
+                StagiaireResolver::class
+            )->find(
+                $validated
+            );
+
         $dejaInscrit =
             Inscription::query()
                 ->where(
                     'session_stage_id',
                     $session->id
                 )
-                ->whereHas(
-                    'stagiaire',
-                    fn ($query) => $query->where('email', $validated['email'])
+                ->duCandidat(
+                    $user->getKey(),
+                    $validated['email'],
+                    $stagiaire?->getKey()
                 )
                 ->whereNotIn(
                     'statut',
@@ -244,14 +282,13 @@ class PublicInscriptionController extends Controller
             ]);
         }
 
-        $stagiaire = app(StagiaireResolver::class)->resolve($validated);
-
         $inscription =
             DB::transaction(
                 function () use (
                     $validated,
                     $session,
                     $stagiaire,
+                    $user,
                     $demandeDerogation,
                     $prerequisManquants,
                     $reponsesPrerequis
@@ -267,7 +304,47 @@ class PublicInscriptionController extends Controller
                                 $session->id,
 
 
-                            'stagiaire_id' => $stagiaire->getKey(),
+                            'stagiaire_id' =>
+                                $stagiaire?->getKey(),
+
+                            'candidat_user_id' =>
+                                $user->getKey(),
+
+                            'candidat_nom' =>
+                                $validated['nom'],
+
+                            'candidat_prenom' =>
+                                $validated['prenom'],
+
+                            'candidat_email' =>
+                                $validated['email'],
+
+                            'candidat_matricule' =>
+                                $validated['matricule']
+                                ?? null,
+
+                            'candidat_nid' =>
+                                $validated['nid']
+                                ?? null,
+
+                            'candidat_grade' =>
+                                $validated['grade']
+                                ?? null,
+
+                            'candidat_brevet' =>
+                                $validated['brevet']
+                                ?? null,
+
+                            'candidat_specialite' =>
+                                $validated['specialite']
+                                ?? null,
+
+                            'candidat_unite' =>
+                                $validated['unite'],
+
+                            'candidat_telephone' =>
+                                $validated['telephone']
+                                ?? null,
 
                             'statut' =>
                                 $statut,
@@ -355,7 +432,10 @@ class PublicInscriptionController extends Controller
                 ],
                 false
             );
-return redirect()->to('/apps/fpsplanificationstage/espace-stagiaire/planning-formations')
+        $redirect =
+            redirect()->to(
+                '/apps/fpsplanificationstage/espace-stagiaire/planning-formations'
+            )
             ->with(
                 'inscription_success',
                 'Votre candidature a bien été enregistrée.'
@@ -368,6 +448,24 @@ return redirect()->to('/apps/fpsplanificationstage/espace-stagiaire/planning-for
                 'inscription_pdf_url',
                 $pdfUrl
             );
+
+        if (
+            $inscription
+                ->stage_deja_effectue
+        ) {
+            app(
+                CandidatureStageDejaEffectueNotifier::class
+            )->notifier(
+                $inscription
+            );
+
+            $redirect->with(
+                'inscription_warning',
+                'Vous avez déjà effectué ce stage. Votre candidature est enregistrée, mais elle ne sera pas prioritaire.'
+            );
+        }
+
+        return $redirect;
     }
 
     public function confirmation(
@@ -460,5 +558,68 @@ return view(
         ) {
             abort(404);
         }
+    }
+
+    /**
+     * @return array<string, ?string>
+     */
+    private function identityFor(
+        User $use
+    ): array {
+        $marin = Marin::fromUser(
+            $use
+        );
+
+        $mindef =
+            $use
+                ->getMindefConnectInformations();
+
+        return [
+            'nom' =>
+                $user->nom,
+
+            'prenom' =>
+                $user->prenom,
+
+            'email' =>
+                $user->email,
+
+            'matricule' =>
+                $marin?->matricule,
+
+            'nid' =>
+                $marin?->nid,
+
+            'grade' =>
+                $marin
+                    ?->grade
+                    ?->libelle_court
+                ?? data_get(
+                    $mindef,
+                    'short_rank'
+                ),
+
+            'brevet' =>
+                $marin
+                    ?->brevet
+                    ?->libelle_court,
+
+            'specialite' =>
+                $marin
+                    ?->specialite
+                    ?->libelle_court,
+
+            'unite' =>
+                $marin
+                    ?->unite
+                    ?->libelle_court
+                ?? data_get(
+                    $mindef,
+                    'main_department_number'
+                ),
+
+            'telephone' =>
+                null,
+        ];
     }
 }

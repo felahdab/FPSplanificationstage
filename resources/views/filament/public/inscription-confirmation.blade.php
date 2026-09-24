@@ -6,6 +6,12 @@
         @if ($inscription->sessionStage?->stage)
             <div style="margin-top:.5rem;">Stage : {{ $inscription->sessionStage->stage->libelle_court }}</div>
         @endif
+        @if ($inscription->stage_deja_effectue)
+            <div style="margin-top:1rem;padding:1rem;border:1px solid #fbbf24;border-radius:.75rem;background:#fffbeb;color:#92400e;">
+                <strong>Candidature non prioritaire :</strong>
+                vous avez déjà effectué ce stage.
+            </div>
+        @endif
         <div style="margin-top:1rem;">
             <x-filament::button tag="a" href="/apps/fpsplanificationstage/espace-stagiaire/planning-formations">Retour au portail</x-filament::button>
         </div>

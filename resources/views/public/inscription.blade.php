@@ -217,7 +217,7 @@
         class="back-calendar"
         href="{{ route('fpsplanificationstage.public.calendrier') }}"
     >
-        ← Retour au calendrier
+        ← Retour au calendrie
     </a>
 
     <div class="card">
@@ -296,7 +296,8 @@
                         id="nom"
                         type="text"
                         name="nom"
-                        value="{{ old('nom') }}"
+                        value="{{ old('nom', $identity['nom'] ?? null) }}"
+                        readonly
                         required
                     >
                 </div>
@@ -310,7 +311,8 @@
                         id="prenom"
                         type="text"
                         name="prenom"
-                        value="{{ old('prenom') }}"
+                        value="{{ old('prenom', $identity['prenom'] ?? null) }}"
+                        readonly
                         required
                     >
                 </div>
@@ -343,7 +345,7 @@
                         )
                             <option
                                 value="{{ $grade }}"
-                                @selected(old('grade') === $grade)
+                                @selected(old('grade', $identity['grade'] ?? null) === $grade)
                             >
                                 {{ $grade }}
                             </option>
@@ -362,7 +364,7 @@
                         id="matricule"
                         type="text"
                         name="matricule"
-                        value="{{ old('matricule') }}"
+                        value="{{ old('matricule', $identity['matricule'] ?? null) }}"
                         maxlength="100"
                     >
                 </div>
@@ -376,7 +378,7 @@
                         id="nid"
                         type="text"
                         name="nid"
-                        value="{{ old('nid') }}"
+                        value="{{ old('nid', $identity['nid'] ?? null) }}"
                         maxlength="100"
                     >
                 </div>
@@ -397,7 +399,7 @@
                         @foreach (['FEM', 'BAT', 'BS', 'BM'] as $brevet)
                             <option
                                 value="{{ $brevet }}"
-                                @selected(old('brevet') === $brevet)
+                                @selected(old('brevet', $identity['brevet'] ?? null) === $brevet)
                             >
                                 {{ $brevet }}
                             </option>
@@ -414,7 +416,7 @@
                         id="specialite"
                         type="text"
                         name="specialite"
-                        value="{{ old('specialite') }}"
+                        value="{{ old('specialite', $identity['specialite'] ?? null) }}"
                         maxlength="255"
                     >
                 </div>
@@ -428,7 +430,7 @@
                         id="unite"
                         type="text"
                         name="unite"
-                        value="{{ old('unite') }}"
+                        value="{{ old('unite', $identity['unite'] ?? null) }}"
                         required
                     >
                 </div>
@@ -442,7 +444,8 @@
                         id="email"
                         type="email"
                         name="email"
-                        value="{{ old('email') }}"
+                        value="{{ old('email', $identity['email'] ?? null) }}"
+                        readonly
                         required
                     >
                 </div>
@@ -456,7 +459,7 @@
                         id="telephone"
                         type="tel"
                         name="telephone"
-                        value="{{ old('telephone') }}"
+                        value="{{ old('telephone', $identity['telephone'] ?? null) }}"
                     >
                 </div>
 

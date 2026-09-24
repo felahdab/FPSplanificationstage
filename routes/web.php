@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\FPSplanificationstage\Http\Controllers\PublicBesoinFormationController;
 use Modules\FPSplanificationstage\Http\Controllers\PublicInscriptionController;
+use Modules\FPSplanificationstage\Http\Middleware\RequireMindefConnectAuthentication;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,7 +44,11 @@ Route::post(
         PublicInscriptionController::class,
         'store',
     ]
-)->name('fpsplanificationstage.public.inscription.store');
+)
+    ->middleware(
+        RequireMindefConnectAuthentication::class
+    )
+    ->name('fpsplanificationstage.public.inscription.store');
 
 Route::get(
     '/fpsplanificationstage/espace-stagiaire/planning-formations/inscriptions/{code}/pdf',
