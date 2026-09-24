@@ -4,7 +4,7 @@ namespace Modules\FPSplanificationstage\Services;
 
 use Modules\RH\Models\Marin;
 
-class StagiaireResolve
+class StagiaireResolver
 {
     public function find(
         array $identity

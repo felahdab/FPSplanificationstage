@@ -217,7 +217,7 @@
         class="back-calendar"
         href="{{ route('fpsplanificationstage.public.calendrier') }}"
     >
-        ← Retour au calendrie
+        ← Retour au calendrier
     </a>
 
     <div class="card">

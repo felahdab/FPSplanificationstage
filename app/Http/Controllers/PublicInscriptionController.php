@@ -16,7 +16,7 @@ use Modules\FPSplanificationstage\Services\CandidatureStageDejaEffectueNotifier;
 use Modules\FPSplanificationstage\Services\StagiaireResolver;
 use Modules\RH\Models\Marin;
 
-class PublicInscriptionController extends Controlle
+class PublicInscriptionController extends Controller
 {
     public function create(
         SessionStage $session
@@ -182,7 +182,7 @@ class PublicInscriptionController extends Controlle
 
         $stagiaire =
             Marin::fromUser(
-                $use
+                $user
             )
             ?? app(
                 StagiaireResolver::class
@@ -564,14 +564,14 @@ return view(
      * @return array<string, ?string>
      */
     private function identityFor(
-        User $use
+        User $user
     ): array {
         $marin = Marin::fromUser(
-            $use
+            $user
         );
 
         $mindef =
-            $use
+            $user
                 ->getMindefConnectInformations();
 
         return [

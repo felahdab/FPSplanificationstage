@@ -905,7 +905,7 @@
     <style>
         /*
          * Couche VISUELLE uniquement.
-         * Aucun HTML, aucune variable Blade et aucune logique métie
+         * Aucun HTML, aucune variable Blade et aucune logique métier
          * de la page existante ne sont modifiés.
          */
 
@@ -1403,7 +1403,7 @@
                 class="search-button"
                 type="submit"
             >
-                Recherche
+                Rechercher
             </button>
 
             @if ($searchTerm !== '')
@@ -1420,7 +1420,7 @@
                         ])
                     ) }}"
                 >
-                    Efface
+                    Effacer
                 </a>
             @endif
         </form>
@@ -1463,7 +1463,7 @@
                     />
                     <path d="M16 3v4M8 3v4M3 10h18" />
                 </svg>
-                Calendrie
+                Calendrier
             </a>
 
                         {{-- PORTAIL_VUE_SEMAINE_V1 --}}
@@ -1789,7 +1789,7 @@
 
                             <div
                                 class="
-                                    day-numbe
+                                    day-number
                                     {{ $day['aujourdhui'] ? 'today' : '' }}
                                 "
                             >
@@ -1928,7 +1928,7 @@
                                         aria-hidden="true"
                                     ></div>
                                 @endif
-                            @endfo
+                            @endfor
 
                         </div>
 
@@ -2368,7 +2368,7 @@
                                 @endif
                             </div>
                         @endforeach
-                    @endfo
+                    @endfor
                 </div>
 
                 @if (! $weekHasSession)

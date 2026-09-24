@@ -6,7 +6,7 @@ use App\Models\User;
 use Filament\Notifications\Notification;
 use Modules\FPSplanificationstage\Models\Inscription;
 
-class CandidatureStageDejaEffectueNotifie
+class CandidatureStageDejaEffectueNotifier
 {
     public function notifier(
         Inscription $inscription

@@ -5,7 +5,7 @@ namespace Modules\FPSplanificationstage\Services;
 use Modules\FPSplanificationstage\Models\Inscription;
 use Modules\FPSplanificationstage\Models\SessionStage;
 
-class StageDejaEffectueDetecto
+class StageDejaEffectueDetector
 {
     public function detecte(
         ?int $stagiaireId,
@@ -43,7 +43,7 @@ class StageDejaEffectueDetecto
                 $inscriptionAIgnorer,
                 fn ($query) =>
                     $query->whereKeyNot(
-                        $inscriptionAIgnore
+                        $inscriptionAIgnorer
                     )
             )
             ->whereHas(

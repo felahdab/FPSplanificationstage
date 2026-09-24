@@ -104,10 +104,10 @@ class MarinDepuisInscriptionService
 
                 $marin =
                     $inscription
-                        ->candidatUse
+                        ->candidatUser
                         ? Marin::fromUser(
                             $inscription
-                                ->candidatUse
+                                ->candidatUser
                         )
                         : null;
 
