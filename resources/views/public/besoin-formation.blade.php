@@ -254,10 +254,21 @@
                     id="demandeur"
                     type="text"
                     name="demandeur"
-                    value="{{ old('demandeur') }}"
-                    placeholder="Ex. FDA FORBIN"
+                    list="unites-demandeur"
+                    value="{{ old('demandeur', $demandeur) }}"
+                    autocomplete="off"
                     required
                 >
+
+                <datalist id="unites-demandeur">
+                    @foreach ($unites as $unite)
+                        <option value="{{ $unite }}"></option>
+                    @endforeach
+                </datalist>
+
+                <p class="help">
+                    Commencez à saisir le libellé de l’unité, puis choisissez-la dans la liste.
+                </p>
 
             </div>
 

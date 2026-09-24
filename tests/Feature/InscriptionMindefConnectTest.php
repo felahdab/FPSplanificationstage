@@ -10,11 +10,15 @@ use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Str;
 use Modules\FPSplanificationstage\Filament\Public\Pages\Inscription as PublicInscriptionPage;
 use Modules\FPSplanificationstage\Filament\Resources\Inscriptions\Pages\ListInscriptions;
+use Modules\FPSplanificationstage\Http\Controllers\PublicInscriptionController;
 use Modules\FPSplanificationstage\Models\Inscription;
 use Modules\FPSplanificationstage\Models\SessionStage;
 use Modules\FPSplanificationstage\Models\Stage;
 use Modules\FPSplanificationstage\Services\MarinDepuisInscriptionService;
+use Modules\RH\Models\Brevet;
+use Modules\RH\Models\Grade;
 use Modules\RH\Models\Marin;
+use Modules\RH\Models\Specialite;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
@@ -93,6 +97,15 @@ it(
             )
         );
 
+    }
+);
+
+it(
+    'laisse un utilisateur deja authentifie acceder directement a l inscription',
+    function (): void {
+        $session =
+            creerSessionPourInscriptionMindef();
+
         $compteLocal =
             User::factory()
                 ->create([
@@ -113,12 +126,11 @@ it(
                 panel:
                     'fpsplanificationstage'
             )
-        )->assertRedirect(
-            route(
-                'login'
-            )
-        );
-
+        )
+            ->assertSuccessful()
+            ->assertSee(
+                $compteLocal->email
+            );
     }
 );
 
@@ -168,6 +180,8 @@ it(
 it(
     'affiche le formulaire avec l identite du compte MindefConnect',
     function (): void {
+        Queue::fake();
+
         $session =
             creerSessionPourInscriptionMindef();
 
@@ -178,9 +192,85 @@ it(
                         'mindef-' . Str::uuid(),
                 ]);
 
+        $grade =
+            Grade::factory()
+                ->create([
+                    'libelle_court' =>
+                        'GRTEST',
+
+                    'libelle_long' =>
+                        'Grade long de test',
+                ]);
+
+        $specialite =
+            Specialite::factory()
+                ->create([
+                    'libelle_court' =>
+                        'SPTEST',
+
+                    'libelle_long' =>
+                        'Spécialité longue de test',
+                ]);
+
+        $brevet =
+            Brevet::factory()
+                ->create([
+                    'libelle_court' =>
+                        'BRTEST',
+
+                    'libelle_long' =>
+                        'Brevet long de test',
+                ]);
+
+        Marin::factory()
+            ->create([
+                'user_id' =>
+                    null,
+
+                'nom' =>
+                    $compteMindef->nom,
+
+                'prenom' =>
+                    $compteMindef->prenom,
+
+                'email' =>
+                    $compteMindef->email,
+
+                'grade_id' =>
+                    $grade->id,
+
+                'specialite_id' =>
+                    $specialite->id,
+
+                'brevet_id' =>
+                    $brevet->id,
+            ]);
+
         actingAs(
             $compteMindef
         );
+
+        $data =
+            app(
+                PublicInscriptionController::class
+            )
+                ->create(
+                    $session
+                )
+                ->getData();
+
+        expect($data['identity']['grade'])
+            ->toBe(
+                $grade->libelle_court
+            )
+            ->and($data['identity']['specialite'])
+            ->toBe(
+                $specialite->libelle_court
+            )
+            ->and($data['identity']['brevet'])
+            ->toBe(
+                $brevet->libelle_court
+            );
 
         get(
             PublicInscriptionPage::getUrl(
@@ -195,6 +285,15 @@ it(
             ->assertSuccessful()
             ->assertSee(
                 $compteMindef->email
+            )
+            ->assertSee(
+                $grade->libelle_long
+            )
+            ->assertSee(
+                $specialite->libelle_long
+            )
+            ->assertSee(
+                $brevet->libelle_long
             );
     }
 );
@@ -225,6 +324,18 @@ it(
                         . '@example.test',
                 ]);
 
+        $grade =
+            Grade::factory()
+                ->create();
+
+        $specialite =
+            Specialite::factory()
+                ->create();
+
+        $brevet =
+            Brevet::factory()
+                ->create();
+
         actingAs(
             $candidat
         );
@@ -253,6 +364,15 @@ it(
                 'matricule' =>
                     'MAT-MINDEF',
 
+                'grade' =>
+                    $grade->libelle_court,
+
+                'specialite' =>
+                    $specialite->libelle_court,
+
+                'brevet' =>
+                    $brevet->libelle_court,
+
                 'unite' =>
                     'Unité test',
             ]
@@ -279,6 +399,12 @@ it(
             ->toBe('Alice')
             ->and($inscription->candidat_email)
             ->toBe($candidat->email)
+            ->and($inscription->candidat_grade)
+            ->toBe($grade->libelle_court)
+            ->and($inscription->candidat_specialite)
+            ->toBe($specialite->libelle_court)
+            ->and($inscription->candidat_brevet)
+            ->toBe($brevet->libelle_court)
             ->and($inscription->nom_complet)
             ->toBe('DURAND Alice');
 
@@ -287,6 +413,61 @@ it(
                 ->where(
                     'email',
                     $candidat->email
+                )
+                ->exists()
+        )->toBeFalse();
+    }
+);
+
+it(
+    'refuse les références RH inconnues à l inscription',
+    function (): void {
+        $session =
+            creerSessionPourInscriptionMindef();
+
+        $candidat =
+            User::factory()
+                ->create([
+                    'sub' =>
+                        'mindef-' . Str::uuid(),
+                ]);
+
+        actingAs(
+            $candidat
+        );
+
+        post(
+            route(
+                'fpsplanificationstage.public.inscription.store',
+                [
+                    'session' =>
+                        $session->id,
+                ]
+            ),
+            [
+                'grade' =>
+                    'GRADE-INCONNU',
+
+                'specialite' =>
+                    'SPECIALITE-INCONNUE',
+
+                'brevet' =>
+                    'BREVET-INCONNU',
+
+                'unite' =>
+                    'Unité test',
+            ]
+        )->assertSessionHasErrors([
+            'grade',
+            'specialite',
+            'brevet',
+        ]);
+
+        expect(
+            Inscription::query()
+                ->where(
+                    'session_stage_id',
+                    $session->id
                 )
                 ->exists()
         )->toBeFalse();

@@ -331,23 +331,15 @@
                             Sélectionner un grade
                         </option>
 
-                        @foreach (
-                            [
-                                'MOT',
-                                'QM2',
-                                'QM1',
-                                'SM',
-                                'MT',
-                                'PM',
-                                'MP',
-                                'MJR',
-                            ] as $grade
-                        )
+                        @foreach ($grades as $grade)
                             <option
-                                value="{{ $grade }}"
-                                @selected(old('grade', $identity['grade'] ?? null) === $grade)
+                                value="{{ $grade->libelle_court }}"
+                                @selected(old('grade', $identity['grade'] ?? null) === $grade->libelle_court)
                             >
-                                {{ $grade }}
+                                {{ $grade->libelle_long ?: $grade->libelle_court }}
+                                @if ($grade->libelle_long && $grade->libelle_long !== $grade->libelle_court)
+                                    — {{ $grade->libelle_court }}
+                                @endif
                             </option>
                         @endforeach
                     </select>
@@ -396,12 +388,15 @@
                             Sélectionner un brevet
                         </option>
 
-                        @foreach (['FEM', 'BAT', 'BS', 'BM'] as $brevet)
+                        @foreach ($brevets as $brevet)
                             <option
-                                value="{{ $brevet }}"
-                                @selected(old('brevet', $identity['brevet'] ?? null) === $brevet)
+                                value="{{ $brevet->libelle_court }}"
+                                @selected(old('brevet', $identity['brevet'] ?? null) === $brevet->libelle_court)
                             >
-                                {{ $brevet }}
+                                {{ $brevet->libelle_long ?: $brevet->libelle_court }}
+                                @if ($brevet->libelle_long && $brevet->libelle_long !== $brevet->libelle_court)
+                                    — {{ $brevet->libelle_court }}
+                                @endif
                             </option>
                         @endforeach
                     </select>
@@ -412,13 +407,26 @@
                         Spécialité
                     </label>
 
-                    <input
+                    <select
                         id="specialite"
-                        type="text"
                         name="specialite"
-                        value="{{ old('specialite', $identity['specialite'] ?? null) }}"
-                        maxlength="255"
                     >
+                        <option value="">
+                            Sélectionner une spécialité
+                        </option>
+
+                        @foreach ($specialites as $specialite)
+                            <option
+                                value="{{ $specialite->libelle_court }}"
+                                @selected(old('specialite', $identity['specialite'] ?? null) === $specialite->libelle_court)
+                            >
+                                {{ $specialite->libelle_long ?: $specialite->libelle_court }}
+                                @if ($specialite->libelle_long && $specialite->libelle_long !== $specialite->libelle_court)
+                                    — {{ $specialite->libelle_court }}
+                                @endif
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div class="field">

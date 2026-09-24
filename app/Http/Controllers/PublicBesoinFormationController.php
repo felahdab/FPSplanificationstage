@@ -2,6 +2,7 @@
 
 namespace Modules\FPSplanificationstage\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -13,6 +14,9 @@ use Illuminate\View\View;
 use Modules\FPSplanificationstage\Models\BesoinFormation;
 use Modules\FPSplanificationstage\Models\Stage;
 use Modules\FPSplanificationstage\Services\BesoinPeriodeService;
+use Modules\FPSplanificationstage\Services\StagiaireResolver;
+use Modules\RH\Models\Marin;
+use Modules\RH\Models\Unite;
 
 class PublicBesoinFormationController extends Controller
 {
@@ -34,6 +38,14 @@ class PublicBesoinFormationController extends Controller
             [
                 'stages' =>
                     $stages,
+
+                'unites' =>
+                    $this->uniteLabels(),
+
+                'demandeur' =>
+                    $this->demandeurFor(
+                        auth()->user()
+                    ),
             ]
         );
     }
@@ -75,6 +87,10 @@ class PublicBesoinFormationController extends Controller
                         'required',
                         'string',
                         'max:255',
+                        Rule::exists(
+                            Unite::class,
+                            'libelle_long'
+                        ),
                     ],
 
                     'contact_nom' => [
@@ -486,5 +502,91 @@ class PublicBesoinFormationController extends Controller
                 'portail'
             )
             ->firstOrFail();
+    }
+
+    /** @return array<int, string> */
+    private function uniteLabels(): array
+    {
+        return Unite::query()
+            ->whereNotNull(
+                'libelle_long'
+            )
+            ->where(
+                'libelle_long',
+                '<>',
+                ''
+            )
+            ->orderBy(
+                'libelle_long'
+            )
+            ->pluck(
+                'libelle_long'
+            )
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    private function demandeurFor(
+        ?User $user
+    ): ?string {
+        if (! $user) {
+            return null;
+        }
+
+        $marin =
+            Marin::fromUser(
+                $user
+            )
+            ?? app(
+                StagiaireResolver::class
+            )->find([
+                'nom' =>
+                    $user->nom,
+
+                'prenom' =>
+                    $user->prenom,
+
+                'email' =>
+                    $user->email,
+            ]);
+
+        $unite =
+            $marin?->unite
+            ?? $this->findMindefUnite(
+                data_get(
+                    $user->getMindefConnectInformations(),
+                    'main_department_number'
+                )
+            );
+
+        return $unite?->libelle_long;
+    }
+
+    private function findMindefUnite(
+        mixed $mindefUnite
+    ): ?Unite {
+        $mindefUnite = trim(
+            (string) $mindefUnite
+        );
+
+        if ($mindefUnite === '') {
+            return null;
+        }
+
+        return Unite::query()
+            ->where(
+                'libannudef',
+                $mindefUnite
+            )
+            ->orWhere(
+                'libelle_long',
+                $mindefUnite
+            )
+            ->orWhere(
+                'libelle_court',
+                $mindefUnite
+            )
+            ->first();
     }
 }

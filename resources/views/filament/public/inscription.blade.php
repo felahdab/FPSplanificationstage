@@ -32,7 +32,6 @@
                     ['prenom','Prénom *','text'],
                     ['matricule','Matricule','text'],
                     ['nid','NID','text'],
-                    ['specialite','Spécialité','text'],
                     ['unite','Bâtiment / unité *','text'],
                     ['email','E-mail *','email'],
                     ['telephone','Téléphone','text'],
@@ -55,8 +54,36 @@
                     <x-filament::input.wrapper>
                         <x-filament::input.select name="grade">
                             <option value="">Sélectionner un grade</option>
-                            @foreach (['MOT','QM2','QM1','SM','MT','PM','MP','MJR'] as $grade)
-                                <option value="{{ $grade }}" @selected(old('grade', $identity['grade'] ?? null) === $grade)>{{ $grade }}</option>
+                            @foreach ($grades as $grade)
+                                <option
+                                    value="{{ $grade->libelle_court }}"
+                                    @selected(old('grade', $identity['grade'] ?? null) === $grade->libelle_court)
+                                >
+                                    {{ $grade->libelle_long ?: $grade->libelle_court }}
+                                    @if ($grade->libelle_long && $grade->libelle_long !== $grade->libelle_court)
+                                        — {{ $grade->libelle_court }}
+                                    @endif
+                                </option>
+                            @endforeach
+                        </x-filament::input.select>
+                    </x-filament::input.wrapper>
+                </div>
+
+                <div>
+                    <label style="display:block;font-weight:700;margin-bottom:.35rem;">Spécialité</label>
+                    <x-filament::input.wrapper>
+                        <x-filament::input.select name="specialite">
+                            <option value="">Sélectionner une spécialité</option>
+                            @foreach ($specialites as $specialite)
+                                <option
+                                    value="{{ $specialite->libelle_court }}"
+                                    @selected(old('specialite', $identity['specialite'] ?? null) === $specialite->libelle_court)
+                                >
+                                    {{ $specialite->libelle_long ?: $specialite->libelle_court }}
+                                    @if ($specialite->libelle_long && $specialite->libelle_long !== $specialite->libelle_court)
+                                        — {{ $specialite->libelle_court }}
+                                    @endif
+                                </option>
                             @endforeach
                         </x-filament::input.select>
                     </x-filament::input.wrapper>
@@ -67,8 +94,16 @@
                     <x-filament::input.wrapper>
                         <x-filament::input.select name="brevet">
                             <option value="">Sélectionner un brevet</option>
-                            @foreach (['FEM','BAT','BS','BM'] as $brevet)
-                                <option value="{{ $brevet }}" @selected(old('brevet', $identity['brevet'] ?? null) === $brevet)>{{ $brevet }}</option>
+                            @foreach ($brevets as $brevet)
+                                <option
+                                    value="{{ $brevet->libelle_court }}"
+                                    @selected(old('brevet', $identity['brevet'] ?? null) === $brevet->libelle_court)
+                                >
+                                    {{ $brevet->libelle_long ?: $brevet->libelle_court }}
+                                    @if ($brevet->libelle_long && $brevet->libelle_long !== $brevet->libelle_court)
+                                        — {{ $brevet->libelle_court }}
+                                    @endif
+                                </option>
                             @endforeach
                         </x-filament::input.select>
                     </x-filament::input.wrapper>

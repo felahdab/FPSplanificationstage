@@ -12,12 +12,7 @@ class RequireMindefConnectAuthentication
         Request $request,
         Closure $next
     ): Response {
-        if (
-            $request->user()
-            && filled(
-                $request->user()->sub
-            )
-        ) {
+        if ($request->user()) {
             return $next(
                 $request
             );

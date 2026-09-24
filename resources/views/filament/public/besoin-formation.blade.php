@@ -45,8 +45,23 @@
                 <div style="grid-column:1/-1;">
                     <label style="display:block;font-weight:700;margin-bottom:.35rem;">Bâtiment / unité *</label>
                     <x-filament::input.wrapper>
-                        <x-filament::input name="demandeur" value="{{ old('demandeur') }}" />
+                        <x-filament::input
+                            id="demandeur"
+                            name="demandeur"
+                            list="unites-demandeur"
+                            value="{{ old('demandeur', $demandeur) }}"
+                            autocomplete="off"
+                            required
+                        />
                     </x-filament::input.wrapper>
+                    <datalist id="unites-demandeur">
+                        @foreach ($unites as $unite)
+                            <option value="{{ $unite }}"></option>
+                        @endforeach
+                    </datalist>
+                    <p style="margin-top:.35rem;color:#64748b;font-size:.85rem;">
+                        Commencez à saisir le libellé de l’unité, puis choisissez-la dans la liste.
+                    </p>
                 </div>
 
                 <div>

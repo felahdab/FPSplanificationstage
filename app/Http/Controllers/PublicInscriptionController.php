@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Modules\FPSplanificationstage\Models\Inscription;
@@ -14,7 +15,10 @@ use Modules\FPSplanificationstage\Models\InscriptionPrerequis;
 use Modules\FPSplanificationstage\Models\SessionStage;
 use Modules\FPSplanificationstage\Services\CandidatureStageDejaEffectueNotifier;
 use Modules\FPSplanificationstage\Services\StagiaireResolver;
+use Modules\RH\Models\Brevet;
+use Modules\RH\Models\Grade;
 use Modules\RH\Models\Marin;
+use Modules\RH\Models\Specialite;
 
 class PublicInscriptionController extends Controller
 {
@@ -50,6 +54,23 @@ class PublicInscriptionController extends Controller
                     $this->identityFor(
                         auth()->user()
                     ),
+
+                'grades' =>
+                    Grade::query()
+                        ->orderBy('ordre')
+                        ->orderBy('libelle_long')
+                        ->get(),
+
+                'specialites' =>
+                    Specialite::query()
+                        ->orderBy('libelle_long')
+                        ->get(),
+
+                'brevets' =>
+                    Brevet::query()
+                        ->orderBy('ordre')
+                        ->orderBy('libelle_long')
+                        ->get(),
             ]
         );
     }
@@ -114,13 +135,20 @@ class PublicInscriptionController extends Controller
 
                 'brevet' => [
                     'nullable',
-                    'in:FEM,BAT,BS,BM',
+                    Rule::exists(
+                        Brevet::class,
+                        'libelle_court'
+                    ),
                 ],
 
                 'specialite' => [
                     'nullable',
                     'string',
                     'max:255',
+                    Rule::exists(
+                        Specialite::class,
+                        'libelle_court'
+                    ),
                 ],
 
                 'nom' => [
@@ -136,9 +164,11 @@ class PublicInscriptionController extends Controller
                 ],
 
                 'grade' => [
-                    // GRADE_MENU_DEROULANT_V1_1_VALIDATION
                     'nullable',
-                    'in:MOT,QM2,QM1,SM,MT,PM,MP,MJR',
+                    Rule::exists(
+                        Grade::class,
+                        'libelle_court'
+                    ),
                 ],
 
                 'unite' => [
@@ -566,9 +596,22 @@ return view(
     private function identityFor(
         User $user
     ): array {
-        $marin = Marin::fromUser(
-            $user
-        );
+        $marin =
+            Marin::fromUser(
+                $user
+            )
+            ?? app(
+                StagiaireResolver::class
+            )->find([
+                'nom' =>
+                    $user->nom,
+
+                'prenom' =>
+                    $user->prenom,
+
+                'email' =>
+                    $user->email,
+            ]);
 
         $mindef =
             $user
